@@ -128,7 +128,7 @@ const SidebarSection = ({ title, children }) => (
 
 const Sidebar = ({ active, onNav }) => (
   <aside style={{
-    width: 220, flexShrink: 0,
+    width: 220, flexShrink: 0, alignSelf: 'flex-start',
     background: T.elev, borderRight: `1px solid ${T.border}`,
     padding: '14px 10px', display: 'flex', flexDirection: 'column',
     height: '100vh', position: 'sticky', top: 0, overflow: 'auto',

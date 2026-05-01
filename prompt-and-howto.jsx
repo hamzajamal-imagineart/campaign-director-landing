@@ -176,7 +176,7 @@ const VideoBlock = () => {
   };
 
   return (
-    <div style={{ marginTop: 64 }}>
+    <div id="walkthrough" style={{ marginTop: 64 }}>
       <SectionHead
         eyebrow="Walkthrough"
         title="See it run in 40 seconds."
@@ -192,12 +192,8 @@ const VideoBlock = () => {
           src="assets/walkthrough.mp4"
           playsInline
           loop
+          preload="metadata"
           onClick={toggle}
-          onTimeUpdate={(e)=>localStorage.setItem('cd:vt', e.target.currentTime)}
-          onLoadedMetadata={(e)=>{
-            const t = parseFloat(localStorage.getItem('cd:vt')||'0');
-            if (!isNaN(t)) e.target.currentTime = t;
-          }}
           style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}
         />
         {!playing && (

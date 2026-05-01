@@ -99,17 +99,17 @@ const Hero = ({ onLaunch, headline = 'Direct your campaign.', accent = 'Codex bu
     position: 'relative', overflow: 'hidden',
     borderRadius: 20,
     background: `
-      radial-gradient(80% 140% at 0% 0%, rgba(241,234,252,0.95) 0%, rgba(248,240,255,0.6) 35%, rgba(255,255,255,0.4) 60%),
-      linear-gradient(135deg, #F1EAFC 0%, #F8F0FF 45%, #FCF6FF 100%)
+      radial-gradient(80% 140% at 0% 0%, rgba(138,63,252,0.32) 0%, rgba(138,63,252,0.10) 35%, rgba(0,0,0,0) 60%),
+      linear-gradient(135deg, #1A0F33 0%, #2A1656 50%, #3B1F75 100%)
     `,
-    border: `1px solid ${T.hair}`,
+    border: `1px solid rgba(255,255,255,0.08)`,
     padding: '40px 40px',
     display: 'flex', alignItems: 'center', gap: 24,
   }}>
     {/* dotted overlay layered on top of gradient */}
     <div aria-hidden style={{
       position: 'absolute', inset: 0, pointerEvents: 'none',
-      backgroundImage: 'radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px)',
+      backgroundImage: 'radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px)',
       backgroundSize: '14px 14px',
       maskImage: 'linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0))',
       WebkitMaskImage: 'linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0))',
@@ -142,7 +142,7 @@ const Hero = ({ onLaunch, headline = 'Direct your campaign.', accent = 'Codex bu
           <Icon name="github" size={14} color={T.btnDarkFg}/>
           View on GitHub
         </a>
-        <button onClick={()=>document.getElementById('how-it-works').scrollIntoView({behavior:'smooth', block:'start'})} style={{
+        <button onClick={()=>document.getElementById('walkthrough').scrollIntoView({behavior:'smooth', block:'start'})} style={{
           height: 40, padding: '0 14px', borderRadius: 999,
           background: 'transparent', color: T.fg, border: 0,
           fontWeight: 500, fontSize: 13, cursor: 'pointer',

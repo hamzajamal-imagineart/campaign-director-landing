@@ -8,7 +8,6 @@
 <link rel="stylesheet" href="colors_and_type.css"/>
 <style>
   html, body, #root { margin: 0; padding: 0; min-height: 100%; background: rgb(var(--background)); }
-  body { overflow-x: hidden; }
   *::selection { background: rgba(138,63,252,0.18); }
 
   /* Force Google Sans Flex everywhere */
@@ -19,29 +18,29 @@
     font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
   }
 
-  /* ================ ImagineArt site palette overrides ================
-     The site uses a near-black primary CTA, soft lavender washes, and a
-     muted neutral palette. We re-map a few semantic tokens here to match
-     screenshots of the live product instead of the raw brand purple. */
+  /* ================ ImagineArt site palette overrides ================ */
   :root, .light {
-    /* Primary CTA → near-black (matches "Create New Workflow" in screenshots) */
-    --btn-primary-bg: 23 23 23;        /* neutral-100-ish */
+    --btn-primary-bg: 23 23 23;
     --btn-primary-bg-hover: 0 0 0;
     --btn-primary-fg: 255 255 255;
-
-    /* Subtle lavender wash used in hero / final CTA — pulled from screenshot */
-    --wash-lavender: 241 234 252;       /* #F1EAFC */
-    --wash-lavender-2: 248 240 255;     /* #F8F0FF */
-    --wash-pink: 254 232 244;           /* #FEE8F4 */
-
-    /* Soft borders */
     --hairline: 0 0 0 / 0.06;
     --hairline-strong: 0 0 0 / 0.10;
   }
 
-  /* Soft dotted texture, like the live hero */
+  /* Dark mode: white primary CTA on dark surfaces, lifted hairlines */
+  .dark {
+    --btn-primary-bg: 255 255 255;
+    --btn-primary-bg-hover: 224 224 224;
+    --btn-primary-fg: 23 23 23;
+    --hairline: 255 255 255 / 0.08;
+    --hairline-strong: 255 255 255 / 0.14;
+  }
+
+  /* Any anchor/scroll target clears the 56px sticky TopBar */
+  [id] { scroll-margin-top: 72px; }
+
   .dot-grid {
-    background-image: radial-gradient(rgba(0,0,0,0.06) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
     background-size: 16px 16px;
   }
 
@@ -72,7 +71,7 @@
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="dark">
 <div id="root"></div>
 <script type="text/babel" src="app.jsx"></script>
 <script type="text/babel" src="hero.jsx"></script>

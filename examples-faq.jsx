@@ -188,12 +188,15 @@ const FAQItem = ({ q, a, open, onClick }) => (
       }}/>
     </button>
     <div style={{
-      maxHeight: open ? 400 : 0, overflow: 'hidden',
-      transition: 'max-height 280ms cubic-bezier(0.16,1,0.3,1)',
+      display: 'grid',
+      gridTemplateRows: open ? '1fr' : '0fr',
+      transition: 'grid-template-rows 280ms cubic-bezier(0.16,1,0.3,1)',
     }}>
-      <div style={{
-        padding: '0 18px 18px', fontSize: 13, color: T.fg2, lineHeight: 1.65,
-      }}>{a}</div>
+      <div style={{ overflow: 'hidden', minHeight: 0 }}>
+        <div style={{
+          padding: '0 18px 18px', fontSize: 13, color: T.fg2, lineHeight: 1.65,
+        }}>{a}</div>
+      </div>
     </div>
   </div>
 );
@@ -250,16 +253,16 @@ const FinalCTA = ({ onLaunch }) => (
     position: 'relative', overflow: 'hidden',
     borderRadius: 20,
     background: `
-      radial-gradient(80% 140% at 100% 100%, rgba(241,234,252,0.95) 0%, rgba(248,240,255,0.6) 35%, rgba(255,255,255,0.4) 60%),
-      linear-gradient(135deg, #FCF6FF 0%, #F8F0FF 50%, #F1EAFC 100%)
+      radial-gradient(80% 140% at 100% 100%, rgba(138,63,252,0.32) 0%, rgba(138,63,252,0.10) 35%, rgba(0,0,0,0) 60%),
+      linear-gradient(135deg, #3B1F75 0%, #2A1656 50%, #1A0F33 100%)
     `,
-    border: `1px solid ${T.hair}`,
+    border: `1px solid rgba(255,255,255,0.08)`,
     padding: '40px 36px',
     display: 'flex', alignItems: 'center', gap: 24,
   }}>
     <div aria-hidden style={{
       position: 'absolute', inset: 0, pointerEvents: 'none',
-      backgroundImage: 'radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px)',
+      backgroundImage: 'radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px)',
       backgroundSize: '14px 14px',
       maskImage: 'linear-gradient(315deg, rgba(0,0,0,0.5), rgba(0,0,0,0))',
       WebkitMaskImage: 'linear-gradient(315deg, rgba(0,0,0,0.5), rgba(0,0,0,0))',
