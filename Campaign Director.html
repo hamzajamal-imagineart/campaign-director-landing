@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Campaign Director · ImagineArt</title>
+<meta name="viewport" content="width=1280"/>
+<link rel="icon" href="assets/imagine-logo.svg"/>
+<link rel="stylesheet" href="colors_and_type.css"/>
+<style>
+  html, body, #root { margin: 0; padding: 0; min-height: 100%; background: rgb(var(--background)); }
+  body { overflow-x: hidden; }
+  *::selection { background: rgba(138,63,252,0.18); }
+
+  /* Force Google Sans Flex everywhere */
+  html, body, button, input, textarea, select, pre, code, kbd, samp {
+    font-family: 'Google Sans Flex', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  }
+  pre, code, kbd, samp, .mono {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  }
+
+  /* ================ ImagineArt site palette overrides ================
+     The site uses a near-black primary CTA, soft lavender washes, and a
+     muted neutral palette. We re-map a few semantic tokens here to match
+     screenshots of the live product instead of the raw brand purple. */
+  :root, .light {
+    /* Primary CTA → near-black (matches "Create New Workflow" in screenshots) */
+    --btn-primary-bg: 23 23 23;        /* neutral-100-ish */
+    --btn-primary-bg-hover: 0 0 0;
+    --btn-primary-fg: 255 255 255;
+
+    /* Subtle lavender wash used in hero / final CTA — pulled from screenshot */
+    --wash-lavender: 241 234 252;       /* #F1EAFC */
+    --wash-lavender-2: 248 240 255;     /* #F8F0FF */
+    --wash-pink: 254 232 244;           /* #FEE8F4 */
+
+    /* Soft borders */
+    --hairline: 0 0 0 / 0.06;
+    --hairline-strong: 0 0 0 / 0.10;
+  }
+
+  /* Soft dotted texture, like the live hero */
+  .dot-grid {
+    background-image: radial-gradient(rgba(0,0,0,0.06) 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+
+  /* Scrollbar polish */
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-thumb { background: rgb(var(--neutral-30)); border-radius: 999px; border: 2px solid rgb(var(--surface-elevated)); }
+  *::-webkit-scrollbar-track { background: transparent; }
+
+  @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(66,190,101,0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(66,190,101,0); }
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes popIn { from { opacity: 0; transform: scale(0.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+  button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible {
+    outline: 2px solid rgb(var(--neutral-100));
+    outline-offset: 2px;
+  }
+  textarea:focus { border-color: rgb(var(--neutral-100)) !important; }
+
+  button { -webkit-tap-highlight-color: transparent; }
+  button:active { filter: brightness(0.96); }
+  button::-moz-focus-inner { border: 0; padding: 0; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" src="app.jsx"></script>
+<script type="text/babel" src="hero.jsx"></script>
+<script type="text/babel" src="prompt-and-howto.jsx"></script>
+<script type="text/babel" src="examples-faq.jsx"></script>
+<script type="text/babel" src="launch-modal.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="tweaks.jsx"></script>
+<script type="text/babel" src="main.jsx"></script>
+</body>
+</html>
