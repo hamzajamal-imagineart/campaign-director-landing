@@ -14,11 +14,11 @@ const STREAM_LINES = [
   ['10:42:02', 'info',  'agent.reader', 'Loaded AGENTS.md · 11 production rules'],
   ['10:42:03', 'info',  'agent.reader', 'Loaded prompts/01-brief.md · prompts/02-shot-plan.md'],
   ['10:42:05', 'spawn', 'agent.brainstorm', 'Spawning sub-agent: brainstorm × 3'],
-  ['10:42:07', 'msg',   'brainstorm.1',     'Concept A — Late-night convenience-store cinematic'],
-  ['10:42:07', 'msg',   'brainstorm.2',     'Concept B — Neon-rain product reveal'],
-  ['10:42:08', 'msg',   'brainstorm.3',     'Concept C — Slow-mo overhead pour'],
+  ['10:42:07', 'msg',   'brainstorm.1',     'Concept A: Late-night convenience-store cinematic'],
+  ['10:42:07', 'msg',   'brainstorm.2',     'Concept B: Neon-rain product reveal'],
+  ['10:42:08', 'msg',   'brainstorm.3',     'Concept C: Slow-mo overhead pour'],
   ['10:42:10', 'spawn', 'agent.critic',     'Spawning critic to score concepts...'],
-  ['10:42:13', 'ok',    'agent.critic',     'Selected: Concept A — strongest brand fit'],
+  ['10:42:13', 'ok',    'agent.critic',     'Selected: Concept A, strongest brand fit'],
   ['10:42:15', 'info',  'agent.planner',    'Building shot plan · 6 shots · 15s vertical'],
   ['10:42:18', 'cu',    'computer.use',     'Opening Chrome → imagine.art/workflows'],
   ['10:42:21', 'cu',    'computer.use',     'Detected logged-in session ✓'],
@@ -239,7 +239,7 @@ const LaunchModal = ({ open, onClose, prefill }) => {
                 </div>
               )}
               <div style={{ fontSize: 12, color: T.fg3, marginTop: 4 }}>
-                A sentence is enough — Codex will expand the brief before generating.
+                A sentence is enough. Codex will expand the brief before generating.
               </div>
             </div>
           )}
@@ -272,7 +272,7 @@ const LaunchModal = ({ open, onClose, prefill }) => {
               {[
                 ['terminal', 'Codex with Computer Use enabled', 'Required for browser, clipboard, and download control'],
                 ['chrome',   'Google Chrome open', 'Codex operates the same Chrome session you use'],
-                ['shield',   'Imagine.Art signed in', 'Log in before starting — Codex will stop if it sees a login screen'],
+                ['shield',   'Imagine.Art signed in', 'Log in before starting. Codex stops on a login screen'],
                 ['clipboard','Allow clipboard prompt', "Click \u201cAllow\u201d when Chrome asks about clipboard access"],
               ].map(([icon, title, sub]) => (
                 <div key={title} style={{

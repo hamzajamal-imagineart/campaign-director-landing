@@ -259,25 +259,8 @@ const ShimmerCTA = ({ href, onClick, children, primary = false }) => {
 };
 
 const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex builds the workflow.' }) => {
-  const heroRef = useRef(null);
-  const [spot, setSpot] = useState({ x: 50, y: 45, active: false });
-
-  const onMouseMove = (e) => {
-    const rect = heroRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    setSpot({
-      x: ((e.clientX - rect.left) / rect.width) * 100,
-      y: ((e.clientY - rect.top) / rect.height) * 100,
-      active: true,
-    });
-  };
-  const onMouseLeave = () => setSpot((s) => ({ ...s, x: 50, y: 45, active: false }));
-
   return (
   <div
-    ref={heroRef}
-    onMouseMove={onMouseMove}
-    onMouseLeave={onMouseLeave}
     style={{
     position: 'relative', overflow: 'hidden',
     borderRadius: 24,
@@ -309,18 +292,6 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex builds the w
       `,
     }}/>
 
-    {/* Mouse-follow violet spotlight — smooth lag for premium feel */}
-    <div aria-hidden style={{
-      position: 'absolute',
-      left: `${spot.x}%`, top: `${spot.y}%`,
-      width: 760, height: 760,
-      transform: 'translate(-50%, -50%)',
-      background: `radial-gradient(closest-side, rgba(138,63,252,${spot.active ? 0.18 : 0.10}) 0%, rgba(138,63,252,0) 70%)`,
-      pointerEvents: 'none',
-      zIndex: 1,
-      transition: 'left 720ms cubic-bezier(0.22, 1, 0.36, 1), top 720ms cubic-bezier(0.22, 1, 0.36, 1), background 600ms ease-out',
-    }}/>
-
     {/* Film grain — subtle SVG noise overlay */}
     <svg aria-hidden style={{
       position: 'absolute', inset: 0, zIndex: 1,
@@ -342,8 +313,8 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex builds the w
     }}>
       {/* Headline */}
       <h1 style={{
-        margin: 0, fontSize: 76, lineHeight: 1.02,
-        fontWeight: 600, letterSpacing: '-0.025em', color: '#fff',
+        margin: 0, fontSize: 'clamp(42px, 5vw, 64px)', lineHeight: 1.06,
+        fontWeight: 600, letterSpacing: '-0.03em', color: '#fff',
         maxWidth: 880,
       }}>
         {headline}
@@ -358,11 +329,11 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex builds the w
       </h1>
 
       <p style={{
-        margin: '24px 0 32px', fontSize: 16.5, lineHeight: 1.55,
+        margin: '24px 0 32px', fontSize: 18, lineHeight: 1.7, fontWeight: 400,
         color: 'rgba(255,255,255,0.72)', maxWidth: 580,
       }}>
         Turn one sentence into a finished Imagine.Art campaign.
-        Sub-agent swarms plan, generate, review, and package the run — no nodes to wire by hand.
+        Sub-agent swarms plan, generate, review, and package the run. No nodes to wire by hand.
       </p>
 
       {/* The real starter prompt — copyable */}
@@ -426,7 +397,7 @@ const CodexCallout = () => (
     </div>
     <div style={{ flex: 1 }}>
       <div style={{ fontSize: 13.5, fontWeight: 600, marginBottom: 2 }}>
-        Currently Codex-only — and that's intentional.
+        Currently Codex-only. That's intentional.
       </div>
       <div style={{ fontSize: 12.5, color: T.fg2, lineHeight: 1.55 }}>
         Building real workflow canvases needs reliable browser, clipboard, and download control.

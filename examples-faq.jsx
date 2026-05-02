@@ -37,7 +37,7 @@ const EXAMPLES = [
     icon: 'package',
     title: 'Product launch campaign',
     chip: 'Most popular',
-    desc: 'Hero shot, three social variants, post-ready 1:1 / 9:16 / 16:9 crops, and a 15-second vertical ad — all from one product photo.',
+    desc: 'Hero shot, three social variants, post-ready 1:1 / 9:16 / 16:9 crops, and a 15-second vertical ad. All from one product photo.',
     prompt: `15-second vertical launch ad for this canned drink. Use the product photo and brand kit. Vibe: moody late-night convenience-store cinema. Avoid sports-drink cliches and fake labels.`,
     deliverables: ['Hero image', '3 social variants', '15s vertical ad', 'Crop set'],
     bg: 'linear-gradient(135deg,#1a1330,#3a1f6b)',
@@ -59,7 +59,7 @@ const EXAMPLES = [
     icon: 'spark',
     title: 'Fashion film',
     chip: 'Cinematic',
-    desc: 'A 30-second luxury fashion film with consistent model and wardrobe across shots — rain, black glass, chrome, and a strong final hero image.',
+    desc: 'A 30-second luxury fashion film with consistent model and wardrobe across shots: rain, black glass, chrome, and a strong final hero image.',
     prompt: `30-second luxury fashion film. Mood: rain, black glass, chrome, restrained performance, strong final hero image. Keep model and wardrobe consistent.`,
     deliverables: ['Shot plan', '8 motion clips', 'Final cut MP4', 'QC notes'],
     bg: 'linear-gradient(135deg,#0a0a0a,#3a3a3a)',
@@ -168,11 +168,11 @@ const ExampleCard = ({ ex }) => {
 };
 
 const Examples = ({ columns = 2 }) => (
-  <div style={{ marginTop: 64 }}>
+  <div id="examples" style={{ marginTop: 0 }}>
     <SectionHead
       eyebrow="What you can build"
       title="Four briefs to start with."
-      sub="Plain creative briefs — copy one, paste it after the starter prompt, swap the brand, and you have a working campaign request."
+      sub="Plain creative briefs. Copy one, paste it after the starter prompt, swap the brand, and you have a working campaign request."
     />
     <div style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: 16 }}>
       {EXAMPLES.map(ex => <ExampleCard key={ex.id} ex={ex}/>)}
@@ -183,38 +183,30 @@ const Examples = ({ columns = 2 }) => (
 /* =========================================================
    FAQ
 ========================================================= */
-const FAQItem = ({ q, a, open, onClick }) => (
+const FAQItem = ({ q, a, open, onClick, isLast }) => (
   <div style={{
-    position: 'relative',
-    borderRadius: 12, border: `1px solid ${open ? 'rgba(167,123,254,0.30)' : T.hair}`,
-    background: T.elev, overflow: 'hidden',
-    transition: 'border-color 240ms, background 240ms',
+    borderBottom: isLast ? 'none' : `1px solid ${T.hair}`,
   }}>
-    {/* Left accent bar visible when open */}
-    <div aria-hidden style={{
-      position: 'absolute', top: 0, bottom: 0, left: 0,
-      width: open ? 2 : 0, background: '#A57BFE',
-      transition: 'width 240ms cubic-bezier(0.16,1,0.3,1)',
-    }}/>
     <button onClick={onClick} style={{
-      width: '100%', display: 'flex', alignItems: 'center', gap: 12,
-      padding: '16px 18px', background: 'transparent', border: 0, cursor: 'pointer',
-      color: T.fg, fontSize: 14, fontWeight: 500, textAlign: 'left',
+      width: '100%', display: 'flex', alignItems: 'center', gap: 16,
+      padding: '22px 0', background: 'transparent', border: 0, cursor: 'pointer',
+      color: T.fg, fontSize: 15, fontWeight: 500, textAlign: 'left',
     }}>
       <span style={{ flex: 1 }}>{q}</span>
-      <Icon name="chevronDown" size={15} style={{
+      <Icon name="chevronDown" size={16} color={open ? '#A57BFE' : T.fg2} style={{
+        flexShrink: 0,
         transform: open ? 'rotate(180deg)' : 'rotate(0)',
-        transition: 'transform 200ms',
+        transition: 'transform 220ms cubic-bezier(0.16,1,0.3,1)',
       }}/>
     </button>
     <div style={{
       display: 'grid',
       gridTemplateRows: open ? '1fr' : '0fr',
-      transition: 'grid-template-rows 280ms cubic-bezier(0.16,1,0.3,1)',
+      transition: 'grid-template-rows 300ms cubic-bezier(0.16,1,0.3,1)',
     }}>
       <div style={{ overflow: 'hidden', minHeight: 0 }}>
         <div style={{
-          padding: '0 18px 18px', fontSize: 13, color: T.fg2, lineHeight: 1.65,
+          paddingBottom: 22, fontSize: 14, color: T.fg2, lineHeight: 1.7,
         }}>{a}</div>
       </div>
     </div>
@@ -230,7 +222,7 @@ const FAQ = () => {
     },
     {
       q: 'Will this burn through my credits?',
-      a: 'No. Sub-agents plan and critique before any generation runs, and every node has a cost check. You can also run an audit-only pass that touches nothing — just reads your existing canvas and reports back.',
+      a: 'No. Sub-agents plan and critique before any generation runs, and every node has a cost check. You can also run an audit-only pass that touches nothing, just reads your existing canvas and reports back.',
     },
     {
       q: 'What if my brief is half-baked?',
@@ -242,31 +234,25 @@ const FAQ = () => {
     },
     {
       q: 'What if it gets stuck?',
-      a: "It surfaces the blocker — login required, missing Computer Use, sub-agent failure, export error, low credits — and stops. You get a clear next step, not a half-finished run pretending to be done.",
+      a: "It surfaces the blocker: login required, missing Computer Use, sub-agent failure, export error, low credits. And stops. You get a clear next step, not a half-finished run pretending to be done.",
     },
   ];
-  const left = items.slice(0, 3);
-  const right = items.slice(3);
   return (
-    <div style={{ marginTop: 64 }}>
-      <SectionHead
-        eyebrow="FAQ"
-        title="Quick answers."
-      />
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-        <div style={{ display: 'grid', gap: 8 }}>
-          {left.map((it, i) => (
-            <FAQItem key={i} q={it.q} a={it.a} open={open===i} onClick={()=>setOpen(open===i?-1:i)}/>
-          ))}
-        </div>
-        <div style={{ display: 'grid', gap: 8 }}>
-          {right.map((it, i) => {
-            const idx = i + left.length;
-            return (
-              <FAQItem key={idx} q={it.q} a={it.a} open={open===idx} onClick={()=>setOpen(open===idx?-1:idx)}/>
-            );
-          })}
-        </div>
+    <div id="faq">
+      <div style={{ maxWidth: 760, margin: '0 auto', textAlign: 'center' }}>
+        <SectionHead
+          title="Frequently asked questions"
+        />
+      </div>
+      <div style={{ maxWidth: 760, margin: '0 auto', borderTop: `1px solid ${T.hair}` }}>
+        {items.map((it, i) => (
+          <FAQItem
+            key={i} q={it.q} a={it.a}
+            open={open===i}
+            isLast={i === items.length - 1}
+            onClick={()=>setOpen(open===i?-1:i)}
+          />
+        ))}
       </div>
     </div>
   );
@@ -330,8 +316,8 @@ const FinalCTA = ({ onLaunch }) => {
 
       <div style={{ flex: 1, position: 'relative', zIndex: 1 }}>
         <h2 style={{
-          margin: 0, fontSize: 32, lineHeight: '40px',
-          fontWeight: 700, letterSpacing: '-0.01em',
+          margin: 0, fontSize: 'clamp(28px, 3.2vw, 40px)', lineHeight: 1.05,
+          fontWeight: 600, letterSpacing: '-0.02em',
           background: 'linear-gradient(120deg, #FFFFFF 0%, #C4A8FF 35%, #FFFFFF 70%, #C4A8FF 100%)',
           backgroundSize: '220% 100%',
           WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
@@ -340,9 +326,9 @@ const FinalCTA = ({ onLaunch }) => {
         }}>
           Direct your first campaign.
         </h2>
-        <p style={{ margin: '10px 0 0', fontSize: 14, color: T.fg2, maxWidth: 540, lineHeight: 1.6 }}>
+        <p style={{ margin: '10px 0 0', fontSize: 18, fontWeight: 400, color: T.fg2, maxWidth: 540, lineHeight: 1.7 }}>
           It takes a sentence and a few attachments. Codex does the rest. The first run is the one
-          you'll learn the most from — pick something simple.
+          you'll learn the most from. Pick something simple.
         </p>
       </div>
       <div style={{ display: 'flex', gap: 10, position: 'relative', zIndex: 1 }}>

@@ -181,11 +181,8 @@ const RecentWorkflows = () => {
    App
 ========================================================= */
 const App = () => {
-  const [nav, setNav] = useState('home');
-  const [tab, setTab] = useState('mine');
   const [tweaks, setTweak] = window.useTweaks(window.CAMPAIGN_TWEAK_DEFAULTS);
 
-  /* Apply accent color globally by overriding CSS vars that T.brand reads */
   useEffect(() => {
     const triple = hexToRGB(tweaks.accentColor);
     document.documentElement.style.setProperty('--fill-brand', triple);
@@ -193,64 +190,29 @@ const App = () => {
     document.documentElement.style.setProperty('--border-brand', triple);
   }, [tweaks.accentColor]);
 
+  const cx  = { maxWidth: 1240, margin: '0 auto', padding: '0 clamp(24px, 4vw, 56px)', boxSizing: 'border-box' };
+  const sec = { padding: '120px 0' };
+  const secLg = { padding: '160px 0 140px' };
+
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: T.bg }}>
-      <Sidebar active={nav} onNav={setNav}/>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-        <TopBar/>
+    <div style={{ minHeight: '100vh', background: T.bg }}>
+      {/* Hero: full-bleed */}
+      <Hero headline={tweaks.headline} accent={tweaks.headlineAccent} animateGraph={tweaks.animateGraph}/>
 
-        {nav === 'home' && <HomePage/>}
+      <div style={cx}>
+        {tweaks.showVideo && <div style={sec}><Reveal><VideoBlock/></Reveal></div>}
+        <div style={sec}><Reveal><window.SentenceNetwork/></Reveal></div>
+        <div style={sec}><Reveal><HowItWorks/></Reveal></div>
+      </div>
 
-        <main style={{
-          flex: 1, padding: '24px 28px 48px',
-          maxWidth: 1180, width: '100%', margin: '0 auto',
-          boxSizing: 'border-box',
-          display: nav === 'home' ? 'none' : 'block',
-        }}>
-          {nav === 'workflows' && (
-            <>
-              <WorkflowsHero/>
+      {/* ShowcaseStrip: staggered columns */}
+      <div style={{ padding: '120px 0 0' }}><Reveal><window.ShowcaseStrip/></Reveal></div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16, margin: '20px 0 18px' }}>
-                <Tabs active={tab} onChange={setTab}/>
-                <div style={{ flex: 1 }}/>
-              </div>
-
-              {tab === 'mine' && <RecentWorkflows/>}
-
-              {tab === 'discover' && (
-                <div style={{
-                  padding: 64, borderRadius: 16, background: T.elev,
-                  border: `1px solid ${T.border}`, textAlign: 'center', color: T.fg2,
-                }}>
-                  <Icon name="globe" size={32} color={T.fg3}/>
-                  <div style={{ fontSize: 16, fontWeight: 600, marginTop: 12, color: T.fg }}>Discover community workflows</div>
-                  <div style={{ fontSize: 13, marginTop: 6 }}>Coming soon — fork community-built campaigns and remix.</div>
-                </div>
-              )}
-            </>
-          )}
-
-          {nav === 'director' && (
-            <>
-              <Hero headline={tweaks.headline} accent={tweaks.headlineAccent} animateGraph={tweaks.animateGraph}/>
-
-              <window.SentenceNetwork/>
-
-              <Reveal><HowItWorks/></Reveal>
-              {tweaks.showVideo && <Reveal><VideoBlock/></Reveal>}
-
-              <Reveal><window.ShowcaseStrip/></Reveal>
-
-              <Reveal><Examples columns={tweaks.examplesColumns}/></Reveal>
-
-              <Reveal><CodexCallout/></Reveal>
-
-              {tweaks.showFAQ && <Reveal><FAQ/></Reveal>}
-              <Reveal><FinalCTA/></Reveal>
-            </>
-          )}
-        </main>
+      <div style={cx}>
+        <div style={sec}><Reveal><Examples columns={tweaks.examplesColumns}/></Reveal></div>
+        <div style={sec}><Reveal><CodexCallout/></Reveal></div>
+        {tweaks.showFAQ && <div style={sec}><Reveal><FAQ/></Reveal></div>}
+        <div style={secLg}><Reveal><FinalCTA/></Reveal></div>
       </div>
 
       <CampaignTweaks tweaks={tweaks} setTweak={setTweak}/>

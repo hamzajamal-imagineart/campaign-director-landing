@@ -6,19 +6,19 @@ const { T, Icon } = window;
    Section header
 ========================================================= */
 const SectionHead = ({ eyebrow, title, sub }) => (
-  <div style={{ marginBottom: 22 }}>
+  <div style={{ marginBottom: 40 }}>
     {eyebrow && (
       <div style={{
-        fontSize: 11, fontWeight: 500, letterSpacing: '0.04em',
-        color: T.fg2, marginBottom: 6,
+        fontSize: 10.5, fontWeight: 600, letterSpacing: '1.8px',
+        textTransform: 'uppercase', color: T.fg2, marginBottom: 10,
       }}>{eyebrow}</div>
     )}
     <h2 style={{
-      margin: 0, fontSize: 22, lineHeight: '30px',
-      fontWeight: 600, letterSpacing: '-0.005em', color: T.fg,
+      margin: 0, fontSize: 'clamp(28px, 3.2vw, 40px)', lineHeight: 1.05,
+      fontWeight: 600, letterSpacing: '-0.02em', color: T.fg,
     }}>{title}</h2>
     {sub && (
-      <p style={{ margin: '6px 0 0', fontSize: 13.5, color: T.fg2, maxWidth: 640, lineHeight: 1.55 }}>
+      <p style={{ margin: '10px 0 0', fontSize: 18, color: T.fg2, maxWidth: 640, lineHeight: 1.7, fontWeight: 400 }}>
         {sub}
       </p>
     )}
@@ -177,11 +177,11 @@ const HowItWorks = () => {
   ];
 
   return (
-    <div id="how-it-works" style={{ marginTop: 64 }}>
+    <div id="how-it-works">
       <SectionHead
         eyebrow="How it works"
         title="Paste, plan, run."
-        sub="The repo handles every node — you don't wire a single edge."
+        sub="The repo handles every node. You don't wire a single edge."
       />
       <div style={{
         display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
@@ -207,7 +207,7 @@ const VideoBlock = () => {
   };
 
   return (
-    <div id="walkthrough" style={{ marginTop: 64 }}>
+    <div id="walkthrough">
       <SectionHead
         eyebrow="Walkthrough"
         title="See it run in 40 seconds."

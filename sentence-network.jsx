@@ -126,7 +126,7 @@ const SentenceCard = ({ workflow, revealed }) => {
             → Codex generates
           </div>
           <div style={{ fontSize: 14, color: T.fg, lineHeight: 1.55 }}>
-            A complete Imagine.Art canvas — every node, every connection, every export — built
+            A complete Imagine.Art canvas: every node, every connection, every export, built
             end-to-end without you wiring a single edge.
           </div>
           <div style={{
@@ -189,7 +189,7 @@ const CanvasPanel = ({ workflow, revealed }) => {
           transition: 'background 320ms ease, box-shadow 320ms ease',
         }}/>
         <span style={{ fontWeight: 500, color: T.fg2 }}>
-          {built ? 'Imagine.Art canvas — ready' : (
+          {built ? 'Imagine.Art canvas, ready' : (
             <span style={{ animation: 'statusBlink 1.6s ease-in-out infinite' }}>
               Building canvas…
             </span>
@@ -340,11 +340,11 @@ const SentenceNetwork = () => {
   const [revRef, revealed] = useReveal();
 
   return (
-    <div ref={revRef} style={{ marginTop: 64 }}>
+    <div id="what-it-does" ref={revRef}>
       <SectionHead
         eyebrow="What it does"
         title="One sentence. The whole canvas."
-        sub="Below is a real Imagine.Art canvas — built end-to-end from the brief on the left. Click the canvas to open the live workflow."
+        sub="Below is a real Imagine.Art canvas, built end-to-end from the brief on the left. Click the canvas to open the live workflow."
       />
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 16 }}>

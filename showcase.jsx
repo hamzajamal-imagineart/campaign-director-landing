@@ -115,20 +115,94 @@ const ROW_B_TILES = [
   { src: PHOTO('1504593811423-6dd665756598', 720), shape: 'landscape', chip: '16:9 · Beverage cinema' },
 ];
 
+const P = (id, w) => `https://images.unsplash.com/photo-${id}?w=${w}&q=85&auto=format&fit=crop`;
+
+const COLS = [
+  [
+    { src: P('1488161628813-04466f872be2', 700), ratio: '3/4',  label: 'UGC · 9:16' },
+    { src: P('1551782450-a2132b4ba21d',   700), ratio: '1/1',  label: 'Brand · 1:1' },
+    { src: P('1469854523086-cc02fe5d8800', 700), ratio: '16/9', label: 'Film · 16:9' },
+  ],
+  [
+    { src: P('1493612276216-ee3925520721', 700), ratio: '16/9', label: 'Cinema · 16:9' },
+    { src: P('1573496359142-b8d87734a5a2', 700), ratio: '3/4',  label: 'Beauty · 9:16' },
+    { src: P('1604644401890-0bd678c83788', 700), ratio: '1/1',  label: 'Hero · 1:1' },
+  ],
+  [
+    { src: P('1517649763962-0c623066013b', 700), ratio: '3/4',  label: 'Sport · 9:16' },
+    { src: P('1542291026-7eec264c27ff',   700), ratio: '1/1',  label: 'Product · 1:1' },
+    { src: P('1539109136881-3be0616acf4b', 700), ratio: '3/4',  label: 'Editorial · 9:16' },
+  ],
+  [
+    { src: P('1490481651871-ab68de25d43d', 700), ratio: '3/4',  label: 'Fashion · 9:16' },
+    { src: P('1486718448742-163732cd1544', 700), ratio: '16/9', label: 'Arch · 16:9' },
+    { src: P('1530736559799-3f7e7d23fcef', 700), ratio: '3/4',  label: 'Campaign · 9:16' },
+  ],
+];
+
+const STAGGER = [0, 80, 40, 120];
+
+const ShowcaseCol = ({ images, offset }) => {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingTop: offset }}>
+      {images.map((img, i) => (
+        <ShowcaseCard key={i} img={img}/>
+      ))}
+    </div>
+  );
+};
+
+const ShowcaseCard = ({ img }) => {
+  const [hover, setHover] = useStateS(false);
+  return (
+    <div
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        position: 'relative', borderRadius: 14, overflow: 'hidden',
+        aspectRatio: img.ratio,
+        transform: hover ? 'scale(1.02)' : 'scale(1)',
+        transition: 'transform 500ms cubic-bezier(0.16,1,0.3,1)',
+      }}
+    >
+      <img
+        src={img.src}
+        loading="lazy"
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+      />
+      <span style={{
+        position: 'absolute', bottom: 10, left: 10,
+        background: 'rgba(0,0,0,0.52)', backdropFilter: 'blur(8px)',
+        padding: '3px 9px', borderRadius: 999,
+        fontSize: 10.5, fontWeight: 600, letterSpacing: '1.4px',
+        color: 'rgba(255,255,255,0.82)', textTransform: 'uppercase',
+        border: '1px solid rgba(255,255,255,0.08)',
+      }}>{img.label}</span>
+    </div>
+  );
+};
+
 const ShowcaseStrip = () => {
   const T = window.T;
   const SectionHead = window.SectionHead;
+  const cx = { maxWidth: 1240, margin: '0 auto', padding: '0 clamp(24px, 4vw, 56px)', boxSizing: 'border-box' };
 
   return (
-    <div style={{ marginTop: 64 }}>
-      <SectionHead
-        eyebrow="Real outputs"
-        title="Real outputs. Every format. From one sentence."
-        sub="Hover to pause. UGC reels, brand templates, cinematic shorts — every frame came from a single natural-English brief, run through this repo."
-      />
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-        <Marquee tiles={ROW_A_TILES} speed={120}/>
-        <Marquee tiles={ROW_B_TILES} speed={100} reverse/>
+    <div>
+      <div style={cx}>
+        <SectionHead
+          eyebrow="Real outputs"
+          title="Every format. From one sentence."
+          sub="UGC reels, brand templates, cinematic shorts. Every frame from a single natural-English brief."
+        />
+        <div style={{
+          display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10,
+          paddingBottom: 120,
+        }}>
+          {COLS.map((col, i) => (
+            <ShowcaseCol key={i} images={col} offset={STAGGER[i]}/>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -223,12 +297,12 @@ const Stats = () => {
         <StatCard
           icon="package" end={12} suffix=" min"
           label="Avg. campaign time"
-          sub="From sentence to packaged review MP4 — including motion clips."
+          sub="From sentence to packaged review MP4, including motion clips."
         />
         <StatCard
           icon="layers" end={2400}
           label="Workflows built"
-          sub="Real Imagine.Art canvases assembled by the agent — no manual node wiring."
+          sub="Real Imagine.Art canvases assembled by the agent. No manual node wiring."
         />
         <StatCard
           icon="shield" end={0} suffix="¢"
