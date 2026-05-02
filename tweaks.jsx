@@ -8,9 +8,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "animateGraph": true,
   "showVideo": true,
   "showFAQ": true,
-  "examplesColumns": 2,
-  "newBadge": "New",
-  "tabName": "Campaign Director"
+  "examplesColumns": 2
 }/*EDITMODE-END*/;
 
 window.CAMPAIGN_TWEAK_DEFAULTS = TWEAK_DEFAULTS;
@@ -61,18 +59,6 @@ const CampaignTweaks = ({ tweaks, setTweak }) => (
         { value: '4', label: '4 cols' },
       ]}
       onChange={(v) => setTweak('examplesColumns', Number(v))}
-    />
-
-    <window.TweakSection label="Tab"/>
-    <window.TweakText
-      label="Tab name"
-      value={tweaks.tabName}
-      onChange={(v) => setTweak('tabName', v)}
-    />
-    <window.TweakText
-      label="Tab badge"
-      value={tweaks.newBadge}
-      onChange={(v) => setTweak('newBadge', v)}
     />
   </window.TweaksPanel>
 );

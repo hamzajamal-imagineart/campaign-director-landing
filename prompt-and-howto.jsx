@@ -68,7 +68,7 @@ to create <your idea here>`;
           display: 'inline-flex', alignItems: 'center', gap: 6,
           transition: 'all 200ms',
         }}>
-          {copied ? <Icon name="check" size={12} color={T.btnDarkFg}/> : <Icon name="copy" size={12}/>}
+          {copied ? <Icon name="check" size={13} color={T.btnDarkFg}/> : <Icon name="copy" size={13}/>}
           {copied ? 'Copied' : 'Copy'}
         </button>
       </div>
@@ -99,23 +99,79 @@ to create `}<span style={{
 };
 
 /* =========================================================
-   How it works — 3 steps
+   How it works — compact horizontal strip (no illustrations)
 ========================================================= */
+const HowItWorksStep = ({ step, isLast }) => {
+  const [hover, setHover] = useState(false);
+  return (
+    <div
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        position: 'relative',
+        padding: '20px 22px',
+        borderRight: !isLast ? `1px solid ${T.hair}` : 'none',
+        display: 'flex', flexDirection: 'column', gap: 10,
+        transition: 'background 240ms, transform 240ms',
+        background: hover ? 'rgba(255,255,255,0.025)' : 'transparent',
+        transform: hover ? 'translateY(-1px)' : 'none',
+      }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{
+          position: 'relative', width: 32, height: 32,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          {/* Slowly rotating conic-gradient ring */}
+          <div aria-hidden style={{
+            position: 'absolute', inset: 0, borderRadius: 999,
+            background: 'conic-gradient(from 0deg, transparent 0%, rgba(167,123,254,0.55) 25%, transparent 55%, transparent 100%)',
+            animation: 'rotateRing 7s linear infinite',
+            mask: 'radial-gradient(circle, transparent 60%, #000 62%)',
+            WebkitMask: 'radial-gradient(circle, transparent 60%, #000 62%)',
+          }}/>
+          <div style={{
+            position: 'relative', zIndex: 1,
+            width: 28, height: 28, borderRadius: 999,
+            background: 'rgba(255,255,255,0.06)', color: T.fg,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            border: `1px solid ${T.hair}`,
+            fontSize: 11.5, fontWeight: 600, letterSpacing: '-0.005em',
+          }}>{step.n}</div>
+        </div>
+        <Icon name={step.icon} size={15} color={T.fg2}/>
+        <div style={{ flex: 1 }}/>
+        <div style={{
+          fontSize: 11, color: T.fg2, padding: '2px 9px',
+          borderRadius: 999,
+          border: `1px solid ${T.hairS}`,
+        }}>{step.meta}</div>
+      </div>
+      <div style={{
+        fontSize: 15, fontWeight: 600, letterSpacing: '-0.005em',
+        color: T.fg,
+      }}>{step.title}</div>
+      <div style={{
+        fontSize: 12.5, color: T.fg2, lineHeight: 1.55,
+      }}>{step.body}</div>
+    </div>
+  );
+};
+
 const HowItWorks = () => {
   const steps = [
     {
-      n: '01', icon: 'edit', title: 'Describe what you want',
-      body: 'Paste the starter prompt into Codex with your idea. A sentence is fine — Codex will expand the brief if you only have one. Attach references when you have them.',
-      meta: '~30 sec',
+      n: '01', icon: 'edit', title: 'Paste the starter prompt',
+      body: 'Drop the prompt into Codex with your idea. Attach references if you have them.',
+      meta: '~30s',
     },
     {
-      n: '02', icon: 'github', title: 'Codex reads the repo',
-      body: 'Sub-agents brainstorm, critique, and shape your campaign before any credits are spent. Bad ideas get caught here, not after generation.',
+      n: '02', icon: 'github', title: 'Sub-agents plan the run',
+      body: 'The repo critiques, costs, and shapes your campaign before any credits are spent.',
       meta: '1–2 min',
     },
     {
-      n: '03', icon: 'workflow', title: 'Workflow built end-to-end',
-      body: 'Computer Use opens Imagine.Art in your Chrome session. Codex builds the canvas, generates the motion, verifies the exports, and packages a review MP4.',
+      n: '03', icon: 'workflow', title: 'Canvas built end-to-end',
+      body: 'Computer Use opens Imagine.Art, wires the workflow, generates motion, and packages a review MP4.',
       meta: '5–15 min',
     },
   ];
@@ -124,40 +180,15 @@ const HowItWorks = () => {
     <div id="how-it-works" style={{ marginTop: 64 }}>
       <SectionHead
         eyebrow="How it works"
-        title="From a sentence to a finished campaign — in three steps."
-        sub="No nodes to wire by hand. The agent plans, generates, reviews, and packages the run."
+        title="Paste, plan, run."
+        sub="The repo handles every node — you don't wire a single edge."
       />
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
-        {steps.map((s, i) => (
-          <div key={s.n} style={{
-            position: 'relative', padding: 24, borderRadius: 16,
-            background: T.elev, border: `1px solid ${T.hair}`,
-            display: 'flex', flexDirection: 'column', gap: 12,
-            minHeight: 220,
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{
-                width: 36, height: 36, borderRadius: 10,
-                background: T.surfS, color: T.fg,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <Icon name={s.icon} size={17}/>
-              </div>
-              <div style={{
-                fontSize: 11, fontWeight: 500, letterSpacing: '0.04em',
-                color: T.fg2,
-              }}>Step {s.n}</div>
-              <div style={{ flex: 1 }}/>
-              <div style={{
-                fontSize: 11, color: T.fg2, padding: '3px 8px',
-                borderRadius: 999, background: 'transparent',
-                border: `1px solid ${T.hairS}`,
-              }}>{s.meta}</div>
-            </div>
-            <div style={{ fontSize: 16, fontWeight: 600, letterSpacing: '-0.005em' }}>{s.title}</div>
-            <div style={{ fontSize: 13, color: T.fg2, lineHeight: 1.55 }}>{s.body}</div>
-          </div>
-        ))}
+      <div style={{
+        display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
+        borderRadius: 14, overflow: 'hidden',
+        background: T.elev, border: `1px solid ${T.hair}`,
+      }}>
+        {steps.map((s, i) => <HowItWorksStep key={s.n} step={s} isLast={i === steps.length - 1}/>)}
       </div>
     </div>
   );

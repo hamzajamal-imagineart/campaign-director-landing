@@ -57,6 +57,94 @@
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes popIn { from { opacity: 0; transform: scale(0.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
+  /* Campaign Director — motion */
+  @keyframes kenBurns {
+    0%   { transform: scale(1)    translate(0, 0); }
+    100% { transform: scale(1.12) translate(-2%, -2%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+  }
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(138,63,252,0); }
+    50%      { box-shadow: 0 0 60px 8px rgba(138,63,252,0.35); }
+  }
+  @keyframes dotPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(167,123,254,0.6); }
+    50%      { box-shadow: 0 0 0 6px rgba(167,123,254,0); }
+  }
+  @keyframes marqueeLeft {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes marqueeRight {
+    0%   { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes shimmer {
+    0%   { background-position: -200% 0; }
+    100% { background-position:  200% 0; }
+  }
+  @keyframes typeBlink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+  @keyframes risingDots {
+    0%, 100% { transform: translateY(0);   opacity: 0.4; }
+    50%      { transform: translateY(-4px); opacity: 1; }
+  }
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+  @keyframes tileFade {
+    0%, 45%   { opacity: 1; }
+    55%, 100% { opacity: 0; }
+  }
+  @keyframes tileFadeAlt {
+    0%, 45%   { opacity: 0; }
+    55%, 100% { opacity: 1; }
+  }
+  @keyframes nodeIn {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  }
+  @keyframes edgeFade {
+    0%   { opacity: 0; }
+    100% { opacity: 0.85; }
+  }
+
+  /* Glamour-pass keyframes */
+  @keyframes scanLine {
+    0%   { top: -2px;   opacity: 0; }
+    8%   { opacity: 0.7; }
+    100% { top: 100%;  opacity: 0; }
+  }
+  @keyframes auroraDrift {
+    0%, 100% { background-position:   0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
+  @keyframes metallicSheen {
+    0%, 100% { background-position:   0% 50%; }
+    50%      { background-position: 200% 50%; }
+  }
+  @keyframes particleFloat {
+    0%   { transform: translateY(0)     translateX(0);  opacity: 0; }
+    10%  { opacity: 0.7; }
+    90%  { opacity: 0.7; }
+    100% { transform: translateY(-180px) translateX(20px); opacity: 0; }
+  }
+  @keyframes rotateRing {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  @keyframes shimmerSweep {
+    0%   { transform: translateX(-120%) skewX(-20deg); }
+    100% { transform: translateX(220%)  skewX(-20deg); }
+  }
+  @keyframes borderDrift {
+    0%, 100% { background-position:   0% 50%; }
+    50%      { background-position: 200% 50%; }
+  }
+
   button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible {
     outline: 2px solid rgb(var(--neutral-100));
     outline-offset: 2px;
@@ -74,9 +162,12 @@
 <body class="dark">
 <div id="root"></div>
 <script type="text/babel" src="app.jsx"></script>
+<script type="text/babel" src="home.jsx"></script>
 <script type="text/babel" src="hero.jsx"></script>
 <script type="text/babel" src="prompt-and-howto.jsx"></script>
 <script type="text/babel" src="examples-faq.jsx"></script>
+<script type="text/babel" src="showcase.jsx"></script>
+<script type="text/babel" src="sentence-network.jsx"></script>
 <script type="text/babel" src="launch-modal.jsx"></script>
 <script type="text/babel" src="tweaks-panel.jsx"></script>
 <script type="text/babel" src="tweaks.jsx"></script>

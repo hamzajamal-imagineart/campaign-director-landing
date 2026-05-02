@@ -32,12 +32,13 @@ const T = {
   hairS: 'rgb(var(--hairline-strong))',
 };
 
-const Icon = ({ name, size = 18, sw = 1.6, color = 'currentColor', style, className }) => (
+const Icon = ({ name, size = 18, sw = 1.75, color = 'currentColor', style, className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={size} height={size} viewBox="0 0 24 24"
     fill="none" stroke={color} strokeWidth={sw}
     strokeLinecap="round" strokeLinejoin="round"
+    vectorEffect="non-scaling-stroke"
     style={{ flexShrink: 0, ...style }} className={className}
     dangerouslySetInnerHTML={{ __html: ICONS[name] || '' }}
   />
@@ -52,7 +53,7 @@ const ICONS = {
   folder: '<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/>',
   image: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>',
   film: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 3v18M17 3v18M3 7.5h4M3 12h18M3 16.5h4M17 7.5h4M17 16.5h4"/>',
-  music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+  music: '<path d="M3 12h2"/><path d="M7 8v8"/><path d="M11 5v14"/><path d="M15 8v8"/><path d="M19 10v4"/>',
   edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
   maximize: '<path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>',
   workflow: '<rect x="3" y="3" width="6" height="6" rx="1.5"/><rect x="15" y="15" width="6" height="6" rx="1.5"/><path d="M9 6h3a3 3 0 0 1 3 3v3"/><path d="M15 18H9"/>',
@@ -62,6 +63,7 @@ const ICONS = {
   helpCircle: '<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
   settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
   arrowRight: '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  arrowUp: '<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>',
   arrowUpRight: '<path d="M7 7h10v10"/><path d="M7 17 17 7"/>',
   copy: '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
   check: '<path d="M20 6 9 17l-5-5"/>',
@@ -71,7 +73,8 @@ const ICONS = {
   chevronDown: '<path d="m6 9 6 6 6-6"/>',
   chevronRight: '<path d="m9 18 6-6-6-6"/>',
   alert: '<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
-  terminal: '<path d="m4 17 6-6-6-6"/><path d="M12 19h8"/>',
+  terminal: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 3-3 3"/><path d="M13 15h4"/>',
+  code: '<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
   upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8 12 3 7 8"/><path d="M12 3v12"/>',
   paperclip: '<path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 17.99 8.8l-8.46 8.46a2 2 0 0 1-2.83-2.83l8.49-8.48"/>',
   send: '<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
@@ -100,27 +103,39 @@ const ICONS = {
 /* =========================================================
    Sidebar (matches the screenshot)
 ========================================================= */
-const SidebarItem = ({ icon, label, active, onClick, indent }) => (
+const SidebarItem = ({ icon, label, active, onClick, indent, badge, trailing }) => (
   <button onClick={onClick} style={{
-    display: 'flex', alignItems: 'center', gap: 10,
-    height: 34, padding: indent ? '0 10px 0 14px' : '0 10px',
+    display: 'flex', alignItems: 'center', gap: 9,
+    height: 36, padding: indent ? '0 10px 0 14px' : '0 10px',
     borderRadius: 10,
-    background: active ? T.brandTonal : 'transparent',
-    color: active ? T.brandText : T.fg,
+    background: active ? T.surfS : 'transparent',
+    color: T.fg,
     border: 0, cursor: 'pointer', textAlign: 'left',
-    fontSize: 13, fontWeight: 500, letterSpacing: '0.01em',
+    fontSize: 13.5, fontWeight: 500, letterSpacing: '0.01em',
     width: '100%',
   }}>
     <Icon name={icon} size={16} />
-    <span>{label}</span>
+    <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{label}</span>
+    {badge && (
+      <span style={{
+        marginLeft: 'auto', flexShrink: 0,
+        fontSize: 8, fontWeight: 700, letterSpacing: '0.04em',
+        padding: '1px 4px', borderRadius: 3,
+        background: 'rgb(var(--primary-50))', color: '#fff',
+      }}>{badge}</span>
+    )}
+    {trailing && (
+      <span style={{ marginLeft: 'auto', display: 'inline-flex', color: T.fg2 }}>
+        <Icon name={trailing} size={13}/>
+      </span>
+    )}
   </button>
 );
 
 const SidebarSection = ({ title, children }) => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginTop: 14 }}>
     <div style={{
-      fontSize: 11, fontWeight: 500, color: T.fg3, padding: '0 10px 6px',
-      letterSpacing: '0.04em', textTransform: 'uppercase',
+      fontSize: 12, fontWeight: 500, color: T.fg3, padding: '0 12px 6px',
     }}>{title}</div>
     {children}
   </div>
@@ -128,21 +143,21 @@ const SidebarSection = ({ title, children }) => (
 
 const Sidebar = ({ active, onNav }) => (
   <aside style={{
-    width: 220, flexShrink: 0, alignSelf: 'flex-start',
+    width: 232, flexShrink: 0, alignSelf: 'flex-start',
     background: T.elev, borderRight: `1px solid ${T.border}`,
     padding: '14px 10px', display: 'flex', flexDirection: 'column',
     height: '100vh', position: 'sticky', top: 0, overflow: 'auto',
   }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 8px 12px' }}>
       <img src="assets/imagine-logo.svg" width="26" height="26" alt="ImagineArt" />
-      <div style={{ fontFamily: "'Lemon Milk','Google Sans Flex',sans-serif", fontWeight: 500, letterSpacing: '0.02em', fontSize: 14 }}>
+      <div style={{ fontWeight: 600, fontSize: 16, letterSpacing: '-0.005em', color: T.fg }}>
         ImagineArt
       </div>
       <button style={{
         marginLeft: 'auto', width: 24, height: 24, borderRadius: 6,
         background: 'transparent', border: 0, color: T.fg2, cursor: 'pointer',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}><Icon name="layout" size={14}/></button>
+      }}><Icon name="layout" size={15}/></button>
     </div>
 
     <SidebarItem icon="home" label="Home" active={active==='home'} onClick={()=>onNav('home')} />
@@ -157,20 +172,37 @@ const Sidebar = ({ active, onNav }) => (
       <SidebarItem icon="edit" label="Edit" />
       <SidebarItem icon="maximize" label="Upscale" />
       <SidebarItem icon="film" label="Film studio" />
+      <SidebarItem icon="spark" label="Campaign Director" active={active==='director'} onClick={()=>onNav('director')} badge="NEW" />
     </SidebarSection>
 
     <SidebarSection title="Apps">
       <SidebarItem icon="apps" label="All Tools" />
       <SidebarItem icon="layers" label="Apps" />
       <SidebarItem icon="users" label="Community" />
-      <SidebarItem icon="message" label="Chatly" />
+      <SidebarItem icon="message" label="Chatly" trailing="arrowUpRight" />
     </SidebarSection>
 
     <div style={{ flex: 1 }} />
 
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 2, padding: '8px 0' }}>
-      <SidebarItem icon="helpCircle" label="Help" />
-      <SidebarItem icon="settings" label="Settings" />
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 4, padding: '10px 4px 4px',
+      borderTop: `1px solid ${T.border}`,
+    }}>
+      {[
+        { name: 'settings' },
+        { name: 'message' },
+        { name: 'clipboard' },
+        { name: 'helpCircle' },
+        { name: 'monitor' },
+      ].map((b, i) => (
+        <button key={i} style={{
+          width: 32, height: 32, borderRadius: 8,
+          background: 'transparent', border: 0, color: T.fg2, cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <Icon name={b.name} size={15}/>
+        </button>
+      ))}
     </div>
   </aside>
 );
@@ -182,17 +214,8 @@ const TopBar = () => (
   <header style={{
     height: 56, flexShrink: 0, background: T.bg,
     borderBottom: `1px solid ${T.border}`,
-    display: 'flex', alignItems: 'center', gap: 12, padding: '0 20px',
+    display: 'flex', alignItems: 'center', gap: 10, padding: '0 20px',
   }}>
-    <button style={{
-      height: 32, padding: '0 10px', borderRadius: 8, background: T.surfS,
-      border: `1px solid ${T.border}`, color: T.fg, cursor: 'pointer',
-      display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 500,
-    }}>
-      <Icon name="users" size={14}/>
-      All team creations
-      <Icon name="chevronDown" size={14}/>
-    </button>
     <div style={{ flex: 1 }} />
     <button style={{
       width: 36, height: 36, borderRadius: 10, background: 'transparent',
@@ -201,7 +224,7 @@ const TopBar = () => (
     }}><Icon name="search" size={18}/></button>
     <button style={btnGhost}>Contact Sales</button>
     <button style={btnUpgrade}>
-      <Icon name="zap" size={14}/>
+      <Icon name="zap" size={15}/>
       Upgrade
     </button>
     <button style={btnTeam}>
@@ -210,14 +233,15 @@ const TopBar = () => (
         background: 'linear-gradient(135deg,#8A3FFC,#FF85DD)',
       }}/>
       ImagineArt (...)
-      <Icon name="chevronDown" size={12}/>
+      <Icon name="chevronDown" size={13}/>
     </button>
+    <button style={iconGhost}><Icon name="message" size={18}/></button>
     <button style={iconGhost}><Icon name="bell" size={18}/></button>
     <div style={{
       width: 30, height: 30, borderRadius: 999,
-      background: 'linear-gradient(135deg,#8A3FFC,#FF85DD)',
+      background: 'linear-gradient(135deg,#34D399,#10B981)',
       color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      fontWeight: 600, fontSize: 12,
+      fontWeight: 600, fontSize: 13,
     }}>H</div>
   </header>
 );

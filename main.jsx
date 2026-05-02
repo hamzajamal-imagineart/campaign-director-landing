@@ -1,6 +1,6 @@
 /* global React, ReactDOM */
 const { useState, useEffect } = React;
-const { T, Icon, Sidebar, TopBar, Hero, CodexCallout, PromptBlock, HowItWorks, VideoBlock, Examples, FAQ, FinalCTA, LaunchModal, CampaignTweaks } = window;
+const { T, Icon, Sidebar, TopBar, HomePage, Hero, CodexCallout, HowItWorks, VideoBlock, Examples, FAQ, FinalCTA, LaunchModal, CampaignTweaks } = window;
 
 /* hex → "r g b" triple for CSS var values like "138 63 252" */
 const hexToRGB = (hex) => {
@@ -53,7 +53,7 @@ const WorkflowsHero = () => {
           fontWeight: 500, fontSize: 13, cursor: 'pointer',
           display: 'inline-flex', alignItems: 'center', gap: 8,
         }}>
-          <Icon name="plus" size={14} color={T.btnDarkFg}/> Create New Workflow
+          <Icon name="plus" size={15} color={T.btnDarkFg}/> Create New Workflow
         </button>
       </div>
 
@@ -83,13 +83,12 @@ const WorkflowsHero = () => {
 };
 
 /* =========================================================
-   Page tabs (My Workflows / Discover / Campaign Director)
+   Page tabs (My Workflows / Discover)
 ========================================================= */
-const Tabs = ({ active, onChange, directorLabel, badge }) => {
+const Tabs = ({ active, onChange }) => {
   const items = [
     { id: 'mine', label: 'My Workflows' },
     { id: 'discover', label: 'Discover' },
-    { id: 'director', label: directorLabel, badge: badge || null },
   ];
   return (
     <div style={{
@@ -107,14 +106,6 @@ const Tabs = ({ active, onChange, directorLabel, badge }) => {
             transition: 'all 160ms',
           }}>
             {it.label}
-            {it.badge && (
-              <span style={{
-                fontSize: 9, fontWeight: 600, letterSpacing: '0.04em',
-                padding: '2px 6px', borderRadius: 999,
-                background: isActive ? 'rgba(0,0,0,0.18)' : 'rgba(138,63,252,0.18)',
-                color: isActive ? T.btnDarkFg : 'rgb(var(--primary-30))',
-              }}>{it.badge}</span>
-            )}
           </button>
         );
       })}
@@ -190,6 +181,7 @@ const RecentWorkflows = () => {
    App
 ========================================================= */
 const App = () => {
+  const [nav, setNav] = useState('home');
   const [tab, setTab] = useState('mine');
   const [tweaks, setTweak] = window.useTweaks(window.CAMPAIGN_TWEAK_DEFAULTS);
 
@@ -203,52 +195,57 @@ const App = () => {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: T.bg }}>
-      <Sidebar active="workflows" onNav={()=>{}}/>
+      <Sidebar active={nav} onNav={setNav}/>
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         <TopBar/>
+
+        {nav === 'home' && <HomePage/>}
 
         <main style={{
           flex: 1, padding: '24px 28px 48px',
           maxWidth: 1180, width: '100%', margin: '0 auto',
           boxSizing: 'border-box',
+          display: nav === 'home' ? 'none' : 'block',
         }}>
-          <WorkflowsHero/>
+          {nav === 'workflows' && (
+            <>
+              <WorkflowsHero/>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16, margin: '20px 0 18px' }}>
-            <Tabs active={tab} onChange={setTab} directorLabel={tweaks.tabName} badge={tweaks.newBadge}/>
-            <div style={{ flex: 1 }}/>
-          </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16, margin: '20px 0 18px' }}>
+                <Tabs active={tab} onChange={setTab}/>
+                <div style={{ flex: 1 }}/>
+              </div>
 
-          {tab === 'mine' && <RecentWorkflows/>}
+              {tab === 'mine' && <RecentWorkflows/>}
 
-          {tab === 'discover' && (
-            <div style={{
-              padding: 64, borderRadius: 16, background: T.elev,
-              border: `1px solid ${T.border}`, textAlign: 'center', color: T.fg2,
-            }}>
-              <Icon name="globe" size={32} color={T.fg3}/>
-              <div style={{ fontSize: 16, fontWeight: 600, marginTop: 12, color: T.fg }}>Discover community workflows</div>
-              <div style={{ fontSize: 13, marginTop: 6 }}>Coming soon — fork community-built campaigns and remix.</div>
-            </div>
+              {tab === 'discover' && (
+                <div style={{
+                  padding: 64, borderRadius: 16, background: T.elev,
+                  border: `1px solid ${T.border}`, textAlign: 'center', color: T.fg2,
+                }}>
+                  <Icon name="globe" size={32} color={T.fg3}/>
+                  <div style={{ fontSize: 16, fontWeight: 600, marginTop: 12, color: T.fg }}>Discover community workflows</div>
+                  <div style={{ fontSize: 13, marginTop: 6 }}>Coming soon — fork community-built campaigns and remix.</div>
+                </div>
+              )}
+            </>
           )}
 
-          {tab === 'director' && (
+          {nav === 'director' && (
             <>
               <Hero headline={tweaks.headline} accent={tweaks.headlineAccent} animateGraph={tweaks.animateGraph}/>
-              <CodexCallout/>
 
-              <div style={{ marginTop: 64 }}>
-                <window.SectionHead
-                  eyebrow="The starter prompt"
-                  title="One prompt. That's the whole interface."
-                  sub="Paste this into Codex with your idea. Attach any references you have. The repo's execution rules handle the rest."
-                />
-                <PromptBlock/>
-              </div>
+              <window.SentenceNetwork/>
 
               <HowItWorks/>
               {tweaks.showVideo && <VideoBlock/>}
+
+              <window.ShowcaseStrip/>
+
               <Examples columns={tweaks.examplesColumns}/>
+
+              <CodexCallout/>
+
               {tweaks.showFAQ && <FAQ/>}
               <FinalCTA/>
             </>

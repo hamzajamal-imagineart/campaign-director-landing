@@ -3,183 +3,390 @@ const { useState, useEffect, useRef } = React;
 const { T, Icon } = window;
 
 /* =========================================================
-   Animated node graph (replaces the existing hero illustration)
-   Auto-draws on a loop: 4 nodes pop in, lines connect.
+   Curated pool of campaign-aesthetic imagery
 ========================================================= */
-const NodeGraph = ({ animate = true }) => {
-  const [step, setStep] = useState(0);
-  const [key, setKey] = useState(0);
+const TILE_IMAGES = [
+  'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=420&q=80',
+  'https://images.unsplash.com/photo-1493612276216-ee3925520721?w=420&q=80',
+  'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=420&q=80',
+  'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=420&q=80',
+  'https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?w=420&q=80',
+  'https://images.unsplash.com/photo-1535930891776-0c2dfb7fda1a?w=420&q=80',
+  'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=420&q=80',
+  'https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=420&q=80',
+  'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=420&q=80',
+  'https://images.unsplash.com/photo-1502720433255-614171a1835e?w=420&q=80',
+  'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=420&q=80',
+  'https://images.unsplash.com/photo-1561948955-570b270e7c36?w=420&q=80',
+  'https://images.unsplash.com/photo-1604644401890-0bd678c83788?w=420&q=80',
+  'https://images.unsplash.com/photo-1551782450-a2132b4ba21d?w=420&q=80',
+  'https://images.unsplash.com/photo-1486718448742-163732cd1544?w=420&q=80',
+  'https://images.unsplash.com/photo-1488161628813-04466f872be2?w=420&q=80',
+  'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=420&q=80',
+  'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=420&q=80',
+  'https://images.unsplash.com/photo-1530736559799-3f7e7d23fcef?w=420&q=80',
+  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=420&q=80',
+  'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=420&q=80',
+  'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=420&q=80',
+  'https://images.unsplash.com/photo-1559496417-e7f25cb247f3?w=420&q=80',
+  'https://images.unsplash.com/photo-1604017011826-d3b4c23f8914?w=420&q=80',
+];
+window.TILE_IMAGES = TILE_IMAGES;
 
-  useEffect(() => {
-    if (!animate) { setStep(6); return; }
-    const t = setInterval(() => {
-      setStep(s => {
-        if (s >= 6) { setKey(k => k + 1); return 0; }
-        return s + 1;
-      });
-    }, 700);
-    return () => clearInterval(t);
-  }, []);
-
-  // 4 generated frames (replace with project assets if available)
-  const tiles = [
-    { x: 18,  y: 30, label: 'Brief',     img: 'https://images.unsplash.com/photo-1587613864521-9ef8dfe5e333?w=400&q=80' },
-    { x: 165, y: 18, label: 'Variants',  img: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&q=80' },
-    { x: 165, y: 165, label: 'Crops',    img: 'https://images.unsplash.com/photo-1614632537423-1e6c2e7e0aab?w=400&q=80' },
-    { x: 320, y: 90,  label: 'Campaign', img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80' },
-  ];
-
-  const Tile = ({ i }) => {
-    const t = tiles[i];
-    const visible = step >= i + 1;
-    return (
-      <div key={`${key}-${i}`} style={{
-        position: 'absolute', left: t.x, top: t.y,
-        width: 116, height: 116, borderRadius: 14,
-        overflow: 'hidden',
-        border: `1.5px solid ${T.border2}`,
-        background: T.elev,
-        boxShadow: '0 12px 28px rgba(20,16,40,0.18)',
-        opacity: visible ? 1 : 0,
-        transform: visible ? 'scale(1) translateY(0)' : 'scale(0.85) translateY(8px)',
-        transition: 'opacity 500ms cubic-bezier(0.16,1,0.3,1), transform 500ms cubic-bezier(0.16,1,0.3,1)',
-      }}>
-        <div style={{
-          height: 86, background: `linear-gradient(135deg,#8A3FFC22,#FF85DD22)`,
-          backgroundImage: `url(${t.img})`, backgroundSize: 'cover', backgroundPosition: 'center',
-        }}/>
-        <div style={{
-          height: 30, padding: '0 10px', display: 'flex', alignItems: 'center',
-          fontSize: 11, fontWeight: 600, color: T.fg, letterSpacing: '0.02em',
-        }}>
-          <span style={{
-            width: 6, height: 6, borderRadius: 999, background: T.brand, marginRight: 6,
-          }}/>
-          {t.label}
-        </div>
-      </div>
-    );
-  };
-
+/* =========================================================
+   Tile wall — fixed grid, each tile slowly ken-burns
+   and a few cells crossfade between two images
+========================================================= */
+const HeroTileWall = () => {
+  const cols = 6, rows = 4;
+  const tiles = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const i = r * cols + c;
+      const img = TILE_IMAGES[i % TILE_IMAGES.length];
+      const altImg = TILE_IMAGES[(i + 7) % TILE_IMAGES.length];
+      const swapping = (i % 5 === 2);
+      tiles.push({ r, c, img, altImg, swapping, delay: (i % 7) * 0.6, dur: 14 + (i % 5) });
+    }
+  }
   return (
-    <div style={{
-      position: 'relative', width: 460, height: 300,
+    <div aria-hidden style={{
+      position: 'absolute', inset: '-3%', display: 'grid',
+      gridTemplateColumns: `repeat(${cols}, 1fr)`,
+      gridTemplateRows: `repeat(${rows}, 1fr)`,
+      gap: 8, padding: 8, opacity: 0.75,
     }}>
-      {/* connecting lines */}
-      <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible' }}>
-        <defs>
-          <linearGradient id="line-grad" x1="0" x2="1">
-            <stop offset="0" stopColor="#8A3FFC"/>
-            <stop offset="1" stopColor="#FF85DD"/>
-          </linearGradient>
-        </defs>
-        {[
-          { from: [134, 88],  to: [165, 76],  v: 5 },
-          { from: [134, 88],  to: [165, 223], v: 5 },
-          { from: [281, 76],  to: [320, 148], v: 6 },
-          { from: [281, 223], to: [320, 148], v: 6 },
-        ].map((l, i) => (
-          <path key={`${key}-l${i}`} d={`M ${l.from[0]} ${l.from[1]} C ${(l.from[0]+l.to[0])/2} ${l.from[1]}, ${(l.from[0]+l.to[0])/2} ${l.to[1]}, ${l.to[0]} ${l.to[1]}`}
-            stroke="url(#line-grad)" strokeWidth="2" fill="none" strokeLinecap="round"
-            strokeDasharray="200" strokeDashoffset={step >= l.v ? 0 : 200}
-            style={{ transition: 'stroke-dashoffset 600ms cubic-bezier(0.16,1,0.3,1)' }}
-          />
-        ))}
-      </svg>
-      {[0,1,2,3].map(i => <Tile key={i} i={i}/>)}
+      {tiles.map((t, i) => (
+        <div key={i} style={{
+          position: 'relative', overflow: 'hidden',
+          borderRadius: 14,
+          background: '#0F0F0F',
+        }}>
+          <div style={{
+            position: 'absolute', inset: 0,
+            backgroundImage: `url(${t.img})`,
+            backgroundSize: 'cover', backgroundPosition: 'center',
+            animation: `kenBurns ${t.dur}s ease-in-out ${t.delay}s infinite alternate${t.swapping ? `, tileFade 9s ease-in-out ${t.delay}s infinite` : ''}`,
+          }}/>
+          {t.swapping && (
+            <div style={{
+              position: 'absolute', inset: 0,
+              backgroundImage: `url(${t.altImg})`,
+              backgroundSize: 'cover', backgroundPosition: 'center',
+              animation: `kenBurns ${t.dur}s ease-in-out ${t.delay}s infinite alternate, tileFadeAlt 9s ease-in-out ${t.delay}s infinite`,
+            }}/>
+          )}
+        </div>
+      ))}
     </div>
   );
 };
 
 /* =========================================================
-   Hero — restructured Workflows page header
+   Floating result card — corner ornaments
 ========================================================= */
-const Hero = ({ onLaunch, headline = 'Direct your campaign.', accent = 'Codex builds the workflow.', animateGraph = true }) => (
-  <div className="dot-grid" style={{
-    position: 'relative', overflow: 'hidden',
-    borderRadius: 20,
-    background: `
-      radial-gradient(80% 140% at 0% 0%, rgba(138,63,252,0.32) 0%, rgba(138,63,252,0.10) 35%, rgba(0,0,0,0) 60%),
-      linear-gradient(135deg, #1A0F33 0%, #2A1656 50%, #3B1F75 100%)
-    `,
-    border: `1px solid rgba(255,255,255,0.08)`,
-    padding: '40px 40px',
-    display: 'flex', alignItems: 'center', gap: 24,
+const FloatingResultCard = ({ x, y, image, title, sub, status, statusColor, delay = 0, rotate = 0 }) => (
+  <div style={{
+    position: 'absolute', ...positionFromXY(x, y),
+    width: 220, padding: 10, borderRadius: 14,
+    background: 'rgba(20,15,35,0.78)', backdropFilter: 'blur(14px)',
+    border: '1px solid rgba(255,255,255,0.12)',
+    boxShadow: '0 24px 60px rgba(0,0,0,0.45)',
+    transform: `rotate(${rotate}deg)`,
+    animation: `float 6s ease-in-out ${delay}s infinite`,
+    zIndex: 3,
   }}>
-    {/* dotted overlay layered on top of gradient */}
-    <div aria-hidden style={{
-      position: 'absolute', inset: 0, pointerEvents: 'none',
-      backgroundImage: 'radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px)',
-      backgroundSize: '14px 14px',
-      maskImage: 'linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0))',
-      WebkitMaskImage: 'linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0))',
+    <div style={{
+      height: 120, borderRadius: 9, overflow: 'hidden',
+      backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center',
+      marginBottom: 10,
     }}/>
+    <div style={{ fontSize: 12.5, fontWeight: 600, color: '#fff', marginBottom: 2 }}>{title}</div>
+    <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginBottom: 8 }}>{sub}</div>
+    <div style={{
+      display: 'inline-flex', alignItems: 'center', gap: 6,
+      fontSize: 10.5, fontWeight: 600, color: statusColor,
+      padding: '3px 8px', borderRadius: 999,
+      background: `${statusColor}22`, border: `1px solid ${statusColor}55`,
+      letterSpacing: '0.04em', textTransform: 'uppercase',
+    }}>
+      <span style={{
+        width: 5, height: 5, borderRadius: 999, background: statusColor,
+      }}/>
+      {status}
+    </div>
+  </div>
+);
 
-    <div style={{ flex: 1, position: 'relative', maxWidth: 540 }}>
-      <h1 style={{
-        margin: 0, fontSize: 40, lineHeight: '46px',
-        fontWeight: 700, letterSpacing: '-0.01em', color: T.fg,
-      }}>
-        {headline}
-        {accent ? (<><br/><span style={{ color: T.fg2, fontWeight: 500 }}>{accent}</span></>) : null}
-      </h1>
-      <p style={{
-        margin: '14px 0 24px', fontSize: 14, lineHeight: '22px',
-        color: T.fg2, maxWidth: 460,
-      }}>
-        Turn a product photo, brand kit, or a single sentence into a complete Imagine.Art
-        workflow — planned, generated, reviewed, and packaged by an AI agent. No nodes to wire by hand.
-      </p>
+const positionFromXY = (x, y) => {
+  const out = {};
+  if (x.startsWith('L')) out.left = x.slice(1) + 'px';
+  else                   out.right = x.slice(1) + 'px';
+  if (y.startsWith('T')) out.top = y.slice(1) + 'px';
+  else                   out.bottom = y.slice(1) + 'px';
+  return out;
+};
 
-      <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-        <a href="https://github.com/Vyro-ai/imagine-campaign-director" target="_blank" rel="noreferrer" style={{
-          height: 40, padding: '0 18px', borderRadius: 999,
-          background: T.btnDark, color: T.btnDarkFg, border: 0,
-          fontWeight: 500, fontSize: 13.5, cursor: 'pointer',
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          textDecoration: 'none',
-        }}>
-          <Icon name="github" size={14} color={T.btnDarkFg}/>
-          View on GitHub
-        </a>
-        <button onClick={()=>document.getElementById('walkthrough').scrollIntoView({behavior:'smooth', block:'start'})} style={{
-          height: 40, padding: '0 14px', borderRadius: 999,
-          background: 'transparent', color: T.fg, border: 0,
-          fontWeight: 500, fontSize: 13, cursor: 'pointer',
+/* =========================================================
+   The real starter prompt — the artifact users copy.
+   Sentence is static; the <your idea here> placeholder cycles.
+========================================================= */
+const HERO_IDEAS = [
+  'a 15-second vertical launch ad for cold brew',
+  'a brand identity kit for a coffee roaster',
+  'a 30-second luxury fashion film',
+  'an audit of my existing workflow',
+];
+
+const STARTER_PROMPT_TEXT = `Use @Computer Use / sub-agent swarms and this repo:
+https://github.com/Vyro-ai/imagine-campaign-director
+
+to create <your idea here>`;
+
+const HeroStarterPrompt = () => {
+  const [ideaIdx, setIdeaIdx] = useState(0);
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setIdeaIdx((ideaIdx + 1) % HERO_IDEAS.length), 3500);
+    return () => clearTimeout(t);
+  }, [ideaIdx]);
+
+  const onCopy = () => {
+    (window.copyText || ((t) => navigator.clipboard?.writeText(t)))(STARTER_PROMPT_TEXT);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
+  };
+
+  return (
+    <div style={{
+      width: '100%', maxWidth: 720,
+      borderRadius: 18, overflow: 'hidden',
+      background: 'rgba(20,15,35,0.72)', backdropFilter: 'blur(14px)',
+      border: '1px solid rgba(255,255,255,0.10)',
+      boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.12), 0 0 0 6px rgba(138,63,252,0.06), 0 0 32px rgba(138,63,252,0.10)',
+    }}>
+      <div style={{
+        height: 38, padding: '0 16px', display: 'flex', alignItems: 'center', gap: 10,
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+      }}>
+        <Icon name="terminal" size={13} color="rgba(255,255,255,0.65)"/>
+        <span style={{
+          fontSize: 11.5, color: 'rgba(255,255,255,0.7)', fontWeight: 500,
+        }}>Paste into Codex</span>
+        <span style={{ flex: 1 }}/>
+        <button onClick={onCopy} style={{
+          height: 28, padding: '0 14px', borderRadius: 999,
+          background: copied ? '#fff' : 'rgba(255,255,255,0.10)',
+          color: copied ? '#171717' : '#fff',
+          border: copied ? 0 : '1px solid rgba(255,255,255,0.14)',
+          cursor: 'pointer', fontSize: 11.5, fontWeight: 600,
           display: 'inline-flex', alignItems: 'center', gap: 6,
+          transition: 'all 200ms',
         }}>
-          <Icon name="play" size={12}/> Watch 40-second walkthrough
+          {copied
+            ? <Icon name="check" size={13} color="#171717"/>
+            : <Icon name="copy" size={13} color="#fff"/>}
+          {copied ? 'Copied' : 'Copy prompt'}
         </button>
       </div>
-
       <div style={{
-        marginTop: 22, display: 'flex', alignItems: 'center', gap: 16,
-        fontSize: 12, color: T.fg2,
+        padding: '22px 24px', textAlign: 'left',
+        fontFamily: 'ui-monospace, SF Mono, Menlo, Consolas, monospace',
+        fontSize: 14, lineHeight: '24px', color: '#fff',
       }}>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          <Icon name="terminal" size={13}/> Codex-only beta
+        Use <span style={{ fontWeight: 700 }}>@Computer Use / sub-agent swarms</span> and this repo:
+        <br/>
+        <span style={{
+          color: '#fff', textDecoration: 'underline', textUnderlineOffset: 3,
+          textDecorationColor: 'rgba(167,123,254,0.5)',
+        }}>
+          https://github.com/Vyro-ai/imagine-campaign-director
         </span>
-        <span style={{ width: 1, height: 12, background: T.hairS }}/>
-        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-          <Icon name="github" size={13}/> Vyro-ai/imagine-campaign-director
+        <br/><br/>
+        to create{' '}
+        <span key={ideaIdx} style={{
+          background: 'rgba(138,63,252,0.20)',
+          color: '#D8C5FF',
+          padding: '2px 9px', borderRadius: 6, fontWeight: 500,
+          border: '1px solid rgba(167,123,254,0.30)',
+          display: 'inline-block',
+          animation: 'fadeIn 600ms ease-out',
+        }}>
+          {HERO_IDEAS[ideaIdx]}
         </span>
       </div>
     </div>
+  );
+};
 
-    <div style={{ flexShrink: 0, position: 'relative' }}>
-      <NodeGraph animate={animateGraph}/>
+/* =========================================================
+   Hero — the new cinematic landing block
+========================================================= */
+const ShimmerCTA = ({ href, onClick, children, primary = false }) => {
+  const [hover, setHover] = useState(false);
+  const baseStyle = {
+    position: 'relative', overflow: 'hidden',
+    height: 44, padding: '0 22px', borderRadius: 999,
+    background: primary ? '#fff' : 'rgba(255,255,255,0.08)',
+    color: primary ? '#171717' : '#fff',
+    border: primary ? 0 : '1px solid rgba(255,255,255,0.18)',
+    fontWeight: primary ? 600 : 500, fontSize: 14, cursor: 'pointer',
+    display: 'inline-flex', alignItems: 'center', gap: 8,
+    textDecoration: 'none',
+    backdropFilter: primary ? 'none' : 'blur(8px)',
+    boxShadow: primary ? '0 12px 30px rgba(255,255,255,0.10)' : 'none',
+    transition: 'transform 200ms cubic-bezier(0.16,1,0.3,1)',
+    transform: hover ? 'translateY(-1px)' : 'none',
+  };
+  const Tag = href ? 'a' : 'button';
+  const props = href ? { href, target: '_blank', rel: 'noreferrer' } : { onClick };
+  return (
+    <Tag {...props} onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)} style={baseStyle}>
+      {children}
+      {hover && (
+        <span aria-hidden style={{
+          position: 'absolute', top: 0, left: 0, height: '100%', width: '40%',
+          background: primary
+            ? 'linear-gradient(90deg, transparent, rgba(138,63,252,0.18), transparent)'
+            : 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)',
+          animation: 'shimmerSweep 850ms ease-out',
+          pointerEvents: 'none',
+        }}/>
+      )}
+    </Tag>
+  );
+};
+
+const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex builds the workflow.' }) => (
+  <div style={{
+    position: 'relative', overflow: 'hidden',
+    borderRadius: 24,
+    minHeight: 720,
+    background: '#0A0A0A',
+    border: '1px solid rgba(255,255,255,0.06)',
+    isolation: 'isolate',
+  }}>
+    {/* Tile wall background */}
+    <HeroTileWall/>
+
+    {/* Aurora drift — slow horizontal violet/pink/amber band, screen blend */}
+    <div aria-hidden style={{
+      position: 'absolute', inset: '-10% -5%', zIndex: 1, pointerEvents: 'none',
+      background: 'linear-gradient(90deg, rgba(138,63,252,0.18) 0%, rgba(255,133,221,0.14) 35%, rgba(255,184,119,0.12) 65%, rgba(138,63,252,0.18) 100%)',
+      backgroundSize: '300% 100%',
+      mixBlendMode: 'screen',
+      filter: 'blur(60px)',
+      animation: 'auroraDrift 38s ease-in-out infinite',
+      opacity: 0.55,
+    }}/>
+
+    {/* Vignette / dark gradient overlay so text reads */}
+    <div aria-hidden style={{
+      position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
+      background: `
+        radial-gradient(70% 90% at 50% 50%, rgba(10,10,10,0) 0%, rgba(10,10,10,0.55) 55%, rgba(10,10,10,0.95) 100%),
+        linear-gradient(180deg, rgba(10,10,10,0.35) 0%, rgba(10,10,10,0.65) 100%)
+      `,
+    }}/>
+
+    {/* Center violet spotlight — restrained, just enough for legibility */}
+    <div aria-hidden style={{
+      position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
+      background: 'radial-gradient(50% 70% at 50% 45%, rgba(138,63,252,0.10) 0%, rgba(138,63,252,0) 100%)',
+    }}/>
+
+    {/* Film grain — subtle SVG noise overlay */}
+    <svg aria-hidden style={{
+      position: 'absolute', inset: 0, zIndex: 1,
+      width: '100%', height: '100%', pointerEvents: 'none',
+      opacity: 0.06, mixBlendMode: 'overlay',
+    }}>
+      <filter id="heroGrain">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/>
+        <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0"/>
+      </filter>
+      <rect width="100%" height="100%" filter="url(#heroGrain)"/>
+    </svg>
+
+    {/* Centered content */}
+    <div style={{
+      position: 'relative', zIndex: 2,
+      padding: '120px 60px 100px',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
+    }}>
+      {/* Headline */}
+      <h1 style={{
+        margin: 0, fontSize: 76, lineHeight: 1.02,
+        fontWeight: 600, letterSpacing: '-0.025em', color: '#fff',
+        maxWidth: 880,
+      }}>
+        {headline}
+        <br/>
+        <span style={{
+          background: 'linear-gradient(135deg, #FFFFFF 0%, #C4A8FF 100%)',
+          backgroundSize: '200% 100%',
+          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+          animation: 'gradientShift 10s ease-in-out infinite',
+        }}>{accent}</span>
+      </h1>
+
+      <p style={{
+        margin: '24px 0 32px', fontSize: 16.5, lineHeight: 1.55,
+        color: 'rgba(255,255,255,0.72)', maxWidth: 580,
+      }}>
+        Turn one sentence into a finished Imagine.Art campaign.
+        Sub-agent swarms plan, generate, review, and package the run — no nodes to wire by hand.
+      </p>
+
+      {/* The real starter prompt — copyable */}
+      <HeroStarterPrompt/>
+
+      {/* CTAs */}
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center', marginTop: 28 }}>
+        <ShimmerCTA href="https://github.com/Vyro-ai/imagine-campaign-director" primary>
+          <Icon name="github" size={15} color="#171717"/>
+          View on GitHub
+        </ShimmerCTA>
+        <ShimmerCTA onClick={()=>document.getElementById('walkthrough')?.scrollIntoView({behavior:'smooth', block:'start'})}>
+          <Icon name="play" size={13} color="#fff"/>
+          Watch 40-second demo
+        </ShimmerCTA>
+      </div>
+
+      {/* Trust strip */}
+      <div style={{
+        marginTop: 36, display: 'flex', alignItems: 'center', gap: 22,
+        fontSize: 12, color: 'rgba(255,255,255,0.55)', flexWrap: 'wrap', justifyContent: 'center',
+      }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <Icon name="terminal" size={13} color="rgba(255,255,255,0.55)"/>
+          Codex with Computer Use
+        </span>
+        <span style={{ width: 4, height: 4, borderRadius: 999, background: 'rgba(255,255,255,0.25)' }}/>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <Icon name="github" size={13} color="rgba(255,255,255,0.55)"/>
+          Vyro-ai/imagine-campaign-director
+        </span>
+        <span style={{ width: 4, height: 4, borderRadius: 999, background: 'rgba(255,255,255,0.25)' }}/>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+          <Icon name="shield" size={13} color="rgba(255,255,255,0.55)"/>
+          No credits spent on planning
+        </span>
+      </div>
     </div>
   </div>
 );
 
 /* =========================================================
-   Codex requirement callout — visible on landing
+   Codex requirement callout
 ========================================================= */
 const CodexCallout = () => (
   <div style={{
-    marginTop: 16,
+    marginTop: 18,
     display: 'flex', alignItems: 'flex-start', gap: 14,
-    padding: '14px 18px', borderRadius: 14,
+    padding: '16px 20px', borderRadius: 14,
     background: T.elev,
     border: `1px solid ${T.hair}`,
   }}>
@@ -209,11 +416,11 @@ const CodexCallout = () => (
       textDecoration: 'none',
     }}>
       Enable Computer Use
-      <Icon name="external" size={11} color={T.btnDarkFg}/>
+      <Icon name="arrowUpRight" size={13} color={T.btnDarkFg}/>
     </a>
   </div>
 );
 
 window.Hero = Hero;
 window.CodexCallout = CodexCallout;
-window.NodeGraph = NodeGraph;
+window.HeroTileWall = HeroTileWall;

@@ -118,7 +118,7 @@ const Stepper = ({ step }) => {
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 11, fontWeight: 700,
             }}>
-              {i < step ? <Icon name="check" size={12} color="#fff"/> : i + 1}
+              {i < step ? <Icon name="check" size={13} color="#fff"/> : i + 1}
             </div>
             <span style={{ fontSize: 12.5, fontWeight: 500 }}>{s}</span>
           </div>
@@ -233,7 +233,7 @@ const LaunchModal = ({ open, onClose, prefill }) => {
                       background: T.brandTonal, color: T.brandText, fontWeight: 500,
                       display: 'inline-flex', alignItems: 'center', gap: 6,
                     }}>
-                      <Icon name="paperclip" size={11}/> {f}
+                      <Icon name="paperclip" size={13}/> {f}
                     </span>
                   ))}
                 </div>
@@ -347,7 +347,7 @@ const LaunchModal = ({ open, onClose, prefill }) => {
               boxShadow: canNext ? '0 4px 14px rgba(138,63,252,0.32)' : 'none',
             }}>
               {step === 0 ? 'Continue' : 'Launch in Codex'}
-              <Icon name="arrowRight" size={14} color={canNext ? '#fff' : T.fg3}/>
+              <Icon name="arrowRight" size={15} color={canNext ? '#fff' : T.fg3}/>
             </button>
           ) : (
             <button onClick={onClose} style={{
