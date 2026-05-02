@@ -153,6 +153,22 @@
     50%      { transform: translateY(-6px) translateX(3px); }
   }
 
+  /* Live canvas build — clip-path reveal + traveling scan line */
+  @keyframes liveBuild {
+    0%   { clip-path: inset(0 100% 0 0); }
+    100% { clip-path: inset(0 0 0 0); }
+  }
+  @keyframes liveScan {
+    0%   { left: 0%;   opacity: 0; }
+    8%   { opacity: 1; }
+    92%  { opacity: 1; }
+    100% { left: 100%; opacity: 0; }
+  }
+  @keyframes statusBlink {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.35; }
+  }
+
   html { scroll-behavior: smooth; }
 
   button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible {

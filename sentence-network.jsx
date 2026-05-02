@@ -148,13 +148,26 @@ const SentenceCard = ({ workflow, revealed }) => {
   );
 };
 
-/* ---------- Canvas panel (right) — real screenshot ---------- */
+/* ---------- Canvas panel (right) — live-time build of the screenshot ---------- */
+const BUILD_DURATION = 3400;     // total canvas-build animation
+const BUILD_DELAY    = 400;      // wait briefly after the section reveals before starting
+const POST_BUILD_GAP = 200;      // small grace period before "Ready" + chrome glints
+
 const CanvasPanel = ({ workflow, revealed }) => {
   const T = window.T;
   const Icon = window.Icon;
-  const nodes = useCountUp(workflow.stats.nodes, { duration: 900, delay: 250, start: revealed });
-  const edges = useCountUp(workflow.stats.edges, { duration: 1100, delay: 400, start: revealed });
-  const minutes = useCountUp(workflow.stats.minutes, { duration: 900, delay: 600, start: revealed });
+  const [built, setBuilt] = useStateSN(false);
+
+  /* Numbers tick during build, finish around the same time it does */
+  const nodes   = useCountUp(workflow.stats.nodes,   { duration: 1800, delay: BUILD_DELAY + 600,  start: revealed });
+  const edges   = useCountUp(workflow.stats.edges,   { duration: 2200, delay: BUILD_DELAY + 800,  start: revealed });
+  const minutes = useCountUp(workflow.stats.minutes, { duration: 1400, delay: BUILD_DELAY + 1400, start: revealed });
+
+  useEffectSN(() => {
+    if (!revealed) return;
+    const t = setTimeout(() => setBuilt(true), BUILD_DELAY + BUILD_DURATION + POST_BUILD_GAP);
+    return () => clearTimeout(t);
+  }, [revealed]);
 
   return (
     <div style={{
@@ -168,8 +181,20 @@ const CanvasPanel = ({ workflow, revealed }) => {
         background: 'rgba(255,255,255,0.02)',
         flexShrink: 0,
       }}>
-        <span style={{ width: 7, height: 7, borderRadius: 999, background: '#FEBC2E' }}/>
-        <span style={{ fontWeight: 500 }}>Imagine.Art canvas</span>
+        <span style={{
+          width: 7, height: 7, borderRadius: 999,
+          background: built ? '#42BE65' : '#FEBC2E',
+          boxShadow: built ? '0 0 10px rgba(66,190,101,0.55)' : '0 0 10px rgba(254,188,46,0.55)',
+          animation: built ? 'none' : 'dotPulse 1.2s ease-in-out infinite',
+          transition: 'background 320ms ease, box-shadow 320ms ease',
+        }}/>
+        <span style={{ fontWeight: 500, color: T.fg2 }}>
+          {built ? 'Imagine.Art canvas — ready' : (
+            <span style={{ animation: 'statusBlink 1.6s ease-in-out infinite' }}>
+              Building canvas…
+            </span>
+          )}
+        </span>
         <span style={{ flex: 1 }}/>
         <a
           href={workflow.flowUrl}
@@ -196,6 +221,10 @@ const CanvasPanel = ({ workflow, revealed }) => {
           backgroundImage: 'radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px)',
           backgroundSize: '20px 20px',
         }}/>
+
+        {/* Image is clipped to a 0-width strip on the left, then `liveBuild`
+            wipes the clip-path open over BUILD_DURATION. Looks like the canvas
+            is being rendered live, not pasted in. */}
         <img
           src={workflow.file}
           alt={workflow.label}
@@ -203,20 +232,22 @@ const CanvasPanel = ({ workflow, revealed }) => {
             position: 'absolute', inset: 0,
             width: '100%', height: '100%',
             objectFit: 'contain', objectPosition: 'center',
-            opacity: revealed ? 1 : 0,
-            transform: revealed ? 'scale(1)' : 'scale(0.985)',
-            transition: 'opacity 700ms cubic-bezier(0.16,1,0.3,1) 120ms, transform 900ms cubic-bezier(0.16,1,0.3,1) 120ms',
+            clipPath: 'inset(0 100% 0 0)',
+            animation: revealed
+              ? `liveBuild ${BUILD_DURATION}ms cubic-bezier(0.7, 0, 0.3, 1) ${BUILD_DELAY}ms forwards`
+              : 'none',
           }}
         />
 
-        {/* Scan-line sweep on first reveal */}
+        {/* Vertical scan line — travels along the wipe leading edge */}
         {revealed && (
           <div aria-hidden style={{
-            position: 'absolute', left: 0, right: 0, height: 2,
-            background: 'linear-gradient(90deg, transparent 0%, rgba(167,123,254,0.55) 50%, transparent 100%)',
-            boxShadow: '0 0 14px rgba(167,123,254,0.40)',
-            pointerEvents: 'none',
-            animation: 'scanLine 1.4s ease-out 200ms',
+            position: 'absolute', top: 0, bottom: 0,
+            width: 2, left: 0,
+            background: 'linear-gradient(180deg, transparent 0%, rgba(167,123,254,0.85) 50%, transparent 100%)',
+            boxShadow: '0 0 28px 4px rgba(167,123,254,0.50), 0 0 14px 2px rgba(255,255,255,0.18)',
+            pointerEvents: 'none', zIndex: 2,
+            animation: `liveScan ${BUILD_DURATION}ms cubic-bezier(0.7, 0, 0.3, 1) ${BUILD_DELAY}ms forwards`,
           }}/>
         )}
 
@@ -227,7 +258,31 @@ const CanvasPanel = ({ workflow, revealed }) => {
           pointerEvents: 'none',
         }}/>
 
-        {/* Stats pill bottom-left */}
+        {/* Live progress pill in the canvas (bottom-center during build,
+            fades out once built) */}
+        {revealed && !built && (
+          <div style={{
+            position: 'absolute', left: '50%', top: 14,
+            transform: 'translateX(-50%)',
+            padding: '5px 12px', borderRadius: 999,
+            background: 'rgba(0,0,0,0.65)',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(167,123,254,0.40)',
+            color: '#fff', fontSize: 11, fontWeight: 500,
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            letterSpacing: '-0.005em',
+            zIndex: 3,
+            animation: 'fadeIn 300ms ease-out',
+          }}>
+            <span style={{
+              width: 6, height: 6, borderRadius: 999, background: '#A57BFE',
+              animation: 'dotPulse 1.1s ease-in-out infinite',
+            }}/>
+            Codex is wiring nodes…
+          </div>
+        )}
+
+        {/* Stats pill bottom-left — appears when build completes */}
         <div style={{
           position: 'absolute', left: 14, bottom: 14,
           padding: '6px 12px', borderRadius: 999,
@@ -237,9 +292,9 @@ const CanvasPanel = ({ workflow, revealed }) => {
           color: '#fff', fontSize: 11, fontWeight: 500,
           display: 'inline-flex', alignItems: 'center', gap: 8,
           letterSpacing: '-0.005em',
-          opacity: revealed ? 1 : 0,
-          transform: revealed ? 'translateY(0)' : 'translateY(8px)',
-          transition: 'opacity 480ms ease-out 700ms, transform 480ms cubic-bezier(0.16,1,0.3,1) 700ms',
+          opacity: built ? 1 : 0,
+          transform: built ? 'translateY(0)' : 'translateY(8px)',
+          transition: 'opacity 480ms ease-out, transform 480ms cubic-bezier(0.16,1,0.3,1)',
         }}>
           <span>{nodes} nodes</span>
           <span style={{ opacity: 0.4 }}>·</span>
@@ -248,7 +303,7 @@ const CanvasPanel = ({ workflow, revealed }) => {
           <span>{minutes} min</span>
         </div>
 
-        {/* Open-in-imagine.art pill bottom-right */}
+        {/* Open-in-imagine.art pill bottom-right — appears when build completes */}
         <a
           href={workflow.flowUrl}
           target="_blank"
@@ -262,12 +317,13 @@ const CanvasPanel = ({ workflow, revealed }) => {
             textDecoration: 'none',
             letterSpacing: '-0.005em',
             border: '1px solid rgba(0,0,0,0.05)',
-            opacity: revealed ? 1 : 0,
-            transform: revealed ? 'translateY(0)' : 'translateY(8px)',
-            transition: 'opacity 480ms ease-out 800ms, transform 480ms cubic-bezier(0.16,1,0.3,1) 800ms',
+            opacity: built ? 1 : 0,
+            transform: built ? 'translateY(0)' : 'translateY(8px)',
+            transition: 'opacity 480ms ease-out 100ms, transform 480ms cubic-bezier(0.16,1,0.3,1) 100ms',
+            pointerEvents: built ? 'auto' : 'none',
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-1px)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; }}
+          onMouseEnter={(e) => { if (built) e.currentTarget.style.transform = 'translateY(-1px)'; }}
+          onMouseLeave={(e) => { if (built) e.currentTarget.style.transform = 'translateY(0)'; }}
         >
           Open the live canvas
           <Icon name="arrowUpRight" size={12} color="#171717"/>
