@@ -54,7 +54,8 @@ const HeroTileWall = () => {
       position: 'absolute', inset: '-3%', display: 'grid',
       gridTemplateColumns: `repeat(${cols}, 1fr)`,
       gridTemplateRows: `repeat(${rows}, 1fr)`,
-      gap: 8, padding: 8, opacity: 0.75,
+      gap: 8, padding: 8, opacity: 0.28,
+      filter: 'grayscale(0.55) brightness(0.65)',
     }}>
       {tiles.map((t, i) => (
         <div key={i} style={{
@@ -171,9 +172,7 @@ const HeroStarterPrompt = () => {
         borderBottom: '1px solid rgba(255,255,255,0.06)',
       }}>
         <Icon name="terminal" size={13} color="rgba(255,255,255,0.65)"/>
-        <span style={{
-          fontSize: 11.5, color: 'rgba(255,255,255,0.7)', fontWeight: 500,
-        }}>Paste into Codex</span>
+        <span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>Paste into Codex</span>
         <span style={{ flex: 1 }}/>
         <button onClick={onCopy} style={{
           height: 28, padding: '0 14px', borderRadius: 999,
@@ -258,6 +257,24 @@ const ShimmerCTA = ({ href, onClick, children, primary = false }) => {
   );
 };
 
+const StaggerWords = ({ text, startDelay = 0, style = {} }) => {
+  const words = text.split(' ');
+  return (
+    <>
+      {words.map((word, i) => (
+        <span key={i} style={{
+          display: 'inline-block',
+          opacity: 0,
+          animation: `revealUp 700ms cubic-bezier(0.16,1,0.3,1) ${startDelay + i * 85}ms forwards`,
+          ...style,
+        }}>
+          {word}{i < words.length - 1 ? ' ' : ''}
+        </span>
+      ))}
+    </>
+  );
+};
+
 const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex builds the workflow.' }) => {
   return (
   <div
@@ -272,23 +289,23 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex builds the w
     {/* Tile wall background */}
     <HeroTileWall/>
 
-    {/* Aurora drift — slow horizontal violet/pink/amber band, screen blend */}
+    {/* Aurora drift — very subtle edge accent */}
     <div aria-hidden style={{
       position: 'absolute', inset: '-10% -5%', zIndex: 1, pointerEvents: 'none',
-      background: 'linear-gradient(90deg, rgba(138,63,252,0.18) 0%, rgba(255,133,221,0.14) 35%, rgba(255,184,119,0.12) 65%, rgba(138,63,252,0.18) 100%)',
+      background: 'linear-gradient(90deg, rgba(138,63,252,0.10) 0%, rgba(255,133,221,0.06) 35%, rgba(255,184,119,0.05) 65%, rgba(138,63,252,0.10) 100%)',
       backgroundSize: '300% 100%',
       mixBlendMode: 'screen',
-      filter: 'blur(60px)',
+      filter: 'blur(80px)',
       animation: 'auroraDrift 38s ease-in-out infinite',
-      opacity: 0.55,
+      opacity: 0.7,
     }}/>
 
-    {/* Vignette / dark gradient overlay so text reads */}
+    {/* Strong center-dark vignette so text reads crisply */}
     <div aria-hidden style={{
       position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
       background: `
-        radial-gradient(70% 90% at 50% 50%, rgba(10,10,10,0) 0%, rgba(10,10,10,0.55) 55%, rgba(10,10,10,0.95) 100%),
-        linear-gradient(180deg, rgba(10,10,10,0.35) 0%, rgba(10,10,10,0.65) 100%)
+        radial-gradient(65% 80% at 50% 48%, rgba(8,8,8,0.82) 0%, rgba(8,8,8,0.60) 50%, rgba(8,8,8,0.10) 100%),
+        linear-gradient(180deg, rgba(8,8,8,0.55) 0%, rgba(8,8,8,0.40) 50%, rgba(8,8,8,0.75) 100%)
       `,
     }}/>
 
@@ -317,7 +334,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex builds the w
         fontWeight: 600, letterSpacing: '-0.03em', color: '#fff',
         maxWidth: 880,
       }}>
-        {headline}
+        <StaggerWords text={headline} startDelay={100}/>
         <br/>
         <span style={{
           background: 'linear-gradient(135deg, #FFFFFF 0%, #C4A8FF 100%)',
@@ -325,7 +342,9 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex builds the w
           WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
           backgroundClip: 'text',
           animation: 'gradientShift 10s ease-in-out infinite',
-        }}>{accent}</span>
+        }}>
+          <StaggerWords text={accent} startDelay={100 + headline.split(' ').length * 85 + 60}/>
+        </span>
       </h1>
 
       <p style={{
