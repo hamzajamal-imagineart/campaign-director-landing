@@ -269,5 +269,44 @@ const iconGhost = {
   alignItems: 'center', justifyContent: 'center',
 };
 
+/* =========================================================
+   Scroll-reveal hook + wrapper. Adds a one-shot fade-up
+   when the element scrolls into view. Used to give every
+   section a soft entrance instead of arriving cold.
+========================================================= */
+const useReveal = (rootMargin = '0px 0px -80px 0px', threshold = 0.12) => {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!ref.current || visible) return;
+    const obs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        setVisible(true);
+        obs.disconnect();
+      }
+    }, { threshold, rootMargin });
+    obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [visible, rootMargin, threshold]);
+  return [ref, visible];
+};
+
+const Reveal = ({ children, delay = 0, distance = 14, style }) => {
+  const [ref, visible] = useReveal();
+  return (
+    <div ref={ref} style={{
+      opacity: visible ? 1 : 0,
+      transform: visible ? 'translateY(0)' : `translateY(${distance}px)`,
+      transition: `opacity 640ms cubic-bezier(0.16,1,0.3,1) ${delay}ms, transform 720ms cubic-bezier(0.16,1,0.3,1) ${delay}ms`,
+      willChange: 'opacity, transform',
+      ...style,
+    }}>
+      {children}
+    </div>
+  );
+};
+
 window.T = T; window.Icon = Icon;
 window.Sidebar = Sidebar; window.TopBar = TopBar;
+window.useReveal = useReveal;
+window.Reveal = Reveal;

@@ -144,6 +144,16 @@
     0%, 100% { background-position:   0% 50%; }
     50%      { background-position: 200% 50%; }
   }
+  @keyframes revealUp {
+    0%   { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes ambientFloat {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    50%      { transform: translateY(-6px) translateX(3px); }
+  }
+
+  html { scroll-behavior: smooth; }
 
   button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible {
     outline: 2px solid rgb(var(--neutral-100));

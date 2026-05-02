@@ -1,6 +1,6 @@
 /* global React, ReactDOM */
 const { useState, useEffect } = React;
-const { T, Icon, Sidebar, TopBar, HomePage, Hero, CodexCallout, HowItWorks, VideoBlock, Examples, FAQ, FinalCTA, LaunchModal, CampaignTweaks } = window;
+const { T, Icon, Sidebar, TopBar, HomePage, Hero, CodexCallout, HowItWorks, VideoBlock, Examples, FAQ, FinalCTA, LaunchModal, CampaignTweaks, Reveal } = window;
 
 /* hex → "r g b" triple for CSS var values like "138 63 252" */
 const hexToRGB = (hex) => {
@@ -237,17 +237,17 @@ const App = () => {
 
               <window.SentenceNetwork/>
 
-              <HowItWorks/>
-              {tweaks.showVideo && <VideoBlock/>}
+              <Reveal><HowItWorks/></Reveal>
+              {tweaks.showVideo && <Reveal><VideoBlock/></Reveal>}
 
-              <window.ShowcaseStrip/>
+              <Reveal><window.ShowcaseStrip/></Reveal>
 
-              <Examples columns={tweaks.examplesColumns}/>
+              <Reveal><Examples columns={tweaks.examplesColumns}/></Reveal>
 
-              <CodexCallout/>
+              <Reveal><CodexCallout/></Reveal>
 
-              {tweaks.showFAQ && <FAQ/>}
-              <FinalCTA/>
+              {tweaks.showFAQ && <Reveal><FAQ/></Reveal>}
+              <Reveal><FinalCTA/></Reveal>
             </>
           )}
         </main>

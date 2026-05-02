@@ -221,9 +221,10 @@ const VideoBlock = () => {
         <video
           ref={ref}
           src="assets/walkthrough.mp4"
+          poster="assets/walkthrough-poster.jpg"
           playsInline
           loop
-          preload="metadata"
+          preload="none"
           onClick={toggle}
           style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}
         />
@@ -231,14 +232,16 @@ const VideoBlock = () => {
           <button onClick={toggle} style={{
             position: 'absolute', inset: 0, display: 'flex',
             alignItems: 'center', justifyContent: 'center',
-            background: 'linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.35))',
+            background: 'radial-gradient(60% 70% at 50% 50%, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.35) 100%)',
             border: 0, cursor: 'pointer',
           }}>
             <div style={{
-              width: 76, height: 76, borderRadius: 999,
-              background: 'rgba(255,255,255,0.95)',
+              position: 'relative',
+              width: 80, height: 80, borderRadius: 999,
+              background: 'rgba(255,255,255,0.96)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 12px 36px rgba(0,0,0,0.4)',
+              boxShadow: '0 16px 44px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06)',
+              animation: 'glowPulse 3s ease-in-out infinite',
             }}>
               <Icon name="play" size={28} color="#000"/>
             </div>
