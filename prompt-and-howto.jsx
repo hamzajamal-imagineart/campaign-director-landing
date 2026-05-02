@@ -6,18 +6,7 @@ const { T, Icon } = window;
    Section header
 ========================================================= */
 const SectionHead = ({ eyebrow, title, sub }) => {
-  const [revealed, setRevealed] = useState(false);
-  const ref = useRef(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    const obs = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setRevealed(true); obs.disconnect(); }
-    }, { threshold: 0.25 });
-    obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, []);
-
+  const [ref, revealed] = window.useReveal();
   const words = title.split(' ');
 
   return (
@@ -29,24 +18,23 @@ const SectionHead = ({ eyebrow, title, sub }) => {
         }}>{eyebrow}</div>
       )}
       <h2 style={{
-        margin: 0, fontSize: 'clamp(28px, 3.2vw, 40px)', lineHeight: 1.15,
+        margin: 0, fontSize: 'clamp(28px, 3.2vw, 40px)', lineHeight: 1.1,
         fontWeight: 600, letterSpacing: '-0.02em', color: T.fg,
-        overflow: 'hidden',
       }}>
         {words.map((word, i) => (
           <span key={i} style={{
             display: 'inline-block',
-            opacity: 0,
+            opacity: revealed ? undefined : 0,
             animation: revealed
-              ? `revealUp 650ms cubic-bezier(0.16,1,0.3,1) ${i * 75}ms forwards`
+              ? `revealUp 700ms cubic-bezier(0.16,1,0.3,1) ${i * 70}ms both`
               : 'none',
           }}>
-            {word}{i < words.length - 1 ? ' ' : ''}
+            {word}{i < words.length - 1 ? ' ' : ''}
           </span>
         ))}
       </h2>
       {sub && (
-        <p style={{ margin: '10px 0 0', fontSize: 18, color: T.fg2, maxWidth: 640, lineHeight: 1.7, fontWeight: 400 }}>
+        <p style={{ margin: '12px 0 0', fontSize: 18, color: T.fg2, maxWidth: 640, lineHeight: 1.7, fontWeight: 400 }}>
           {sub}
         </p>
       )}
