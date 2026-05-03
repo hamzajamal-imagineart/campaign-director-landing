@@ -186,13 +186,17 @@ const BENTO_CARDS = [
   { src: PHOTO('1490481651871-ab68de25d43d', 800), format: '9:16', label: 'Fashion story',
     gridColumn: '1 / 5', gridRow: '1 / 3' },
   { src: PHOTO('1469854523086-cc02fe5d8800', 900), format: '16:9', label: 'Cinematic cut',
-    gridColumn: '5 / 10', gridRow: '1 / 2' },
+    gridColumn: '5 / 13', gridRow: '1 / 2' },
   { src: PHOTO('1622483767028-3f66f32aef97', 600), format: '1:1', label: 'Brand template',
-    gridColumn: '10 / 13', gridRow: '1 / 2' },
-  { src: PHOTO('1573496359142-b8d87734a5a2', 600), format: '9:16', label: 'Beauty UGC',
     gridColumn: '5 / 9', gridRow: '2 / 3' },
-  { src: PHOTO('1604017011826-d3b4c23f8914', 900), format: '16:9', label: 'Moody product',
+  { src: PHOTO('1573496359142-b8d87734a5a2', 600), format: '9:16', label: 'Beauty UGC',
     gridColumn: '9 / 13', gridRow: '2 / 3' },
+  { src: PHOTO('1604017011826-d3b4c23f8914', 900), format: '16:9', label: 'Moody product',
+    gridColumn: '1 / 6', gridRow: '3 / 4' },
+  { src: PHOTO('1517649763962-0c623066013b', 600), format: '9:16', label: 'Sport story',
+    gridColumn: '6 / 10', gridRow: '3 / 4' },
+  { src: PHOTO('1502672260266-1c1ef2d93688', 600), format: '1:1', label: 'Interior brand',
+    gridColumn: '10 / 13', gridRow: '3 / 4' },
 ];
 
 const BentoCard = ({ card }) => {
@@ -204,10 +208,9 @@ const BentoCard = ({ card }) => {
       style={{
         gridColumn: card.gridColumn, gridRow: card.gridRow,
         position: 'relative', overflow: 'hidden',
-        borderRadius: 16,
-        border: `1px solid ${hover ? 'rgba(167,123,254,0.30)' : 'rgba(255,255,255,0.07)'}`,
-        cursor: 'default',
-        transition: 'border-color 300ms',
+        borderRadius: 14,
+        border: `1px solid ${hover ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.06)'}`,
+        transition: 'border-color 350ms',
       }}
     >
       <img
@@ -217,40 +220,31 @@ const BentoCard = ({ card }) => {
         style={{
           width: '100%', height: '100%',
           objectFit: 'cover', display: 'block',
-          transform: hover ? 'scale(1.04)' : 'scale(1)',
-          filter: hover ? 'brightness(0.95)' : 'brightness(0.78)',
-          transition: 'transform 600ms cubic-bezier(0.16,1,0.3,1), filter 400ms ease',
+          transform: hover ? 'scale(1.05)' : 'scale(1)',
+          filter: hover ? 'brightness(0.90)' : 'brightness(0.72)',
+          transition: 'transform 700ms cubic-bezier(0.16,1,0.3,1), filter 400ms ease',
         }}
       />
-      {/* bottom gradient */}
+      {/* bottom gradient for label readability */}
       <div aria-hidden style={{
         position: 'absolute', inset: 0,
-        background: 'linear-gradient(to top, rgba(0,0,0,0.60) 0%, transparent 45%)',
+        background: 'linear-gradient(to top, rgba(0,0,0,0.68) 0%, rgba(0,0,0,0.12) 38%, transparent 60%)',
         pointerEvents: 'none',
       }}/>
-      {/* format chip */}
+      {/* stacked corner label */}
       <div style={{
-        position: 'absolute', top: 14, left: 14,
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-        padding: '5px 11px', borderRadius: 999,
-        background: 'rgba(0,0,0,0.52)', backdropFilter: 'blur(8px)',
-        border: '1px solid rgba(255,255,255,0.10)',
-        fontSize: 10.5, fontWeight: 600, letterSpacing: '0.04em',
-        color: 'rgba(255,255,255,0.85)',
+        position: 'absolute', bottom: 16, left: 16,
+        display: 'flex', flexDirection: 'column', gap: 3,
       }}>
         <span style={{
-          width: 5, height: 5, borderRadius: 999, flexShrink: 0,
-          background: card.format === '9:16' ? '#FF85DD' : card.format === '1:1' ? '#FEBC2E' : '#42BE65',
-        }}/>
-        {card.format}
+          fontSize: 9.5, fontWeight: 600, letterSpacing: '1.6px',
+          textTransform: 'uppercase', color: 'rgba(255,255,255,0.42)',
+        }}>{card.format}</span>
+        <span style={{
+          fontSize: 13, fontWeight: 500, letterSpacing: '-0.01em',
+          color: 'rgba(255,255,255,0.88)',
+        }}>{card.label}</span>
       </div>
-      {/* label */}
-      <div style={{
-        position: 'absolute', bottom: 14, left: 16,
-        fontSize: 12, fontWeight: 500,
-        color: 'rgba(255,255,255,0.70)',
-        letterSpacing: '0.01em',
-      }}>{card.label}</div>
     </div>
   );
 };
@@ -270,7 +264,7 @@ const ShowcaseStrip = () => {
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(12, 1fr)',
-        gridTemplateRows: '300px 260px',
+        gridTemplateRows: '280px 240px 220px',
         gap: 10,
         paddingBottom: 120,
       }}>
