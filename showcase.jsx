@@ -182,101 +182,99 @@ const ShowcaseCard = ({ img }) => {
   );
 };
 
-const GALLERY_IMAGES = [
-  { src: PHOTO('1488161628813-04466f872be2', 600), chip: '9:16 · UGC reel' },
-  { src: PHOTO('1573496359142-b8d87734a5a2', 600), chip: '9:16 · Beauty UGC' },
-  { src: PHOTO('1517649763962-0c623066013b', 600), chip: '9:16 · Sport story' },
-  { src: PHOTO('1539109136881-3be0616acf4b', 600), chip: '9:16 · Editorial UGC' },
-  { src: PHOTO('1490481651871-ab68de25d43d', 600), chip: '9:16 · Fashion story' },
-  { src: PHOTO('1517677208171-0bc6725a3e60', 600), chip: '9:16 · Dark portrait' },
-  { src: PHOTO('1551782450-a2132b4ba21d', 600), chip: '1:1 · Pink hero' },
-  { src: PHOTO('1604644401890-0bd678c83788', 600), chip: '1:1 · Beauty hero' },
-  { src: PHOTO('1542291026-7eec264c27ff', 600), chip: '1:1 · Product hero' },
-  { src: PHOTO('1622483767028-3f66f32aef97', 600), chip: '1:1 · Cold brew' },
-  { src: PHOTO('1561948955-570b270e7c36', 600), chip: '1:1 · Detail hero' },
-  { src: PHOTO('1530736559799-3f7e7d23fcef', 600), chip: '9:16 · Product reel' },
+const BENTO_CARDS = [
+  { src: PHOTO('1490481651871-ab68de25d43d', 800), format: '9:16', label: 'Fashion story',
+    gridColumn: '1 / 5', gridRow: '1 / 3' },
+  { src: PHOTO('1469854523086-cc02fe5d8800', 900), format: '16:9', label: 'Cinematic cut',
+    gridColumn: '5 / 10', gridRow: '1 / 2' },
+  { src: PHOTO('1622483767028-3f66f32aef97', 600), format: '1:1', label: 'Brand template',
+    gridColumn: '10 / 13', gridRow: '1 / 2' },
+  { src: PHOTO('1573496359142-b8d87734a5a2', 600), format: '9:16', label: 'Beauty UGC',
+    gridColumn: '5 / 9', gridRow: '2 / 3' },
+  { src: PHOTO('1604017011826-d3b4c23f8914', 900), format: '16:9', label: 'Moody product',
+    gridColumn: '9 / 13', gridRow: '2 / 3' },
 ];
+
+const BentoCard = ({ card }) => {
+  const [hover, setHover] = useStateS(false);
+  return (
+    <div
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        gridColumn: card.gridColumn, gridRow: card.gridRow,
+        position: 'relative', overflow: 'hidden',
+        borderRadius: 16,
+        border: `1px solid ${hover ? 'rgba(167,123,254,0.30)' : 'rgba(255,255,255,0.07)'}`,
+        cursor: 'default',
+        transition: 'border-color 300ms',
+      }}
+    >
+      <img
+        src={card.src}
+        loading="lazy"
+        alt={card.label}
+        style={{
+          width: '100%', height: '100%',
+          objectFit: 'cover', display: 'block',
+          transform: hover ? 'scale(1.04)' : 'scale(1)',
+          filter: hover ? 'brightness(0.95)' : 'brightness(0.78)',
+          transition: 'transform 600ms cubic-bezier(0.16,1,0.3,1), filter 400ms ease',
+        }}
+      />
+      {/* bottom gradient */}
+      <div aria-hidden style={{
+        position: 'absolute', inset: 0,
+        background: 'linear-gradient(to top, rgba(0,0,0,0.60) 0%, transparent 45%)',
+        pointerEvents: 'none',
+      }}/>
+      {/* format chip */}
+      <div style={{
+        position: 'absolute', top: 14, left: 14,
+        display: 'inline-flex', alignItems: 'center', gap: 6,
+        padding: '5px 11px', borderRadius: 999,
+        background: 'rgba(0,0,0,0.52)', backdropFilter: 'blur(8px)',
+        border: '1px solid rgba(255,255,255,0.10)',
+        fontSize: 10.5, fontWeight: 600, letterSpacing: '0.04em',
+        color: 'rgba(255,255,255,0.85)',
+      }}>
+        <span style={{
+          width: 5, height: 5, borderRadius: 999, flexShrink: 0,
+          background: card.format === '9:16' ? '#FF85DD' : card.format === '1:1' ? '#FEBC2E' : '#42BE65',
+        }}/>
+        {card.format}
+      </div>
+      {/* label */}
+      <div style={{
+        position: 'absolute', bottom: 14, left: 16,
+        fontSize: 12, fontWeight: 500,
+        color: 'rgba(255,255,255,0.70)',
+        letterSpacing: '0.01em',
+      }}>{card.label}</div>
+    </div>
+  );
+};
 
 const ShowcaseStrip = () => {
   const T = window.T;
   const SectionHead = window.SectionHead;
-  const pinWrapRef = useRefS(null);
-  const gridRef = useRefS(null);
   const cx = { maxWidth: 1240, margin: '0 auto', padding: '0 clamp(24px, 4vw, 56px)', boxSizing: 'border-box' };
 
-  useEffectS(() => {
-    const pinWrap = pinWrapRef.current;
-    const grid = gridRef.current;
-    if (!pinWrap || !grid) return;
-    const SCALE_START = 1.5, SCALE_END = 1.0;
-    const update = () => {
-      if (window.innerWidth <= 900) { grid.style.transform = 'scale(1)'; return; }
-      const rect = pinWrap.getBoundingClientRect();
-      const scrollRange = pinWrap.offsetHeight - window.innerHeight;
-      const progress = Math.max(0, Math.min(1, -rect.top / scrollRange));
-      grid.style.transform = `scale(${SCALE_START - (SCALE_START - SCALE_END) * progress})`;
-    };
-    // Set immediately before first paint
-    grid.style.transform = `scale(${SCALE_START})`;
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update, { passive: true });
-    update();
-    return () => {
-      window.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
-    };
-  }, []);
-
   return (
-    <div>
-      <div style={cx}>
-        <SectionHead
-          eyebrow="Real outputs"
-          title="Every format. From one sentence."
-          sub="UGC reels, brand templates, cinematic shorts. Every frame from a single natural-English brief."
-        />
-      </div>
-      <div ref={pinWrapRef} style={{ position: 'relative', height: '250vh' }}>
-        <div style={{
-          position: 'sticky', top: 0, height: '100vh',
-          overflow: 'hidden', display: 'flex', alignItems: 'center',
-        }}>
-          <div ref={gridRef} style={{
-            display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)',
-            gap: 4, width: '100%',
-            transformOrigin: 'center center',
-            willChange: 'transform',
-          }}>
-            {GALLERY_IMAGES.map((img, i) => (
-              <div key={i} style={{ aspectRatio: '3/4', overflow: 'hidden', position: 'relative' }}>
-                <img
-                  src={img.src}
-                  loading="lazy"
-                  alt=""
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block',
-                    filter: 'brightness(0.85) saturate(0.9)',
-                    transition: 'transform 0.55s cubic-bezier(0.4,0,0.2,1), filter 0.55s ease',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.06)'; e.currentTarget.style.filter = 'brightness(1) saturate(1.1)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.filter = 'brightness(0.85) saturate(0.9)'; }}
-                />
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  background: 'linear-gradient(to top, rgba(0,0,0,0.52) 0%, transparent 50%)',
-                  opacity: 0, transition: 'opacity 0.28s',
-                  pointerEvents: 'none',
-                }}/>
-                <span style={{
-                  position: 'absolute', bottom: 10, left: 10,
-                  padding: '4px 9px', borderRadius: 999,
-                  background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)',
-                  border: '1px solid rgba(255,255,255,0.10)',
-                  color: '#fff', fontSize: 10, fontWeight: 600, letterSpacing: '0.02em',
-                }}>{img.chip}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+    <div style={cx}>
+      <SectionHead
+        eyebrow="Real outputs"
+        title="Every format. From one sentence."
+        sub="UGC reels, brand templates, cinematic shorts. Every frame from a single natural-English brief."
+      />
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(12, 1fr)',
+        gridTemplateRows: '300px 260px',
+        gap: 10,
+        paddingBottom: 120,
+      }}>
+        {BENTO_CARDS.map((card, i) => <BentoCard key={i} card={card}/>)}
       </div>
     </div>
   );
