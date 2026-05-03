@@ -225,6 +225,15 @@ const BentoCard = ({ card }) => {
           transition: 'transform 700ms cubic-bezier(0.16,1,0.3,1), filter 400ms ease',
         }}
       />
+      {/* dot grid overlay */}
+      <div aria-hidden style={{
+        position: 'absolute', inset: 0,
+        backgroundImage: 'radial-gradient(rgba(255,255,255,0.55) 1px, transparent 1px)',
+        backgroundSize: '18px 18px',
+        opacity: hover ? 0.18 : 0,
+        transition: 'opacity 500ms ease',
+        pointerEvents: 'none',
+      }}/>
       {/* bottom gradient for label readability */}
       <div aria-hidden style={{
         position: 'absolute', inset: 0,
