@@ -28,7 +28,7 @@ const SectionHead = ({ eyebrow, title, sub }) => {
               opacity: revealed ? 1 : 0,
               transform: revealed ? 'translateY(0)' : 'translateY(8px)',
               transition: revealed
-                ? `opacity 600ms ease ${i * 60}ms, transform 600ms cubic-bezier(0.16,1,0.3,1) ${i * 60}ms`
+                ? `opacity 800ms ease ${i * 110}ms, transform 800ms cubic-bezier(0.16,1,0.3,1) ${i * 110}ms`
                 : 'none',
             }}>
               {word}

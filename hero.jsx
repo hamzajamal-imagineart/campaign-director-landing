@@ -265,7 +265,7 @@ const StaggerWords = ({ text, startDelay = 0, style = {} }) => {
         <React.Fragment key={i}>
           <span style={{
             display: 'inline-block',
-            animation: `revealUp 750ms cubic-bezier(0.16,1,0.3,1) ${startDelay + i * 80}ms both`,
+            animation: `revealUp 950ms cubic-bezier(0.16,1,0.3,1) ${startDelay + i * 110}ms both`,
             ...style,
           }}>
             {word}
@@ -338,15 +338,17 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex builds the w
       }}>
         <StaggerWords text={headline} startDelay={100}/>
         <br/>
-        <span style={{
-          background: 'linear-gradient(135deg, #FFFFFF 0%, #C4A8FF 100%)',
-          backgroundSize: '200% 100%',
-          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-          animation: 'gradientShift 10s ease-in-out infinite',
-        }}>
-          <StaggerWords text={accent} startDelay={100 + headline.split(' ').length * 85 + 60}/>
-        </span>
+        <StaggerWords
+          text={accent}
+          startDelay={100 + headline.split(' ').length * 100 + 40}
+          style={{
+            background: 'linear-gradient(135deg, #FFFFFF 0%, #C4A8FF 100%)',
+            backgroundSize: '200% 100%',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        />
       </h1>
 
       <p style={{
