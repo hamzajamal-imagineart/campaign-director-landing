@@ -22,15 +22,19 @@ const SectionHead = ({ eyebrow, title, sub }) => {
         fontWeight: 600, letterSpacing: '-0.02em', color: T.fg,
       }}>
         {words.map((word, i) => (
-          <span key={i} style={{
-            display: 'inline-block',
-            opacity: revealed ? undefined : 0,
-            animation: revealed
-              ? `revealUp 700ms cubic-bezier(0.16,1,0.3,1) ${i * 70}ms both`
-              : 'none',
-          }}>
-            {word}{i < words.length - 1 ? ' ' : ''}
-          </span>
+          <React.Fragment key={i}>
+            <span style={{
+              display: 'inline-block',
+              opacity: revealed ? 1 : 0,
+              transform: revealed ? 'translateY(0)' : 'translateY(8px)',
+              transition: revealed
+                ? `opacity 600ms ease ${i * 60}ms, transform 600ms cubic-bezier(0.16,1,0.3,1) ${i * 60}ms`
+                : 'none',
+            }}>
+              {word}
+            </span>
+            {i < words.length - 1 ? ' ' : ''}
+          </React.Fragment>
         ))}
       </h2>
       {sub && (

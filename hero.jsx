@@ -262,13 +262,16 @@ const StaggerWords = ({ text, startDelay = 0, style = {} }) => {
   return (
     <>
       {words.map((word, i) => (
-        <span key={i} style={{
-          display: 'inline-block',
-          animation: `revealUp 750ms cubic-bezier(0.16,1,0.3,1) ${startDelay + i * 80}ms both`,
-          ...style,
-        }}>
-          {word}{i < words.length - 1 ? ' ' : ''}
-        </span>
+        <React.Fragment key={i}>
+          <span style={{
+            display: 'inline-block',
+            animation: `revealUp 750ms cubic-bezier(0.16,1,0.3,1) ${startDelay + i * 80}ms both`,
+            ...style,
+          }}>
+            {word}
+          </span>
+          {i < words.length - 1 ? ' ' : ''}
+        </React.Fragment>
       ))}
     </>
   );
