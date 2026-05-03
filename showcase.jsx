@@ -182,10 +182,50 @@ const ShowcaseCard = ({ img }) => {
   );
 };
 
+const GALLERY_IMAGES = [
+  { src: PHOTO('1488161628813-04466f872be2', 600), chip: '9:16 · UGC reel' },
+  { src: PHOTO('1573496359142-b8d87734a5a2', 600), chip: '9:16 · Beauty UGC' },
+  { src: PHOTO('1517649763962-0c623066013b', 600), chip: '9:16 · Sport story' },
+  { src: PHOTO('1539109136881-3be0616acf4b', 600), chip: '9:16 · Editorial UGC' },
+  { src: PHOTO('1490481651871-ab68de25d43d', 600), chip: '9:16 · Fashion story' },
+  { src: PHOTO('1517677208171-0bc6725a3e60', 600), chip: '9:16 · Dark portrait' },
+  { src: PHOTO('1551782450-a2132b4ba21d', 600), chip: '1:1 · Pink hero' },
+  { src: PHOTO('1604644401890-0bd678c83788', 600), chip: '1:1 · Beauty hero' },
+  { src: PHOTO('1542291026-7eec264c27ff', 600), chip: '1:1 · Product hero' },
+  { src: PHOTO('1622483767028-3f66f32aef97', 600), chip: '1:1 · Cold brew' },
+  { src: PHOTO('1561948955-570b270e7c36', 600), chip: '1:1 · Detail hero' },
+  { src: PHOTO('1530736559799-3f7e7d23fcef', 600), chip: '9:16 · Product reel' },
+];
+
 const ShowcaseStrip = () => {
   const T = window.T;
   const SectionHead = window.SectionHead;
+  const pinWrapRef = useRefS(null);
+  const gridRef = useRefS(null);
   const cx = { maxWidth: 1240, margin: '0 auto', padding: '0 clamp(24px, 4vw, 56px)', boxSizing: 'border-box' };
+
+  useEffectS(() => {
+    const pinWrap = pinWrapRef.current;
+    const grid = gridRef.current;
+    if (!pinWrap || !grid) return;
+    const SCALE_START = 1.5, SCALE_END = 1.0;
+    const update = () => {
+      if (window.innerWidth <= 900) { grid.style.transform = 'scale(1)'; return; }
+      const rect = pinWrap.getBoundingClientRect();
+      const scrollRange = pinWrap.offsetHeight - window.innerHeight;
+      const progress = Math.max(0, Math.min(1, -rect.top / scrollRange));
+      grid.style.transform = `scale(${SCALE_START - (SCALE_START - SCALE_END) * progress})`;
+    };
+    // Set immediately before first paint
+    grid.style.transform = `scale(${SCALE_START})`;
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    update();
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, []);
 
   return (
     <div>
@@ -195,13 +235,47 @@ const ShowcaseStrip = () => {
           title="Every format. From one sentence."
           sub="UGC reels, brand templates, cinematic shorts. Every frame from a single natural-English brief."
         />
+      </div>
+      <div ref={pinWrapRef} style={{ position: 'relative', height: '250vh' }}>
         <div style={{
-          display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10,
-          paddingBottom: 120,
+          position: 'sticky', top: 0, height: '100vh',
+          overflow: 'hidden', display: 'flex', alignItems: 'center',
         }}>
-          {COLS.map((col, i) => (
-            <ShowcaseCol key={i} images={col} offset={STAGGER[i]}/>
-          ))}
+          <div ref={gridRef} style={{
+            display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)',
+            gap: 4, width: '100%',
+            transformOrigin: 'center center',
+            willChange: 'transform',
+          }}>
+            {GALLERY_IMAGES.map((img, i) => (
+              <div key={i} style={{ aspectRatio: '3/4', overflow: 'hidden', position: 'relative' }}>
+                <img
+                  src={img.src}
+                  loading="lazy"
+                  alt=""
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block',
+                    filter: 'brightness(0.85) saturate(0.9)',
+                    transition: 'transform 0.55s cubic-bezier(0.4,0,0.2,1), filter 0.55s ease',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.06)'; e.currentTarget.style.filter = 'brightness(1) saturate(1.1)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = ''; e.currentTarget.style.filter = 'brightness(0.85) saturate(0.9)'; }}
+                />
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: 'linear-gradient(to top, rgba(0,0,0,0.52) 0%, transparent 50%)',
+                  opacity: 0, transition: 'opacity 0.28s',
+                  pointerEvents: 'none',
+                }}/>
+                <span style={{
+                  position: 'absolute', bottom: 10, left: 10,
+                  padding: '4px 9px', borderRadius: 999,
+                  background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)',
+                  border: '1px solid rgba(255,255,255,0.10)',
+                  color: '#fff', fontSize: 10, fontWeight: 600, letterSpacing: '0.02em',
+                }}>{img.chip}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
