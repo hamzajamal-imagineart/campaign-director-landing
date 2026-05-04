@@ -178,6 +178,18 @@ const RecentWorkflows = () => {
 };
 
 /* =========================================================
+   DarkSection — dark bg with subtle dot grid + cursor spotlight
+========================================================= */
+const DarkSection = ({ children, style }) => (
+  <div style={{ background: T.bg, ...style }}>{children}</div>
+);
+
+/* Light section — flips CSS vars to light palette via .light class */
+const LightSection = ({ children, style }) => (
+  <div className="light" style={{ background: '#f5f5f7', ...style }}>{children}</div>
+);
+
+/* =========================================================
    App
 ========================================================= */
 const App = () => {
@@ -191,41 +203,68 @@ const App = () => {
   }, [tweaks.accentColor]);
 
   const SectionHead = window.SectionHead;
-  const cx  = { maxWidth: 1240, margin: '0 auto', padding: '0 clamp(24px, 4vw, 56px)', boxSizing: 'border-box' };
-  const sec = { padding: '120px 0' };
+  const cx   = { maxWidth: 1240, margin: '0 auto', padding: '0 clamp(24px, 4vw, 56px)', boxSizing: 'border-box' };
+  const sec  = { padding: '120px 0' };
   const secLg = { padding: '160px 0 140px' };
 
   return (
     <div style={{ minHeight: '100vh', background: T.bg }}>
-      {/* Hero: full-bleed */}
+
+      {/* ① Hero — dark, full-bleed */}
       <Hero headline={tweaks.headline} accent={tweaks.headlineAccent} animateGraph={tweaks.animateGraph}/>
 
-      <div style={cx}>
-        {tweaks.showVideo && <div style={sec}><Reveal><VideoBlock/></Reveal></div>}
-        <div style={sec}><Reveal><window.SentenceNetwork/></Reveal></div>
-        <div style={sec}><Reveal><HowItWorks/></Reveal></div>
-      </div>
+      {/* ② Walkthrough video — light */}
+      {tweaks.showVideo && (
+        <LightSection>
+          <div style={cx}><div style={sec}><Reveal><VideoBlock light/></Reveal></div></div>
+        </LightSection>
+      )}
 
-      {/* Real Outputs: marquee */}
-      <div style={{ padding: '120px 0 0' }}>
+      {/* ③ Sentence Network — dark + dots */}
+      <DarkSection>
+        <div style={cx}><div style={sec}><Reveal><window.SentenceNetwork/></Reveal></div></div>
+      </DarkSection>
+
+      {/* ④ How it Works — light */}
+      <LightSection>
+        <div style={cx}><div style={sec}><Reveal><HowItWorks/></Reveal></div></div>
+      </LightSection>
+
+      {/* ⑤ What you can build / Templates marquee — dark + dots */}
+      <DarkSection style={{ paddingTop: 120, paddingBottom: 80 }}>
         <Reveal>
-          <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(24px, 4vw, 56px)', boxSizing: 'border-box' }}>
+          <div style={cx}>
             <SectionHead
-              eyebrow="Real outputs"
+              eyebrow="What you can build"
               title="Every format. From one sentence."
               sub="UGC reels, brand templates, cinematic shorts. Every frame from a single natural-English brief."
             />
           </div>
-          <window.ExploreWorkflowsMarquee headingHidden/>
+          <window.Templates headingHidden/>
         </Reveal>
-      </div>
+      </DarkSection>
 
-      <div style={cx}>
-        <div style={sec}><Reveal><Examples columns={tweaks.examplesColumns}/></Reveal></div>
-        <div style={sec}><Reveal><CodexCallout/></Reveal></div>
-        {tweaks.showFAQ && <div style={sec}><Reveal><FAQ/></Reveal></div>}
-        <div style={secLg}><Reveal><FinalCTA/></Reveal></div>
-      </div>
+      {/* ⑥ Prompt examples — light */}
+      <LightSection>
+        <div style={cx}><div style={sec}><Reveal><Examples columns={tweaks.examplesColumns}/></Reveal></div></div>
+      </LightSection>
+
+      {/* ⑦ Codex callout — dark + dots */}
+      <DarkSection>
+        <div style={cx}><div style={sec}><Reveal><CodexCallout/></Reveal></div></div>
+      </DarkSection>
+
+      {/* ⑧ FAQ — light (conditional) */}
+      {tweaks.showFAQ && (
+        <LightSection>
+          <div style={cx}><div style={sec}><Reveal><FAQ/></Reveal></div></div>
+        </LightSection>
+      )}
+
+      {/* ⑨ Final CTA — dark + dots */}
+      <DarkSection>
+        <div style={cx}><div style={secLg}><Reveal><FinalCTA/></Reveal></div></div>
+      </DarkSection>
 
       <CampaignTweaks tweaks={tweaks} setTweak={setTweak}/>
     </div>
