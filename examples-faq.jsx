@@ -302,70 +302,89 @@ const FAQ = () => {
 };
 
 /* =========================================================
-   Final CTA
+   Final CTA — background video with dark overlay
 ========================================================= */
 const FinalCTA = () => (
   <div style={{
+    position: 'relative',
     borderRadius: 16,
-    border: '1px solid rgba(255,255,255,0.07)',
-    background: 'rgba(255,255,255,0.03)',
+    overflow: 'hidden',
+    minHeight: 480,
+    display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'flex-end',
     padding: 'clamp(48px, 6vw, 80px) clamp(32px, 5vw, 72px)',
-    display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 32,
   }}>
-    {/* Top rule */}
-    <div style={{ width: 32, height: 1, background: 'rgba(255,255,255,0.18)' }}/>
+    {/* Background video */}
+    <video
+      autoPlay muted loop playsInline
+      src="assets/home-card-bottom-3.mp4"
+      style={{
+        position: 'absolute', inset: 0,
+        width: '100%', height: '100%', objectFit: 'cover',
+        zIndex: 0,
+      }}
+    />
 
-    {/* Copy */}
-    <div style={{ maxWidth: 560 }}>
-      <p style={{
-        margin: '0 0 6px',
-        fontSize: 11, fontWeight: 600, letterSpacing: '1.8px',
-        textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)',
-      }}>Get started</p>
-      <h2 style={{
-        margin: '0 0 20px',
-        fontSize: 'clamp(32px, 3.8vw, 52px)',
-        lineHeight: 1.08, fontWeight: 600,
-        letterSpacing: '-0.025em', color: '#fff',
-      }}>
-        Direct your first campaign.
-      </h2>
-      <p style={{
-        margin: 0, fontSize: 17, fontWeight: 400,
-        color: 'rgba(255,255,255,0.45)', lineHeight: 1.75,
-      }}>
-        One sentence. A few attachments. Codex handles the rest —
-        planning, generating, reviewing, and packaging the run end-to-end.
-      </p>
-    </div>
+    {/* Dark overlay — gradient from bottom so text stays readable */}
+    <div style={{
+      position: 'absolute', inset: 0, zIndex: 1,
+      background: 'linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.55) 50%, rgba(0,0,0,0.30) 100%)',
+    }}/>
 
-    {/* Actions */}
-    <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-      <a
-        href="https://cal.com/imagine-art/campaign-director"
-        target="_blank" rel="noreferrer"
-        style={{
-          height: 44, padding: '0 24px', borderRadius: 999,
-          background: '#fff', color: '#0a0a0a',
-          fontSize: 14, fontWeight: 600,
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          textDecoration: 'none',
+    {/* Content */}
+    <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', gap: 32, width: '100%' }}>
+      {/* Copy */}
+      <div style={{ maxWidth: 560 }}>
+        <p style={{
+          margin: '0 0 6px',
+          fontSize: 11, fontWeight: 600, letterSpacing: '1.8px',
+          textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)',
+        }}>Get started</p>
+        <h2 style={{
+          margin: '0 0 20px',
+          fontSize: 'clamp(32px, 3.8vw, 52px)',
+          lineHeight: 1.08, fontWeight: 600,
+          letterSpacing: '-0.025em', color: '#fff',
         }}>
-        Book a demo
-      </a>
-      <a
-        href="https://github.com/Vyro-ai/imagine-campaign-director"
-        target="_blank" rel="noreferrer"
-        style={{
-          height: 44, padding: '0 24px', borderRadius: 999,
-          background: 'transparent', color: 'rgba(255,255,255,0.6)',
-          border: '1px solid rgba(255,255,255,0.12)',
-          fontSize: 14, fontWeight: 400,
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          textDecoration: 'none',
+          Direct your first campaign.
+        </h2>
+        <p style={{
+          margin: 0, fontSize: 17, fontWeight: 400,
+          color: 'rgba(255,255,255,0.55)', lineHeight: 1.75,
         }}>
-        <Icon name="github" size={14} color="rgba(255,255,255,0.6)"/> View on GitHub
-      </a>
+          One sentence. A few attachments. Codex handles the rest —
+          planning, generating, reviewing, and packaging the run end-to-end.
+        </p>
+      </div>
+
+      {/* Actions */}
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+        <a
+          href="https://cal.com/imagine-art/campaign-director"
+          target="_blank" rel="noreferrer"
+          style={{
+            height: 44, padding: '0 24px', borderRadius: 999,
+            background: '#fff', color: '#0a0a0a',
+            fontSize: 14, fontWeight: 600,
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            textDecoration: 'none',
+          }}>
+          Book a demo
+        </a>
+        <a
+          href="https://github.com/Vyro-ai/imagine-campaign-director"
+          target="_blank" rel="noreferrer"
+          style={{
+            height: 44, padding: '0 24px', borderRadius: 999,
+            background: 'rgba(255,255,255,0.10)', color: 'rgba(255,255,255,0.75)',
+            border: '1px solid rgba(255,255,255,0.18)',
+            fontSize: 14, fontWeight: 400,
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            textDecoration: 'none',
+            backdropFilter: 'blur(8px)',
+          }}>
+          <Icon name="github" size={14} color="rgba(255,255,255,0.75)"/> View on GitHub
+        </a>
+      </div>
     </div>
   </div>
 );

@@ -181,7 +181,15 @@ const RecentWorkflows = () => {
    DarkSection — dark bg with subtle dot grid + cursor spotlight
 ========================================================= */
 const DarkSection = ({ children, style }) => (
-  <div style={{ background: T.bg, ...style }}>{children}</div>
+  <div style={{ position: 'relative', backgroundColor: T.bg, ...style }}>
+    {/* Dot grid on its own isolated layer so hover compositing never touches it */}
+    <div aria-hidden style={{
+      position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none',
+      backgroundImage: 'radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px)',
+      backgroundSize: '20px 20px',
+    }}/>
+    <div style={{ position: 'relative', zIndex: 1 }}>{children}</div>
+  </div>
 );
 
 /* Light section — flips CSS vars to light palette via .light class */
