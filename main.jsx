@@ -207,7 +207,7 @@ const App = () => {
       </div>
 
       {/* Real Outputs: marquee */}
-      <div style={{ padding: '120px 0 0', overflowX: 'hidden' }}>
+      <div style={{ padding: '120px 0 0' }}>
         <Reveal>
           <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(24px, 4vw, 56px)', boxSizing: 'border-box' }}>
             <SectionHead
