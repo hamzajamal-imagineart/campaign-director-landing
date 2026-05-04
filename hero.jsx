@@ -169,9 +169,9 @@ const TICKER_2X = [...TICKER_ITEMS, ...TICKER_ITEMS];
 
 const HeroTicker = () => (
   <div style={{
-    position: 'absolute', bottom: 0, left: 0, right: 0,
-    height: 70, zIndex: 9, overflow: 'hidden',
-    display: 'flex', alignItems: 'center',
+    position: 'absolute', bottom: 19, left: 0, right: 0,
+    height: 20, zIndex: 9,
+    display: 'flex', alignItems: 'center', overflow: 'hidden',
   }}>
     <style>{`
       @keyframes heroTickerScroll {
