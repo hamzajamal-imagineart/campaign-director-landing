@@ -175,7 +175,7 @@ const StarField = () => (
 /* ── Hero ───────────────────────────────────────────────── */
 const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the rest.' }) => {
   const { Icon } = window;
-  const NOTCH_TOP = 44; /* = section padding-top */
+  const NOTCH_TOP = 28; /* = section padding-top */
 
   return (
     /* Page-level wrapper: black bg, creates space around the frame */
@@ -187,18 +187,18 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
         top: NOTCH_TOP,
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 72, height: 28,
-        background: '#111',
-        border: '1px solid rgba(255,255,255,0.15)',
+        width: 64, height: 30,
+        background: '#0d0d0d',
+        border: '1px solid rgba(255,255,255,0.18)',
         borderRadius: 999,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         zIndex: 20,
-        boxShadow: '0 2px 12px rgba(0,0,0,0.6)',
+        boxShadow: '0 0 0 3px #000, 0 4px 20px rgba(0,0,0,0.9)',
       }}>
         <img
           src="assets/imagine-logo.svg"
-          width={16} height={16}
-          style={{ filter: 'brightness(0) invert(1)', opacity: 0.9 }}
+          width={15} height={15}
+          style={{ filter: 'brightness(0) invert(1)', opacity: 0.85, display: 'block' }}
           alt="ImagineArt"
         />
       </div>
