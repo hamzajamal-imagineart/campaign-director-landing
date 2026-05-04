@@ -169,7 +169,7 @@ const TICKER_2X = [...TICKER_ITEMS, ...TICKER_ITEMS];
 
 const HeroTicker = () => (
   <div style={{
-    position: 'absolute', bottom: 19, left: 0, right: 0,
+    position: 'absolute', bottom: 9, left: 0, right: 0,
     height: 20, zIndex: 9,
     display: 'flex', alignItems: 'center', overflow: 'hidden',
   }}>
@@ -314,7 +314,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           viewBox="0 0 1000 80" preserveAspectRatio="none"
           style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: 80, zIndex: 10, pointerEvents: 'none', display: 'block' }}
         >
-          <path d="M 0 80 L 363 80 A 11 14 0 0 0 374 66 L 374 56 A 11 14 0 0 1 385 42 L 615 42 A 11 14 0 0 1 626 56 L 626 66 A 11 14 0 0 0 637 80 L 1000 80 Z" fill="#000"/>
+          <path d="M 0 0 L 1000 0 L 1000 80 L 0 80 Z M 637 80 A 11 14 0 0 1 626 66 L 626 56 A 11 14 0 0 0 615 42 L 385 42 A 11 14 0 0 0 374 56 L 374 66 A 11 14 0 0 1 363 80 Z" fill="#000" fillRule="nonzero"/>
         </svg>
 
         <GradientBars/>
