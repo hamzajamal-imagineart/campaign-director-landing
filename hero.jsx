@@ -1,8 +1,8 @@
 /* global React */
-const { useState, useEffect, useRef } = React;
+const { useState, useEffect } = React;
 
 /* =========================================================
-   Hero — refined centered layout
+   Hero — Mac frame + starfield aesthetic
 ========================================================= */
 
 const TILE_IMAGES = [
@@ -14,6 +14,17 @@ const TILE_IMAGES = [
 ];
 window.TILE_IMAGES = TILE_IMAGES;
 window.HeroTileWall = () => null;
+
+/* Stable star positions — generated once at module load */
+const STARS = Array.from({ length: 110 }, (_, i) => {
+  const seed = i * 2654435761;
+  return {
+    x: ((seed * 1234567) % 10000) / 100,
+    y: ((seed * 9876543) % 10000) / 100,
+    r: i % 7 === 0 ? 1.4 : 0.8,
+    o: 0.1 + ((seed % 100) / 100) * 0.45,
+  };
+});
 
 /* ── Cycling prompt ideas ───────────────────────────────── */
 const HERO_IDEAS = [
@@ -47,13 +58,12 @@ const HeroStarterPrompt = () => {
   return (
     <div style={{
       width: '100%',
-      borderRadius: 16,
+      borderRadius: 14,
       overflow: 'hidden',
       background: 'rgba(255,255,255,0.03)',
       border: '1px solid rgba(255,255,255,0.08)',
       animation: 'revealUp 900ms cubic-bezier(0.16,1,0.3,1) 700ms both',
     }}>
-      {/* Bar */}
       <div style={{
         height: 40, padding: '0 16px',
         display: 'flex', alignItems: 'center', gap: 8,
@@ -80,9 +90,8 @@ const HeroStarterPrompt = () => {
           {copied ? 'Copied' : 'Copy prompt'}
         </button>
       </div>
-      {/* Body */}
       <div style={{
-        padding: '20px 20px 22px',
+        padding: '18px 20px 20px',
         fontFamily: 'ui-monospace, SF Mono, Menlo, Consolas, monospace',
         fontSize: 13, lineHeight: '22px',
         color: 'rgba(255,255,255,0.65)',
@@ -115,7 +124,7 @@ const HeroStarterPrompt = () => {
   );
 };
 
-/* ── CTA ────────────────────────────────────────────────── */
+/* ── CTA button ─────────────────────────────────────────── */
 const HeroCTA = ({ href, onClick, children, primary = false }) => {
   const [hover, setHover] = useState(false);
   const Tag = href ? 'a' : 'button';
@@ -126,17 +135,18 @@ const HeroCTA = ({ href, onClick, children, primary = false }) => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        height: 40, padding: '0 18px', borderRadius: 10,
-        background: primary ? '#fff' : 'transparent',
-        color: primary ? '#0a0a0a' : 'rgba(255,255,255,0.65)',
-        border: primary ? 'none' : '1px solid rgba(255,255,255,0.12)',
-        fontWeight: 500, fontSize: 13.5, cursor: 'pointer',
+        height: 44, padding: '0 24px', borderRadius: 999,
+        background: primary ? '#fff' : 'rgba(255,255,255,0.07)',
+        color: primary ? '#0a0a0a' : 'rgba(255,255,255,0.75)',
+        border: primary ? 'none' : '1px solid rgba(255,255,255,0.13)',
+        fontWeight: 600, fontSize: 14, cursor: 'pointer',
         textDecoration: 'none', fontFamily: 'inherit',
         display: 'inline-flex', alignItems: 'center', gap: 7,
-        transition: 'transform 200ms ease, background 150ms, color 150ms, border-color 150ms',
+        transition: 'transform 200ms ease, background 150ms, color 150ms, box-shadow 150ms',
         transform: hover ? 'translateY(-1px)' : 'none',
-        ...(primary && hover ? { background: '#ebebeb' } : {}),
-        ...(!primary && hover ? { color: '#fff', borderColor: 'rgba(255,255,255,0.28)' } : {}),
+        boxShadow: primary && hover ? '0 8px 24px rgba(255,255,255,0.15)' : 'none',
+        ...(primary && hover ? { background: '#f0f0f0' } : {}),
+        ...(!primary && hover ? { color: '#fff', borderColor: 'rgba(255,255,255,0.28)', background: 'rgba(255,255,255,0.10)' } : {}),
       }}
     >
       {children}
@@ -144,202 +154,209 @@ const HeroCTA = ({ href, onClick, children, primary = false }) => {
   );
 };
 
-/* ── Background visual ──────────────────────────────────── */
-const HeroBg = () => (
-  <>
-    {/* Film grain */}
-    <svg aria-hidden style={{
-      position: 'absolute', inset: 0, zIndex: 1,
-      width: '100%', height: '100%', pointerEvents: 'none',
-      opacity: 0.05, mixBlendMode: 'overlay',
-    }}>
-      <filter id="hGrain">
-        <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="2" stitchTiles="stitch"/>
-        <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0"/>
-      </filter>
-      <rect width="100%" height="100%" filter="url(#hGrain)"/>
-    </svg>
-
-    {/* Center radial glow */}
-    <div aria-hidden style={{
-      position: 'absolute', top: '30%', left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: 900, height: 600, borderRadius: 999,
-      background: 'radial-gradient(ellipse, rgba(108,40,220,0.18) 0%, rgba(138,63,252,0.08) 40%, transparent 70%)',
-      pointerEvents: 'none', zIndex: 1,
-      filter: 'blur(40px)',
-    }}/>
-
-    {/* Faint dot-grid */}
-    <div aria-hidden style={{
-      position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
-      backgroundImage: 'radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)',
-      backgroundSize: '32px 32px',
-      maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, rgba(0,0,0,0.5) 0%, transparent 100%)',
-      WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, rgba(0,0,0,0.5) 0%, transparent 100%)',
-    }}/>
-  </>
+/* ── Starfield ──────────────────────────────────────────── */
+const StarField = () => (
+  <div aria-hidden style={{
+    position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden',
+  }}>
+    {STARS.map((s, i) => (
+      <div key={i} style={{
+        position: 'absolute',
+        left: `${s.x}%`, top: `${s.y}%`,
+        width: s.r * 2, height: s.r * 2,
+        borderRadius: '50%',
+        background: '#fff',
+        opacity: s.o,
+      }}/>
+    ))}
+  </div>
 );
 
 /* ── Hero ───────────────────────────────────────────────── */
 const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the rest.' }) => {
   const { Icon } = window;
+  const NOTCH_TOP = 44; /* = section padding-top */
 
   return (
-    <div style={{
-      position: 'relative', overflow: 'hidden',
-      minHeight: '92vh',
-      background: '#080808',
-      display: 'flex', alignItems: 'center',
-      isolation: 'isolate',
-    }}>
-      <HeroBg/>
+    /* Page-level wrapper: black bg, creates space around the frame */
+    <div style={{ background: '#000', padding: `${NOTCH_TOP}px clamp(10px, 2vw, 28px) 0`, position: 'relative' }}>
 
+      {/* ── Top notch ── */}
       <div style={{
-        position: 'relative', zIndex: 2,
-        width: '100%',
-        maxWidth: 1240, margin: '0 auto',
-        padding: '100px clamp(24px, 4vw, 56px) 80px',
-        boxSizing: 'border-box',
-        display: 'flex', flexDirection: 'column', alignItems: 'center',
-        textAlign: 'center',
+        position: 'absolute',
+        top: NOTCH_TOP,
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 72, height: 28,
+        background: '#111',
+        border: '1px solid rgba(255,255,255,0.15)',
+        borderRadius: 999,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        zIndex: 20,
+        boxShadow: '0 2px 12px rgba(0,0,0,0.6)',
       }}>
-
-        {/* Eyebrow badge */}
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: 8,
-          padding: '5px 14px', borderRadius: 999,
-          border: '1px solid rgba(167,123,254,0.25)',
-          background: 'rgba(138,63,252,0.08)',
-          marginBottom: 32,
-          animation: 'revealUp 800ms cubic-bezier(0.16,1,0.3,1) 0ms both',
-        }}>
-          <span style={{ width: 5, height: 5, borderRadius: 999, background: '#A57BFE' }}/>
-          <span style={{
-            fontSize: 11.5, fontWeight: 600, letterSpacing: '0.06em',
-            textTransform: 'uppercase', color: 'rgba(167,123,254,0.9)',
-          }}>
-            Campaign Director · Powered by Codex
-          </span>
-        </div>
-
-        {/* Headline */}
-        <div style={{
-          overflow: 'hidden',
-          animation: 'revealUp 1000ms cubic-bezier(0.16,1,0.3,1) 120ms both',
-        }}>
-          <h1 style={{
-            margin: 0,
-            fontSize: 'clamp(36px, 4.5vw, 58px)',
-            lineHeight: 1.1,
-            fontWeight: 600,
-            letterSpacing: '-0.03em',
-            color: '#fff',
-          }}>
-            {headline}
-          </h1>
-        </div>
-
-        {/* Accent */}
-        <div style={{
-          overflow: 'hidden',
-          animation: 'revealUp 1000ms cubic-bezier(0.16,1,0.3,1) 220ms both',
-        }}>
-          <div style={{
-            fontSize: 'clamp(36px, 4.5vw, 58px)',
-            lineHeight: 1.1,
-            fontWeight: 600,
-            letterSpacing: '-0.03em',
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.7) 0%, #C4A8FF 55%, #9B6EFF 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            marginBottom: 24,
-          }}>
-            {accent}
-          </div>
-        </div>
-
-        {/* Sub */}
-        <p style={{
-          margin: '0 0 40px',
-          fontSize: 17, lineHeight: 1.65, fontWeight: 400,
-          color: 'rgba(255,255,255,0.45)',
-          maxWidth: 520,
-          animation: 'revealUp 900ms cubic-bezier(0.16,1,0.3,1) 320ms both',
-        }}>
-          Turn one sentence into a finished Imagine.Art campaign.
-          Sub-agent swarms plan, generate, review, and package the run.
-        </p>
-
-        {/* CTAs */}
-        <div style={{
-          display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap',
-          justifyContent: 'center', marginBottom: 44,
-          animation: 'revealUp 900ms cubic-bezier(0.16,1,0.3,1) 400ms both',
-        }}>
-          <HeroCTA href="https://github.com/Vyro-ai/imagine-campaign-director" primary>
-            <Icon name="github" size={14} color="#0a0a0a"/>
-            View on GitHub
-          </HeroCTA>
-          <HeroCTA onClick={() => document.getElementById('walkthrough')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
-            <Icon name="play" size={12} color="rgba(255,255,255,0.65)"/>
-            Watch 40-second demo
-          </HeroCTA>
-        </div>
-
-        {/* Prompt block */}
-        <div style={{
-          width: '100%', maxWidth: 620,
-        }}>
-          <HeroStarterPrompt/>
-        </div>
-
-        {/* Trust strip */}
-        <div style={{
-          marginTop: 24,
-          display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap',
-          justifyContent: 'center',
-          animation: 'revealUp 800ms cubic-bezier(0.16,1,0.3,1) 860ms both',
-        }}>
-          {[
-            { icon: 'terminal', text: 'Codex with Computer Use' },
-            { icon: 'github',   text: 'Vyro-ai/imagine-campaign-director' },
-            { icon: 'shield',   text: 'No credits spent on planning' },
-          ].map((item, i) => (
-            <React.Fragment key={i}>
-              {i > 0 && (
-                <span style={{ width: 3, height: 3, borderRadius: 999, background: 'rgba(255,255,255,0.15)', flexShrink: 0 }}/>
-              )}
-              <span style={{
-                display: 'inline-flex', alignItems: 'center', gap: 5,
-                fontSize: 11.5, color: 'rgba(255,255,255,0.3)', fontWeight: 500,
-              }}>
-                <Icon name={item.icon} size={12} color="rgba(255,255,255,0.3)"/>
-                {item.text}
-              </span>
-            </React.Fragment>
-          ))}
-        </div>
-
+        <img
+          src="assets/imagine-logo.svg"
+          width={16} height={16}
+          style={{ filter: 'brightness(0) invert(1)', opacity: 0.9 }}
+          alt="ImagineArt"
+        />
       </div>
 
-      {/* Scroll indicator */}
+      {/* ── Mac frame ── */}
       <div style={{
-        position: 'absolute', bottom: 28, left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 2,
-        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
-        animation: 'revealUp 700ms cubic-bezier(0.16,1,0.3,1) 1000ms both',
+        position: 'relative',
+        borderRadius: 20,
+        border: '1px solid rgba(255,255,255,0.10)',
+        overflow: 'hidden',
+        background: 'linear-gradient(145deg, #0b0d14 0%, #080a10 60%, #06080d 100%)',
+        minHeight: '90vh',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        isolation: 'isolate',
       }}>
-        <span style={{
-          fontSize: 9.5, letterSpacing: '0.16em', textTransform: 'uppercase',
-          color: 'rgba(255,255,255,0.2)', fontWeight: 600,
-        }}>Scroll</span>
-        <div style={{
-          width: 1, height: 32,
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.2) 0%, transparent 100%)',
+        <StarField/>
+
+        {/* Right-side ambient glow */}
+        <div aria-hidden style={{
+          position: 'absolute', top: '-10%', right: '-5%',
+          width: '55%', height: '80%',
+          background: 'radial-gradient(ellipse 60% 70% at 100% 20%, rgba(50,50,75,0.35) 0%, transparent 70%)',
+          pointerEvents: 'none', zIndex: 1,
         }}/>
+
+        {/* Center purple glow */}
+        <div aria-hidden style={{
+          position: 'absolute', top: '35%', left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 800, height: 450,
+          background: 'radial-gradient(ellipse, rgba(110,45,210,0.14) 0%, transparent 65%)',
+          pointerEvents: 'none', zIndex: 1,
+          filter: 'blur(36px)',
+        }}/>
+
+        {/* ── Content ── */}
+        <div style={{
+          position: 'relative', zIndex: 2,
+          width: '100%', maxWidth: 1040,
+          padding: '96px clamp(24px, 5vw, 100px) 80px',
+          boxSizing: 'border-box',
+          display: 'flex', flexDirection: 'column', alignItems: 'center',
+          textAlign: 'center',
+        }}>
+
+          {/* Badge */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center',
+            marginBottom: 36, borderRadius: 999,
+            border: '1px solid rgba(255,255,255,0.10)',
+            overflow: 'hidden',
+            animation: 'revealUp 800ms cubic-bezier(0.16,1,0.3,1) 0ms both',
+          }}>
+            <span style={{
+              padding: '5px 11px',
+              background: 'rgba(138,63,252,0.85)',
+              color: '#fff',
+              fontSize: 11, fontWeight: 700,
+              letterSpacing: '0.05em',
+            }}>NEW</span>
+            <span style={{
+              padding: '5px 14px',
+              fontSize: 12, fontWeight: 500,
+              color: 'rgba(255,255,255,0.65)',
+              letterSpacing: '0.01em',
+            }}>Campaign Director · Powered by Codex</span>
+          </div>
+
+          {/* Headline */}
+          <div style={{ animation: 'revealUp 1000ms cubic-bezier(0.16,1,0.3,1) 120ms both' }}>
+            <h1 style={{
+              margin: '0 0 4px',
+              fontSize: 'clamp(44px, 6.5vw, 82px)',
+              lineHeight: 1.06,
+              fontWeight: 800,
+              letterSpacing: '-0.04em',
+              color: '#fff',
+            }}>
+              {headline}
+            </h1>
+          </div>
+
+          {/* Accent line */}
+          <div style={{ animation: 'revealUp 1000ms cubic-bezier(0.16,1,0.3,1) 200ms both', marginBottom: 28 }}>
+            <div style={{
+              fontSize: 'clamp(44px, 6.5vw, 82px)',
+              lineHeight: 1.06,
+              fontWeight: 800,
+              letterSpacing: '-0.04em',
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, #C4A8FF 50%, #9B6EFF 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>
+              {accent}
+            </div>
+          </div>
+
+          {/* Sub */}
+          <p style={{
+            margin: '0 0 40px',
+            fontSize: 16.5, lineHeight: 1.65, fontWeight: 400,
+            color: 'rgba(255,255,255,0.45)',
+            maxWidth: 480,
+            animation: 'revealUp 900ms cubic-bezier(0.16,1,0.3,1) 300ms both',
+          }}>
+            Turn one sentence into a finished Imagine.Art campaign.
+            Sub-agent swarms plan, generate, review, and package the run.
+          </p>
+
+          {/* CTAs */}
+          <div style={{
+            display: 'flex', gap: 12, alignItems: 'center',
+            justifyContent: 'center', marginBottom: 56,
+            animation: 'revealUp 900ms cubic-bezier(0.16,1,0.3,1) 380ms both',
+          }}>
+            <HeroCTA href="https://cal.com/imagine-art/campaign-director" primary>
+              Book a demo
+            </HeroCTA>
+            <HeroCTA href="https://github.com/Vyro-ai/imagine-campaign-director">
+              Get Started →
+            </HeroCTA>
+          </div>
+
+          {/* Prompt block */}
+          <div style={{ width: '100%', maxWidth: 620 }}>
+            <HeroStarterPrompt/>
+          </div>
+
+          {/* Trust strip */}
+          <div style={{
+            marginTop: 28,
+            display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap',
+            justifyContent: 'center',
+            animation: 'revealUp 800ms cubic-bezier(0.16,1,0.3,1) 860ms both',
+          }}>
+            {[
+              { icon: 'terminal', text: 'Codex with Computer Use' },
+              { icon: 'github',   text: 'Vyro-ai/imagine-campaign-director' },
+              { icon: 'shield',   text: 'No credits spent on planning' },
+            ].map((item, i) => (
+              <React.Fragment key={i}>
+                {i > 0 && (
+                  <span style={{ width: 3, height: 3, borderRadius: 999, background: 'rgba(255,255,255,0.15)', flexShrink: 0 }}/>
+                )}
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 5,
+                  fontSize: 11.5, color: 'rgba(255,255,255,0.28)', fontWeight: 500,
+                }}>
+                  <Icon name={item.icon} size={12} color="rgba(255,255,255,0.28)"/>
+                  {item.text}
+                </span>
+              </React.Fragment>
+            ))}
+          </div>
+
+        </div>
+
       </div>
     </div>
   );
