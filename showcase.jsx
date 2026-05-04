@@ -391,3 +391,258 @@ const Stats = () => {
 
 window.ShowcaseStrip = ShowcaseStrip;
 window.Stats = Stats;
+
+/* =========================================================
+   Explore Workflows slider
+========================================================= */
+const WORKFLOW_CARDS = [
+  {
+    img: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=700&q=85&auto=format&fit=crop',
+    category: 'Fashion',
+    title: 'Editorial Fashion Film',
+    desc: 'Generate a cinematic 9:16 fashion film from a single mood reference. Includes style transfer and auto-colour grade.',
+    tags: ['Image', 'Video', '9:16'],
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=700&q=85&auto=format&fit=crop',
+    category: 'Automotive',
+    title: 'Cinematic Auto Reveal',
+    desc: 'Studio-quality vehicle reveal with custom environment and dramatic lighting. One prompt, full sequence.',
+    tags: ['Image', 'Video', '16:9'],
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=700&q=85&auto=format&fit=crop',
+    category: 'Beauty',
+    title: 'Beauty UGC Pack',
+    desc: 'Batch-generate authentic UGC reels in vertical format. Product placement and skin-tone consistency baked in.',
+    tags: ['Image', 'UGC', '9:16'],
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1604017011826-d3b4c23f8914?w=700&q=85&auto=format&fit=crop',
+    category: 'Product',
+    title: 'Moody Product Hero',
+    desc: 'Dark-studio product hero with motion blur and volumetric light. Outputs still + cinemagraph variant.',
+    tags: ['Image', 'Video', '1:1'],
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=700&q=85&auto=format&fit=crop',
+    category: 'Beverage',
+    title: 'Cold Brew Brand Kit',
+    desc: 'Full-brand content kit: hero still, social cut-down, and motion logo reveal. Runs in under 8 minutes.',
+    tags: ['Image', 'Branding', '1:1'],
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?w=700&q=85&auto=format&fit=crop',
+    category: 'Sports',
+    title: 'Athlete Story Pack',
+    desc: 'High-energy story sequence with dynamic text overlays and music sync. Built for Instagram and TikTok.',
+    tags: ['Video', 'UGC', '9:16'],
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=700&q=85&auto=format&fit=crop',
+    category: 'Interior',
+    title: 'Interior Brand Lookbook',
+    desc: 'Lifestyle interior photography with consistent light and tone across 12 frames. Auto-exports to PDF.',
+    tags: ['Image', '16:9', '1:1'],
+  },
+];
+
+const CATEGORY_COLORS = {
+  Fashion: '#FF85DD',
+  Automotive: '#FEBC2E',
+  Beauty: '#FF85DD',
+  Product: '#A57BFE',
+  Beverage: '#42BE65',
+  Sports: '#FEBC2E',
+  Interior: '#42BE65',
+};
+
+const WorkflowCard = ({ card }) => {
+  const [hover, setHover] = useStateS(false);
+  const T = window.T;
+  const Icon = window.Icon;
+  const color = CATEGORY_COLORS[card.category] || '#A57BFE';
+  return (
+    <div
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        width: 300, flexShrink: 0,
+        borderRadius: 18, overflow: 'hidden',
+        background: 'rgba(255,255,255,0.04)',
+        border: hover ? '1px solid rgba(167,123,254,0.35)' : '1px solid rgba(255,255,255,0.08)',
+        boxShadow: hover ? '0 20px 48px rgba(0,0,0,0.5), 0 0 32px rgba(138,63,252,0.12)' : '0 8px 24px rgba(0,0,0,0.35)',
+        transform: hover ? 'translateY(-4px)' : 'translateY(0)',
+        transition: 'transform 380ms cubic-bezier(0.16,1,0.3,1), box-shadow 300ms ease, border-color 260ms ease',
+        cursor: 'pointer',
+        display: 'flex', flexDirection: 'column',
+      }}
+    >
+      {/* Image */}
+      <div style={{ position: 'relative', height: 200, overflow: 'hidden' }}>
+        <img
+          src={card.img}
+          loading="lazy"
+          style={{
+            width: '100%', height: '100%', objectFit: 'cover', display: 'block',
+            transform: hover ? 'scale(1.06)' : 'scale(1)',
+            transition: 'transform 600ms cubic-bezier(0.16,1,0.3,1)',
+          }}
+        />
+        <div aria-hidden style={{
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.55) 100%)',
+        }}/>
+        {/* Category pill */}
+        <div style={{
+          position: 'absolute', top: 12, left: 12,
+          padding: '4px 10px', borderRadius: 999,
+          background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          display: 'inline-flex', alignItems: 'center', gap: 5,
+          fontSize: 10.5, fontWeight: 600, letterSpacing: '0.04em',
+          color: '#fff',
+        }}>
+          <span style={{ width: 5, height: 5, borderRadius: 999, background: color, flexShrink: 0 }}/>
+          {card.category}
+        </div>
+      </div>
+
+      {/* Body */}
+      <div style={{ padding: '20px 20px 22px', display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+        <div style={{ fontSize: 16, fontWeight: 600, letterSpacing: '-0.01em', color: '#fff', lineHeight: 1.3 }}>
+          {card.title}
+        </div>
+        <div style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.55)', lineHeight: 1.6, flex: 1 }}>
+          {card.desc}
+        </div>
+
+        {/* Format tags */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginTop: 2 }}>
+          {card.tags.map((tag, i) => (
+            <span key={i} style={{
+              padding: '3px 9px', borderRadius: 999,
+              background: 'rgba(255,255,255,0.07)',
+              border: '1px solid rgba(255,255,255,0.10)',
+              fontSize: 10.5, fontWeight: 500, color: 'rgba(255,255,255,0.55)',
+            }}>{tag}</span>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <button style={{
+          marginTop: 6, height: 36, borderRadius: 10,
+          background: hover ? 'rgba(138,63,252,0.22)' : 'rgba(255,255,255,0.07)',
+          border: hover ? '1px solid rgba(138,63,252,0.4)' : '1px solid rgba(255,255,255,0.10)',
+          color: hover ? '#C4A8FF' : 'rgba(255,255,255,0.7)',
+          fontSize: 12.5, fontWeight: 500, cursor: 'pointer',
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+          transition: 'background 240ms, border-color 240ms, color 240ms',
+          fontFamily: 'inherit',
+        }}>
+          Use Workflow
+          <Icon name="arrowRight" size={13} color={hover ? '#C4A8FF' : 'rgba(255,255,255,0.55)'}/>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const WorkflowsSlider = () => {
+  const T = window.T;
+  const SectionHead = window.SectionHead;
+  const scrollRef = useRefS(null);
+  const [canScrollLeft, setCanScrollLeft] = useStateS(false);
+  const [canScrollRight, setCanScrollRight] = useStateS(true);
+
+  const SCROLL_BY = 632;
+
+  const updateScrollState = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 8);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 8);
+  };
+
+  const scroll = (dir) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === 'left' ? -SCROLL_BY : SCROLL_BY, behavior: 'smooth' });
+  };
+
+  const cx = { maxWidth: 1240, margin: '0 auto', padding: '0 clamp(24px, 4vw, 56px)', boxSizing: 'border-box' };
+
+  const NavBtn = ({ dir, disabled }) => (
+    <button
+      onClick={() => scroll(dir)}
+      disabled={disabled}
+      style={{
+        width: 40, height: 40, borderRadius: 999, flexShrink: 0,
+        background: disabled ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.09)',
+        border: '1px solid rgba(255,255,255,0.10)',
+        color: disabled ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.7)',
+        cursor: disabled ? 'default' : 'pointer',
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        transition: 'background 200ms, color 200ms',
+        fontFamily: 'inherit',
+      }}
+      onMouseEnter={e => { if (!disabled) e.currentTarget.style.background = 'rgba(255,255,255,0.14)'; }}
+      onMouseLeave={e => { if (!disabled) e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; }}
+    >
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        {dir === 'left'
+          ? <><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></>
+          : <><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></>}
+      </svg>
+    </button>
+  );
+
+  return (
+    <div style={{ padding: '120px 0' }}>
+      <div style={cx}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 40 }}>
+          <SectionHead
+            eyebrow="Explore Workflows"
+            title="Ready-made. Fully wired."
+            sub="Pick a workflow and Campaign Director handles the rest — no node setup required."
+            style={{ marginBottom: 0 }}
+          />
+          <div style={{ display: 'flex', gap: 8, flexShrink: 0, paddingBottom: 4 }}>
+            <NavBtn dir="left" disabled={!canScrollLeft}/>
+            <NavBtn dir="right" disabled={!canScrollRight}/>
+          </div>
+        </div>
+      </div>
+
+      {/* Full-bleed scroll track with left-aligned padding */}
+      <div
+        ref={scrollRef}
+        onScroll={updateScrollState}
+        style={{
+          display: 'flex', gap: 16,
+          overflowX: 'auto', overflowY: 'visible',
+          scrollSnapType: 'x mandatory',
+          paddingLeft: 'clamp(24px, calc(50vw - 620px + clamp(24px, 4vw, 56px)), 9999px)',
+          paddingRight: 'clamp(24px, 4vw, 56px)',
+          paddingBottom: 16,
+          scrollbarWidth: 'none',
+          WebkitOverflowScrolling: 'touch',
+        }}
+      >
+        {WORKFLOW_CARDS.map((card, i) => (
+          <div key={i} style={{ scrollSnapAlign: 'start' }}>
+            <WorkflowCard card={card}/>
+          </div>
+        ))}
+      </div>
+
+      <style>{`
+        [data-workflows-scroll]::-webkit-scrollbar { display: none; }
+      `}</style>
+    </div>
+  );
+};
+
+window.ShowcaseStrip = ShowcaseStrip;
+window.Stats = Stats;
+window.WorkflowsSlider = WorkflowsSlider;

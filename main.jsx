@@ -205,8 +205,11 @@ const App = () => {
         <div style={sec}><Reveal><HowItWorks/></Reveal></div>
       </div>
 
-      {/* ShowcaseStrip: staggered columns */}
+      {/* ShowcaseStrip: bento grid */}
       <div style={{ padding: '120px 0 0' }}><Reveal><window.ShowcaseStrip/></Reveal></div>
+
+      {/* Workflows slider */}
+      <Reveal><window.WorkflowsSlider/></Reveal>
 
       <div style={cx}>
         <div style={sec}><Reveal><Examples columns={tweaks.examplesColumns}/></Reveal></div>
