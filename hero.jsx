@@ -91,9 +91,9 @@ const HeroStarterPrompt = () => {
         </button>
       </div>
       <div style={{
-        padding: '18px 20px 20px',
+        padding: '22px 24px 26px',
         fontFamily: 'ui-monospace, SF Mono, Menlo, Consolas, monospace',
-        fontSize: 13, lineHeight: '22px',
+        fontSize: 14, lineHeight: '24px',
         color: 'rgba(255,255,255,0.65)',
       }}>
         Use{' '}
@@ -344,7 +344,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           {/* Badge */}
           <div style={{
             display: 'inline-flex', alignItems: 'center',
-            marginBottom: 36, borderRadius: 999,
+            marginBottom: 24, borderRadius: 999,
             border: '1px solid rgba(255,255,255,0.10)',
             overflow: 'hidden',
             animation: 'revealUp 800ms cubic-bezier(0.16,1,0.3,1) 0ms both',
@@ -398,7 +398,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
 
           {/* Sub — body-lg from type scale */}
           <p style={{
-            margin: '0 0 40px',
+            margin: '0 0 24px',
             fontSize: 16, lineHeight: 1.65, fontWeight: 400,
             color: 'rgba(255,255,255,0.45)',
             maxWidth: 480,
@@ -412,7 +412,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           {/* CTAs */}
           <div style={{
             display: 'flex', gap: 12, alignItems: 'center',
-            justifyContent: 'center', marginBottom: 56,
+            justifyContent: 'center', marginBottom: 28,
             animation: 'revealUp 900ms cubic-bezier(0.16,1,0.3,1) 380ms both',
           }}>
             <HeroCTA href="https://cal.com/imagine-art/campaign-director" primary>
@@ -424,7 +424,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           </div>
 
           {/* Prompt block */}
-          <div style={{ width: '100%', maxWidth: 620, textAlign: 'left' }}>
+          <div style={{ width: '100%', maxWidth: 780, textAlign: 'left' }}>
             <HeroStarterPrompt/>
           </div>
 
