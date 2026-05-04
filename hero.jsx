@@ -311,7 +311,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           viewBox="0 0 1000 80" preserveAspectRatio="none"
           style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 80, zIndex: 10, pointerEvents: 'none', display: 'block' }}
         >
-          <path d="M 0 0 L 340 0 C 376 0 404 8 422 20 C 436 30 440 38 440 44 L 560 44 C 560 38 564 30 578 20 C 596 8 624 0 660 0 L 1000 0 Z" fill="#000"/>
+          <path d="M 0 0 L 437 0 A 11 14 0 0 1 448 14 L 448 24 A 11 14 0 0 0 459 38 L 541 38 A 11 14 0 0 0 552 24 L 552 14 A 11 14 0 0 1 563 0 L 1000 0 Z" fill="#000"/>
         </svg>
 
         {/* ── Bottom wave notch — wider arch, flat on the sides ── */}
