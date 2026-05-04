@@ -5,21 +5,23 @@ const { T, Icon } = window;
 /* =========================================================
    Section header
 ========================================================= */
-const SectionHead = ({ eyebrow, title, sub }) => {
+const SectionHead = ({ eyebrow, title, sub, fg, fg2 }) => {
   const [ref, revealed] = window.useReveal();
   const words = title.split(' ');
+  const headFg  = fg  || T.fg;
+  const headFg2 = fg2 || T.fg2;
 
   return (
     <div style={{ marginBottom: 40 }} ref={ref}>
       {eyebrow && (
         <div style={{
           fontSize: 10.5, fontWeight: 600, letterSpacing: '1.8px',
-          textTransform: 'uppercase', color: T.fg2, marginBottom: 10,
+          textTransform: 'uppercase', color: headFg2, marginBottom: 10,
         }}>{eyebrow}</div>
       )}
       <h2 style={{
         margin: 0, fontSize: 'clamp(28px, 3.2vw, 40px)', lineHeight: 1.1,
-        fontWeight: 600, letterSpacing: '-0.02em', color: T.fg,
+        fontWeight: 600, letterSpacing: '-0.02em', color: headFg,
       }}>
         {words.map((word, i) => (
           <React.Fragment key={i}>
@@ -38,7 +40,7 @@ const SectionHead = ({ eyebrow, title, sub }) => {
         ))}
       </h2>
       {sub && (
-        <p style={{ margin: '12px 0 0', fontSize: 18, color: T.fg2, maxWidth: 640, lineHeight: 1.7, fontWeight: 400 }}>
+        <p style={{ margin: '12px 0 0', fontSize: 18, color: headFg2, maxWidth: 640, lineHeight: 1.7, fontWeight: 400 }}>
           {sub}
         </p>
       )}
@@ -218,29 +220,59 @@ const HowItWorks = () => {
 /* =========================================================
    40-second walkthrough video
 ========================================================= */
-const VideoBlock = () => {
-  const ref = useRef(null);
+const VideoBlock = ({ light = false }) => {
+  const fg  = light ? '#0f0f0f' : T.fg;
+  const fg2 = light ? 'rgba(0,0,0,0.5)' : T.fg2;
+  const videoRef  = useRef(null);
+  const sectionRef = useRef(null);
   const [playing, setPlaying] = useState(false);
+  const [prog, setProg]       = useState(0); // 0→1 scroll progress
+
   const toggle = () => {
-    const v = ref.current; if (!v) return;
+    const v = videoRef.current; if (!v) return;
     if (v.paused) { v.play(); setPlaying(true); }
     else { v.pause(); setPlaying(false); }
   };
 
+  useEffect(() => {
+    const onScroll = () => {
+      const el = sectionRef.current; if (!el) return;
+      const { top, height } = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // progress: 0 when top hits bottom of viewport, 1 when top hits top of viewport
+      const p = Math.min(1, Math.max(0, (vh - top) / (vh + height * 0.4)));
+      setProg(p);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const scale = 0.82 + 0.18 * prog;
+
   return (
-    <div id="walkthrough">
+    <div id="walkthrough" ref={sectionRef}>
       <SectionHead
         eyebrow="Walkthrough"
         title="See it run in 40 seconds."
         sub="A real Codex session: starting the prompt, building the Imagine.Art workflow, and receiving the finished campaign video."
+        fg={fg} fg2={fg2}
       />
+      {/* Scroll-driven scale wrapper */}
+      <div style={{ overflow: 'hidden' }}>
+      <div style={{
+        transform: `scale(${scale})`,
+        transformOrigin: 'top center',
+        transition: 'transform 0.05s linear',
+        willChange: 'transform',
+      }}>
       <div style={{
         position: 'relative', overflow: 'hidden',
-        borderRadius: 16, border: `1px solid ${T.hair}`,
+        borderRadius: 16, border: `1px solid rgba(255,255,255,0.12)`,
         background: '#000', aspectRatio: '16/9',
       }}>
         <video
-          ref={ref}
+          ref={videoRef}
           src="assets/walkthrough.mp4"
           poster="assets/walkthrough-poster.jpg"
           playsInline
@@ -280,6 +312,8 @@ const VideoBlock = () => {
           getting-started-walkthrough.mp4
         </div>
       </div>
+      </div>{/* end scale wrapper */}
+      </div>{/* end overflow clip */}
     </div>
   );
 };

@@ -8,7 +8,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "animateGraph": true,
   "showVideo": true,
   "showFAQ": true,
-  "examplesColumns": 2
+  "examplesColumns": 4
 }/*EDITMODE-END*/;
 
 window.CAMPAIGN_TWEAK_DEFAULTS = TWEAK_DEFAULTS;

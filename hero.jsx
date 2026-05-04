@@ -15,16 +15,19 @@ const TILE_IMAGES = [
 window.TILE_IMAGES = TILE_IMAGES;
 window.HeroTileWall = () => null;
 
-/* Stable star positions — generated once at module load */
-const STARS = Array.from({ length: 110 }, (_, i) => {
-  const seed = i * 2654435761;
-  return {
-    x: ((seed * 1234567) % 10000) / 100,
-    y: ((seed * 9876543) % 10000) / 100,
-    r: i % 7 === 0 ? 1.4 : 0.8,
-    o: 0.1 + ((seed % 100) / 100) * 0.45,
-  };
-});
+/* ── Scattered particle field — generated once at module load ── */
+const SCATTER_PTS = (() => {
+  const rng = (() => { let s = 987654321; return () => { s = (s * 1664525 + 1013904223) & 0xffffffff; return (s >>> 0) / 0xffffffff; }; })();
+  return Array.from({ length: 780 }, () => ({
+    nx:           rng(),                          // normalised x  0..1
+    ny:           rng(),                          // normalised y  0..1
+    size:         0.3 + rng() * 1.15,
+    alpha:        0.06 + rng() * 0.42,
+    wanderAngle:  rng() * Math.PI * 2,
+    wanderSpeed:  0.06 + rng() * 0.12,           // px/frame
+    wanderTurn:   (rng() - 0.5) * 0.022,         // how fast direction rotates
+  }));
+})();
 
 /* ── Cycling prompt ideas ───────────────────────────────── */
 const HERO_IDEAS = [
@@ -91,9 +94,9 @@ const HeroStarterPrompt = () => {
         </button>
       </div>
       <div style={{
-        padding: '18px 20px 20px',
+        padding: '22px 24px 26px',
         fontFamily: 'ui-monospace, SF Mono, Menlo, Consolas, monospace',
-        fontSize: 13, lineHeight: '22px',
+        fontSize: 14, lineHeight: '24px',
         color: 'rgba(255,255,255,0.65)',
       }}>
         Use{' '}
@@ -110,10 +113,10 @@ const HeroStarterPrompt = () => {
         <br/><br/>
         to create{' '}
         <span key={ideaIdx} style={{
-          background: 'rgba(138,63,252,0.16)',
-          color: '#C4A8FF',
+          background: 'rgba(255,255,255,0.08)',
+          color: 'rgba(255,255,255,0.75)',
           padding: '2px 9px', borderRadius: 6,
-          border: '1px solid rgba(167,123,254,0.22)',
+          border: '1px solid rgba(255,255,255,0.12)',
           display: 'inline-block',
           animation: 'fadeIn 500ms ease-out',
         }}>
@@ -154,60 +157,65 @@ const HeroCTA = ({ href, onClick, children, primary = false }) => {
   );
 };
 
-/* ── Bottom ticker — scrolls inside the bottom notch ───── */
-const TICKER_ITEMS = [
-  { icon: 'terminal', text: 'Codex with Computer Use' },
-  { icon: 'github',   text: 'Vyro-ai/imagine-campaign-director' },
-  { icon: 'shield',   text: 'No credits spent on planning' },
-  { icon: 'zap',      text: 'Sub-agent swarms handle execution' },
-  { icon: 'layers',   text: 'Every format from one brief' },
-  { icon: 'check',    text: 'Plan → Generate → Review → Package' },
-  { icon: 'terminal', text: 'Codex with Computer Use' },
-  { icon: 'github',   text: 'Vyro-ai/imagine-campaign-director' },
-  { icon: 'shield',   text: 'No credits spent on planning' },
-  { icon: 'zap',      text: 'Sub-agent swarms handle execution' },
-  { icon: 'layers',   text: 'Every format from one brief' },
-  { icon: 'check',    text: 'Plan → Generate → Review → Package' },
-];
+/* ── Bottom notch points — left / right of the arch ────── */
+const LEFT_POINTS  = ['Computer Use', 'Sub-agent swarms', 'Parallel execution', 'Auto packaging'];
+const RIGHT_POINTS = ['Every format', 'Open source', 'One brief → campaign', 'No manual steps'];
 
-const HeroTicker = () => {
-  const { Icon } = window;
-  return (
+const Dot = () => (
+  <span aria-hidden style={{
+    display: 'inline-block', width: 2, height: 2, borderRadius: '50%',
+    background: 'rgba(255,255,255,0.18)', margin: '0 10px', flexShrink: 0,
+  }}/>
+);
+
+const HeroNotchPoints = () => (
+  <div style={{
+    position: 'absolute', bottom: 0, left: 0, right: 0,
+    height: 38, zIndex: 11,
+    display: 'flex', alignItems: 'center',
+    pointerEvents: 'none',
+  }}>
+    {/* Left side */}
     <div style={{
-      position: 'absolute', bottom: 0, left: 0, right: 0,
-      height: 60, zIndex: 9, overflow: 'hidden',
-      display: 'flex', alignItems: 'center',
+      flex: 1, display: 'flex', alignItems: 'center',
+      justifyContent: 'flex-end', paddingRight: '2%',
+      overflow: 'hidden',
     }}>
-      <style>{`
-        @keyframes heroTickerScroll {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
-      `}</style>
-      <div style={{
-        display: 'flex', gap: 40, alignItems: 'center',
-        width: 'max-content',
-        animation: 'heroTickerScroll 22s linear infinite',
-      }}>
-        {TICKER_ITEMS.map((item, i) => (
-          <span key={i} style={{
-            display: 'inline-flex', alignItems: 'center', gap: 7,
-            fontSize: 11.5, color: 'rgba(255,255,255,0.30)', fontWeight: 500,
-            whiteSpace: 'nowrap',
-          }}>
-            <Icon name={item.icon} size={12} color="rgba(255,255,255,0.28)"/>
-            {item.text}
-          </span>
-        ))}
-      </div>
+      {LEFT_POINTS.map((item, i) => (
+        <React.Fragment key={i}>
+          <span style={{
+            fontSize: 10, color: 'rgba(255,255,255,0.32)', fontWeight: 500,
+            letterSpacing: '0.07em', textTransform: 'uppercase', whiteSpace: 'nowrap',
+          }}>{item}</span>
+          {i < LEFT_POINTS.length - 1 && <Dot/>}
+        </React.Fragment>
+      ))}
     </div>
-  );
-};
+    {/* Arch opening spacer — 27.4% matches x=363→637 in the 1000-unit viewBox */}
+    <div style={{ flex: '0 0 27.4%' }}/>
+    {/* Right side */}
+    <div style={{
+      flex: 1, display: 'flex', alignItems: 'center',
+      justifyContent: 'flex-start', paddingLeft: '2%',
+      overflow: 'hidden',
+    }}>
+      {RIGHT_POINTS.map((item, i) => (
+        <React.Fragment key={i}>
+          <span style={{
+            fontSize: 10, color: 'rgba(255,255,255,0.32)', fontWeight: 500,
+            letterSpacing: '0.07em', textTransform: 'uppercase', whiteSpace: 'nowrap',
+          }}>{item}</span>
+          {i < RIGHT_POINTS.length - 1 && <Dot/>}
+        </React.Fragment>
+      ))}
+    </div>
+  </div>
+);
 
 /* ── Gradient bars background ───────────────────────────── */
 const GradientBars = ({
   numBars = 13,
-  gradientFrom = 'rgba(180, 180, 190, 0.18)',
+  gradientFrom = 'rgba(100, 100, 115, 0.22)',
   gradientTo = 'transparent',
   animationDuration = 2.5,
 }) => {
@@ -249,49 +257,227 @@ const GradientBars = ({
   );
 };
 
-/* ── Starfield ──────────────────────────────────────────── */
-const StarField = () => (
-  <div aria-hidden style={{
-    position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden',
-  }}>
-    {STARS.map((s, i) => (
-      <div key={i} style={{
-        position: 'absolute',
-        left: `${s.x}%`, top: `${s.y}%`,
-        width: s.r * 2, height: s.r * 2,
-        borderRadius: '50%',
-        background: '#fff',
-        opacity: s.o,
-      }}/>
-    ))}
-  </div>
-);
+/* ── Scattered particle field ───────────────────────────── */
+const StarField = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx    = canvas.getContext('2d');
+    let raf;
+
+    // Initialise mutable x/y from normalised positions
+    let pts = [];
+    const init = () => {
+      const W = canvas.width  = canvas.offsetWidth;
+      const H = canvas.height = canvas.offsetHeight;
+      pts = SCATTER_PTS.map(p => ({
+        ...p,
+        x: p.nx * W,
+        y: p.ny * H,
+      }));
+    };
+    init();
+
+    const draw = () => {
+      const W = canvas.offsetWidth;
+      const H = canvas.offsetHeight;
+      if (canvas.width !== W || canvas.height !== H) {
+        canvas.width = W; canvas.height = H;
+        pts.forEach(p => { p.x = p.nx * W; p.y = p.ny * H; });
+      }
+      ctx.clearRect(0, 0, W, H);
+
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i];
+
+        // Gently rotate wander direction each frame
+        p.wanderAngle += p.wanderTurn + (Math.random() - 0.5) * 0.006;
+        p.x += Math.cos(p.wanderAngle) * p.wanderSpeed;
+        p.y += Math.sin(p.wanderAngle) * p.wanderSpeed * 0.55; // flatten vertically
+
+        // Seamless wrap
+        if (p.x < -2)    p.x += W + 4;
+        if (p.x > W + 2) p.x -= W + 4;
+        if (p.y < -2)    p.y += H + 4;
+        if (p.y > H + 2) p.y -= H + 4;
+
+        // Crisp dot — no blur, no glow
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${p.alpha.toFixed(3)})`;
+        ctx.fill();
+      }
+
+      raf = requestAnimationFrame(draw);
+    };
+
+    raf = requestAnimationFrame(draw);
+
+    const ro = new ResizeObserver(() => {
+      const W = canvas.offsetWidth, H = canvas.offsetHeight;
+      canvas.width = W; canvas.height = H;
+      pts.forEach(p => { p.x = p.nx * W; p.y = p.ny * H; });
+    });
+    ro.observe(canvas);
+
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
+  }, []);
+
+  return (
+    <canvas ref={canvasRef} aria-hidden style={{
+      position: 'absolute', inset: 0,
+      width: '100%', height: '100%',
+      pointerEvents: 'none', zIndex: 0, display: 'block',
+    }}/>
+  );
+};
+
+/* ── Expanding notch navbar ─────────────────────────────── */
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = (t) => t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+
+const LEFT_NAV = [
+  { label: 'How it works', href: '#how-it-works' },
+  { label: 'Templates',    href: '#templates'    },
+  { label: 'Examples',     href: '#examples'     },
+];
+const RIGHT_NAV = [
+  { label: 'FAQ',    href: '#faq'                                              },
+  { label: 'GitHub', href: 'https://github.com/Vyro-ai/imagine-campaign-director', external: true },
+];
+
+const NotchNav = () => {
+  const [scrollY, setScrollY]     = useState(0);
+  const [logoHover, setLogoHover] = useState(false);
+
+  useEffect(() => {
+    const fn = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', fn, { passive: true });
+    return () => window.removeEventListener('scroll', fn);
+  }, []);
+
+  const TRIGGER = 120;
+  const raw = logoHover ? 1 : Math.min(1, scrollY / TRIGGER);
+  const p   = ease(raw);
+
+  // Expanded width matches the section containers: maxWidth 1240, padding clamp(24px,4vw,56px)
+  const sidePad    = Math.min(56, Math.max(24, window.innerWidth * 0.04));
+  const containerW = Math.min(1240, window.innerWidth - sidePad * 2);
+  const notchTop   = Math.min(32, Math.max(16, window.innerWidth * 0.025));
+  const width      = lerp(140, containerW, p);
+  const height     = lerp(36, 58, p);
+  const top        = lerp(notchTop, 12, p);
+  const br         = lerp(10, 12, p);
+  const bgAlpha    = lerp(0, 0.82, p);
+  const navAlpha   = Math.max(0, (raw - 0.5) / 0.5);
+
+  const isHoverTrigger = logoHover && scrollY < TRIGGER;
+  const tr = isHoverTrigger
+    ? 'width 480ms cubic-bezier(0.16,1,0.3,1), height 400ms cubic-bezier(0.16,1,0.3,1), top 400ms cubic-bezier(0.16,1,0.3,1), background 350ms ease, border-color 350ms ease, backdrop-filter 350ms ease'
+    : 'none';
+
+  return (
+    <div style={{
+      position: 'fixed',
+      top, left: '50%',
+      transform: 'translateX(-50%)',
+      width, height,
+      zIndex: 200,
+      background: `rgba(7,5,13,${bgAlpha})`,
+      backdropFilter: raw > 0.05 ? `blur(20px) saturate(180%)` : 'none',
+      WebkitBackdropFilter: raw > 0.05 ? `blur(20px) saturate(180%)` : 'none',
+      borderRadius: br,
+      border: raw > 0.05 ? `1px solid rgba(255,255,255,${lerp(0, 0.10, p)})` : 'none',
+      display: 'flex', alignItems: 'center',
+      overflow: 'hidden',
+      pointerEvents: raw > 0.5 ? 'auto' : 'none',
+      transition: tr,
+      willChange: 'width, top',
+    }}>
+      {/* Left nav links */}
+      <div style={{
+        flex: 1, display: 'flex', alignItems: 'center',
+        justifyContent: 'flex-end', gap: 2,
+        paddingRight: 36, opacity: navAlpha,
+        pointerEvents: navAlpha > 0.8 ? 'auto' : 'none',
+      }}>
+        {LEFT_NAV.map(l => (
+          <a key={l.label} href={l.href} style={{
+            padding: '6px 20px', borderRadius: 8,
+            fontSize: 15, fontWeight: 400,
+            color: 'rgba(255,255,255,0.65)',
+            textDecoration: 'none', whiteSpace: 'nowrap',
+          }}>{l.label}</a>
+        ))}
+      </div>
+
+      {/* Logo — centered, hover triggers expand */}
+      <div
+        onMouseEnter={() => setLogoHover(true)}
+        onMouseLeave={() => setLogoHover(false)}
+        style={{
+          flexShrink: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          width: 44, height: 44, cursor: 'pointer',
+        }}>
+        <img src="assets/logo-icon.svg" width={28} height={28}
+          style={{ filter: 'brightness(0) invert(1)', opacity: 0.9, display: 'block' }}
+          alt="ImagineArt"/>
+      </div>
+
+      {/* Right nav links + CTA */}
+      <div style={{
+        flex: 1, display: 'flex', alignItems: 'center',
+        justifyContent: 'flex-start', gap: 2,
+        paddingLeft: 36, opacity: navAlpha,
+        pointerEvents: navAlpha > 0.8 ? 'auto' : 'none',
+      }}>
+        {RIGHT_NAV.map(l => (
+          <a key={l.label} href={l.href} {...(l.external ? { target: '_blank', rel: 'noreferrer' } : {})} style={{
+            padding: '6px 20px', borderRadius: 8,
+            fontSize: 15, fontWeight: 400,
+            color: 'rgba(255,255,255,0.65)',
+            textDecoration: 'none', whiteSpace: 'nowrap',
+          }}>{l.label}</a>
+        ))}
+        <a href="https://cal.com/imagine-art/campaign-director"
+          target="_blank" rel="noreferrer"
+          style={{
+            marginLeft: 12, height: 34, padding: '0 20px', borderRadius: 999,
+            background: '#fff', color: '#0a0a0a',
+            fontSize: 14, fontWeight: 500,
+            display: 'inline-flex', alignItems: 'center',
+            textDecoration: 'none', whiteSpace: 'nowrap',
+          }}>
+          Book a demo
+        </a>
+      </div>
+    </div>
+  );
+};
 
 /* ── Hero ───────────────────────────────────────────────── */
 const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the rest.' }) => {
   const { Icon } = window;
   return (
-    /* Page-level wrapper: black bg, inset the frame */
     <div style={{ background: '#000', padding: `clamp(16px, 2.5vw, 32px) clamp(12px, 2vw, 32px)`, position: 'relative' }}>
 
-      {/* ── Logo pill — sits on the frame's top edge, outside the frame ── */}
+      <NotchNav/>
+
+      {/* Static logo in notch at scroll=0 — hidden once NotchNav takes over */}
       <div style={{
         position: 'absolute',
-        top: 'clamp(16px, 2.5vw, 32px)',
+        top: 'calc(clamp(16px, 2.5vw, 32px) + 12px)',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 112, height: 46,
-        background: '#000',
-        borderRadius: 999,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
         zIndex: 20,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        pointerEvents: 'none',
       }}>
-        <img
-          src="assets/imagine-logo.svg"
-          width={18} height={18}
-          style={{ filter: 'brightness(0) invert(1)', opacity: 0.85, display: 'block' }}
-          alt="ImagineArt"
-        />
+        <img src="assets/logo-icon.svg" width={30} height={30}
+          style={{ filter: 'brightness(0) invert(1)', opacity: 0.9, display: 'block' }}
+          alt="ImagineArt"/>
       </div>
 
       {/* ── Mac frame ── */}
@@ -299,49 +485,29 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
         position: 'relative',
         borderRadius: 20,
         overflow: 'hidden',
-        background: 'linear-gradient(145deg, #1a1c24 0%, #141618 60%, #111214 100%)',
-        boxShadow: '0 0 0 1px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.10), 0 0 80px rgba(255,255,255,0.04)',
+        background: 'linear-gradient(145deg, #131317 0%, #0f0f13 60%, #0b0b0f 100%)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 0 80px rgba(0,0,0,0.5)',
         minHeight: '90vh',
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         isolation: 'isolate',
       }}>
 
-        {/* ── Top wave notch — tapers to y=0 at edges, no black in corners ── */}
-        <svg
-          viewBox="0 0 1000 80" preserveAspectRatio="none"
-          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 80, zIndex: 10, pointerEvents: 'none', display: 'block' }}
-        >
-          <path d="M 0 0 L 1000 0 C 900 0 820 64 760 64 C 710 64 668 44 638 30 C 618 16 594 0 500 0 C 406 0 382 16 362 30 C 332 44 290 64 240 64 C 180 64 100 0 0 0 Z" fill="#000"/>
+
+        {/* ── Top wave notch ── */}
+        <svg viewBox="0 0 1000 80" preserveAspectRatio="none"
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 80, zIndex: 10, pointerEvents: 'none', display: 'block' }}>
+          <path d="M 0 0 L 437 0 A 11 14 0 0 1 448 14 L 448 24 A 11 14 0 0 0 459 38 L 541 38 A 11 14 0 0 0 552 24 L 552 14 A 11 14 0 0 1 563 0 L 1000 0 Z" fill="#000"/>
         </svg>
 
-        {/* ── Bottom wave notch — wider, tapers to y=80 at edges ── */}
-        <svg
-          viewBox="0 0 1000 80" preserveAspectRatio="none"
-          style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: 80, zIndex: 10, pointerEvents: 'none', display: 'block' }}
-        >
-          <path d="M 0 80 L 1000 80 C 900 80 810 16 720 16 C 660 16 618 42 590 56 C 572 68 552 80 500 80 C 448 80 428 68 410 56 C 382 42 340 16 280 16 C 190 16 100 80 0 80 Z" fill="#000"/>
+        {/* ── Bottom wave notch ── */}
+        <svg viewBox="0 0 1000 80" preserveAspectRatio="none"
+          style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: 80, zIndex: 10, pointerEvents: 'none', display: 'block' }}>
+          <path d="M 0 80 L 363 80 A 11 14 0 0 0 374 66 L 374 56 A 11 14 0 0 1 385 42 L 615 42 A 11 14 0 0 1 626 56 L 626 66 A 11 14 0 0 0 637 80 L 1000 80 Z" fill="#000"/>
         </svg>
 
         <GradientBars/>
         <StarField/>
 
-        {/* Right-side ambient glow */}
-        <div aria-hidden style={{
-          position: 'absolute', top: '-10%', right: '-5%',
-          width: '55%', height: '80%',
-          background: 'radial-gradient(ellipse 60% 70% at 100% 20%, rgba(50,50,75,0.35) 0%, transparent 70%)',
-          pointerEvents: 'none', zIndex: 1,
-        }}/>
-
-        {/* Center purple glow */}
-        <div aria-hidden style={{
-          position: 'absolute', top: '35%', left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 800, height: 450,
-          background: 'radial-gradient(ellipse, rgba(110,45,210,0.14) 0%, transparent 65%)',
-          pointerEvents: 'none', zIndex: 1,
-          filter: 'blur(36px)',
-        }}/>
 
         {/* ── Content ── */}
         <div style={{
@@ -353,36 +519,13 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           textAlign: 'center',
         }}>
 
-          {/* Badge */}
-          <div style={{
-            display: 'inline-flex', alignItems: 'center',
-            marginBottom: 36, borderRadius: 999,
-            border: '1px solid rgba(255,255,255,0.10)',
-            overflow: 'hidden',
-            animation: 'revealUp 800ms cubic-bezier(0.16,1,0.3,1) 0ms both',
-          }}>
-            <span style={{
-              padding: '5px 11px',
-              background: 'rgba(138,63,252,0.85)',
-              color: '#fff',
-              fontSize: 11, fontWeight: 700,
-              letterSpacing: '0.05em',
-            }}>NEW</span>
-            <span style={{
-              padding: '5px 14px',
-              fontSize: 12, fontWeight: 500,
-              color: 'rgba(255,255,255,0.65)',
-              letterSpacing: '0.01em',
-            }}>Campaign Director · Powered by Codex</span>
-          </div>
-
           {/* Headline — display-sm from type scale: max 60px, weight 800 */}
           <div style={{ animation: 'revealUp 1000ms cubic-bezier(0.16,1,0.3,1) 120ms both' }}>
             <h1 style={{
               margin: '0 0 4px',
               fontSize: 'clamp(32px, 4.2vw, 60px)',
               lineHeight: 1.08,
-              fontWeight: 600,
+              fontWeight: 400,
               letterSpacing: '-0.02em',
               color: '#fff',
               fontFamily: 'var(--font-sans)',
@@ -410,7 +553,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
 
           {/* Sub — body-lg from type scale */}
           <p style={{
-            margin: '0 0 40px',
+            margin: '0 0 24px',
             fontSize: 16, lineHeight: 1.65, fontWeight: 400,
             color: 'rgba(255,255,255,0.45)',
             maxWidth: 480,
@@ -424,7 +567,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           {/* CTAs */}
           <div style={{
             display: 'flex', gap: 12, alignItems: 'center',
-            justifyContent: 'center', marginBottom: 56,
+            justifyContent: 'center', marginBottom: 28,
             animation: 'revealUp 900ms cubic-bezier(0.16,1,0.3,1) 380ms both',
           }}>
             <HeroCTA href="https://cal.com/imagine-art/campaign-director" primary>
@@ -436,13 +579,13 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           </div>
 
           {/* Prompt block */}
-          <div style={{ width: '100%', maxWidth: 620 }}>
+          <div style={{ width: '100%', maxWidth: 780, textAlign: 'left' }}>
             <HeroStarterPrompt/>
           </div>
 
         </div>
 
-        <HeroTicker/>
+        <HeroNotchPoints/>
 
       </div>
     </div>
