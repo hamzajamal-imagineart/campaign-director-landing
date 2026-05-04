@@ -156,53 +156,51 @@ const HeroCTA = ({ href, onClick, children, primary = false }) => {
 
 /* ── Bottom ticker — scrolls inside the bottom notch ───── */
 const TICKER_ITEMS = [
-  { icon: 'terminal', text: 'Codex with Computer Use' },
-  { icon: 'github',   text: 'Vyro-ai/imagine-campaign-director' },
-  { icon: 'shield',   text: 'No credits spent on planning' },
-  { icon: 'zap',      text: 'Sub-agent swarms handle execution' },
-  { icon: 'layers',   text: 'Every format from one brief' },
-  { icon: 'check',    text: 'Plan → Generate → Review → Package' },
-  { icon: 'terminal', text: 'Codex with Computer Use' },
-  { icon: 'github',   text: 'Vyro-ai/imagine-campaign-director' },
-  { icon: 'shield',   text: 'No credits spent on planning' },
-  { icon: 'zap',      text: 'Sub-agent swarms handle execution' },
-  { icon: 'layers',   text: 'Every format from one brief' },
-  { icon: 'check',    text: 'Plan → Generate → Review → Package' },
+  'Computer Use enabled',
+  'Zero planning tokens',
+  'Parallel sub-agents',
+  'Every output format',
+  'Open source',
+  'One brief → full campaign',
+  'Auto review & packaging',
+  'No manual steps',
 ];
+const TICKER_2X = [...TICKER_ITEMS, ...TICKER_ITEMS];
 
-const HeroTicker = () => {
-  const { Icon } = window;
-  return (
+const HeroTicker = () => (
+  <div style={{
+    position: 'absolute', bottom: 0, left: 0, right: 0,
+    height: 70, zIndex: 9, overflow: 'hidden',
+    display: 'flex', alignItems: 'center',
+  }}>
+    <style>{`
+      @keyframes heroTickerScroll {
+        from { transform: translateX(0); }
+        to   { transform: translateX(-50%); }
+      }
+    `}</style>
     <div style={{
-      position: 'absolute', bottom: 0, left: 0, right: 0,
-      height: 70, zIndex: 9, overflow: 'hidden',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      display: 'flex', alignItems: 'center',
+      width: 'max-content',
+      animation: 'heroTickerScroll 38s linear infinite',
     }}>
-      <style>{`
-        @keyframes heroTickerScroll {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
-        }
-      `}</style>
-      <div style={{
-        display: 'flex', gap: 48, alignItems: 'center',
-        width: 'max-content',
-        animation: 'heroTickerScroll 22s linear infinite',
-      }}>
-        {TICKER_ITEMS.map((item, i) => (
-          <span key={i} style={{
-            display: 'inline-flex', alignItems: 'center', gap: 8,
-            fontSize: 12, color: 'rgba(255,255,255,0.45)', fontWeight: 500,
-            whiteSpace: 'nowrap',
-          }}>
-            <Icon name={item.icon} size={13} color="rgba(255,255,255,0.40)"/>
-            {item.text}
-          </span>
-        ))}
-      </div>
+      {TICKER_2X.map((item, i) => (
+        <span key={i} style={{
+          display: 'inline-flex', alignItems: 'center',
+          fontSize: 10.5, color: 'rgba(255,255,255,0.42)', fontWeight: 500,
+          letterSpacing: '0.07em', textTransform: 'uppercase',
+          whiteSpace: 'nowrap',
+        }}>
+          {item}
+          <span aria-hidden style={{
+            display: 'inline-block', width: 3, height: 3, borderRadius: '50%',
+            background: 'rgba(255,255,255,0.2)', margin: '0 22px', flexShrink: 0,
+          }}/>
+        </span>
+      ))}
     </div>
-  );
-};
+  </div>
+);
 
 /* ── Gradient bars background ───────────────────────────── */
 const GradientBars = ({
