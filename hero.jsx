@@ -175,8 +175,8 @@ const HeroTicker = () => {
   return (
     <div style={{
       position: 'absolute', bottom: 0, left: 0, right: 0,
-      height: 60, zIndex: 9, overflow: 'hidden',
-      display: 'flex', alignItems: 'center',
+      height: 70, zIndex: 9, overflow: 'hidden',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
       <style>{`
         @keyframes heroTickerScroll {
@@ -185,17 +185,17 @@ const HeroTicker = () => {
         }
       `}</style>
       <div style={{
-        display: 'flex', gap: 40, alignItems: 'center',
+        display: 'flex', gap: 48, alignItems: 'center',
         width: 'max-content',
         animation: 'heroTickerScroll 22s linear infinite',
       }}>
         {TICKER_ITEMS.map((item, i) => (
           <span key={i} style={{
-            display: 'inline-flex', alignItems: 'center', gap: 7,
-            fontSize: 11.5, color: 'rgba(255,255,255,0.30)', fontWeight: 500,
+            display: 'inline-flex', alignItems: 'center', gap: 8,
+            fontSize: 12, color: 'rgba(255,255,255,0.45)', fontWeight: 500,
             whiteSpace: 'nowrap',
           }}>
-            <Icon name={item.icon} size={12} color="rgba(255,255,255,0.28)"/>
+            <Icon name={item.icon} size={13} color="rgba(255,255,255,0.40)"/>
             {item.text}
           </span>
         ))}
@@ -314,12 +314,12 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           <path d="M 0 0 L 330 0 C 370 0 400 10 428 26 C 450 40 466 58 484 68 C 490 72 494 74 500 74 C 506 74 510 72 516 68 C 534 58 550 40 572 26 C 600 10 630 0 670 0 L 1000 0 Z" fill="#000"/>
         </svg>
 
-        {/* ── Bottom wave notch — tight center, flat on the sides ── */}
+        {/* ── Bottom wave notch — wider arch, flat on the sides ── */}
         <svg
           viewBox="0 0 1000 80" preserveAspectRatio="none"
           style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: 80, zIndex: 10, pointerEvents: 'none', display: 'block' }}
         >
-          <path d="M 0 80 L 330 80 C 370 80 400 70 428 54 C 450 40 466 22 484 12 C 490 8 494 6 500 6 C 506 6 510 8 516 12 C 534 22 550 40 572 54 C 600 70 630 80 670 80 L 1000 80 Z" fill="#000"/>
+          <path d="M 0 80 L 260 80 C 310 80 360 72 400 56 C 432 42 456 22 478 10 C 486 6 492 4 500 4 C 508 4 514 6 522 10 C 544 22 568 42 600 56 C 640 72 690 80 740 80 L 1000 80 Z" fill="#000"/>
         </svg>
 
         <GradientBars/>
