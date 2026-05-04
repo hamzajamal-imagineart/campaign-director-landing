@@ -183,7 +183,6 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
       <div style={{
         position: 'relative',
         borderRadius: 20,
-        border: '1px solid rgba(255,255,255,0.10)',
         overflow: 'hidden',
         background: 'linear-gradient(145deg, #0b0d14 0%, #080a10 60%, #06080d 100%)',
         minHeight: '90vh',
@@ -198,7 +197,6 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           width: 160, height: 36,
           background: '#000',
           borderRadius: '0 0 22px 22px',
-          border: '1px solid rgba(255,255,255,0.10)',
           borderTop: 'none',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           zIndex: 10,
