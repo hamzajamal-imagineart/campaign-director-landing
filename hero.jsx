@@ -187,18 +187,18 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
         top: NOTCH_TOP,
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 64, height: 30,
-        background: '#0d0d0d',
-        border: '1px solid rgba(255,255,255,0.18)',
+        width: 148, height: 44,
+        background: '#0e0e0e',
         borderRadius: 999,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         zIndex: 20,
-        boxShadow: '0 0 0 3px #000, 0 4px 20px rgba(0,0,0,0.9)',
+        /* border + outer black ring that visually "cuts" into the frame border */
+        boxShadow: '0 0 0 1px rgba(255,255,255,0.13), 0 0 0 5px #000',
       }}>
         <img
           src="assets/imagine-logo.svg"
-          width={15} height={15}
-          style={{ filter: 'brightness(0) invert(1)', opacity: 0.85, display: 'block' }}
+          width={20} height={20}
+          style={{ filter: 'brightness(0) invert(1)', opacity: 0.9, display: 'block' }}
           alt="ImagineArt"
         />
       </div>
