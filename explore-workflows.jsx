@@ -127,7 +127,10 @@ const ExploreWorkflowsMarquee = ({ headingHidden = false }) => {
 
       {/* Marquee */}
       <div
-        style={{ width: '100%', overflow: 'hidden', minHeight: CARD_H + 32 }}
+        style={{
+          width: '100%', overflow: 'hidden', minHeight: CARD_H + 32,
+          paddingLeft: 'clamp(24px, calc(50vw - 620px + clamp(24px, 4vw, 56px)), 9999px)',
+        }}
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
