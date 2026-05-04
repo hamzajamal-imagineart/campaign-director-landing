@@ -177,7 +177,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
   const { Icon } = window;
   return (
     /* Page-level wrapper: black bg, inset the frame */
-    <div style={{ background: '#000', padding: `0 clamp(10px, 2vw, 28px)`, position: 'relative' }}>
+    <div style={{ background: '#000', padding: `clamp(16px, 2.5vw, 32px) clamp(12px, 2vw, 32px) 0`, position: 'relative' }}>
 
       {/* ── Mac frame ── */}
       <div style={{
