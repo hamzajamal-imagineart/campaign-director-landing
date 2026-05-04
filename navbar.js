@@ -71,9 +71,9 @@
   .navbar-btn-ghost:hover { background: rgba(15,15,15,0.06); color: #0f0f0f; }
   .navbar:not(.scrolled) .navbar-btn-ghost { color: rgba(255,255,255,0.75); }
   .navbar:not(.scrolled) .navbar-btn-ghost:hover { color: #fff; background: rgba(255,255,255,0.08); }
-  .navbar-btn-dark { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.25); box-shadow: none; }
-  .navbar-btn-dark:hover { background: rgba(255,255,255,0.18); }
-  .navbar.scrolled .navbar-btn-dark { background: #111; border-color: transparent; color: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
+  .navbar-btn-dark { background: #fff; color: #0f0f0f; border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.18); }
+  .navbar-btn-dark:hover { background: #e8e8e8; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+  .navbar.scrolled .navbar-btn-dark { background: #111; border: none; color: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.15); }
   .navbar.scrolled .navbar-btn-dark:hover { background: #222; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
   .navbar:not(.scrolled) .nav-link { color: rgba(255,255,255,0.75); }
   .navbar:not(.scrolled) .nav-link:hover { color: #fff; background: rgba(255,255,255,0.08); }
