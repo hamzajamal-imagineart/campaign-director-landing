@@ -297,7 +297,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
         borderRadius: 20,
         overflow: 'hidden',
         background: 'linear-gradient(145deg, #1a1c24 0%, #141618 60%, #111214 100%)',
-        boxShadow: '0 0 0 1px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.10), 0 0 80px rgba(255,255,255,0.04)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.10), 0 0 80px rgba(255,255,255,0.04)',
         minHeight: '90vh',
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         isolation: 'isolate',
