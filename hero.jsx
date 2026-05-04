@@ -15,28 +15,18 @@ const TILE_IMAGES = [
 window.TILE_IMAGES = TILE_IMAGES;
 window.HeroTileWall = () => null;
 
-/* ── Particle sphere — generated once at module load ── */
-// 2400 points: ~72% surface shell + 28% interior volume fill
-const SPHERE_PTS = (() => {
-  const pts = [];
-  const rng = (() => { let s = 1234567891; return () => { s = (s * 1664525 + 1013904223) & 0xffffffff; return (s >>> 0) / 0xffffffff; }; })();
-  while (pts.length < 2400) {
-    // Rejection-sample a point inside a unit cube, accept if inside unit sphere
-    const x = rng() * 2 - 1, y = rng() * 2 - 1, z = rng() * 2 - 1;
-    const r = Math.sqrt(x*x + y*y + z*z);
-    if (r > 1 || r < 0.001) continue;
-    const onSurface = rng() < 0.72;
-    // Project to surface or keep as interior volume point
-    const scale = onSurface ? 1 / r : Math.cbrt(rng());
-    pts.push({
-      x: x * scale,
-      y: y * scale,
-      z: z * scale,
-      size:      0.35 + rng() * 1.1,
-      baseAlpha: 0.15 + rng() * 0.70,
-    });
-  }
-  return pts;
+/* ── Scattered particle field — generated once at module load ── */
+const SCATTER_PTS = (() => {
+  const rng = (() => { let s = 987654321; return () => { s = (s * 1664525 + 1013904223) & 0xffffffff; return (s >>> 0) / 0xffffffff; }; })();
+  return Array.from({ length: 780 }, () => ({
+    nx:           rng(),                          // normalised x  0..1
+    ny:           rng(),                          // normalised y  0..1
+    size:         0.3 + rng() * 1.15,
+    alpha:        0.06 + rng() * 0.42,
+    wanderAngle:  rng() * Math.PI * 2,
+    wanderSpeed:  0.06 + rng() * 0.12,           // px/frame
+    wanderTurn:   (rng() - 0.5) * 0.022,         // how fast direction rotates
+  }));
 })();
 
 /* ── Cycling prompt ideas ───────────────────────────────── */
@@ -267,7 +257,7 @@ const GradientBars = ({
   );
 };
 
-/* ── Rotating particle sphere ───────────────────────────── */
+/* ── Scattered particle field ───────────────────────────── */
 const StarField = () => {
   const canvasRef = useRef(null);
 
@@ -276,85 +266,62 @@ const StarField = () => {
     const ctx    = canvas.getContext('2d');
     let raf;
 
-    // Pre-allocate projection buffer so we don't alloc 2400 objects per frame
-    const buf = SPHERE_PTS.map(() => ({ sx: 0, sy: 0, sr: 0, alpha: 0, depth: 0 }));
+    // Initialise mutable x/y from normalised positions
+    let pts = [];
+    const init = () => {
+      const W = canvas.width  = canvas.offsetWidth;
+      const H = canvas.height = canvas.offsetHeight;
+      pts = SCATTER_PTS.map(p => ({
+        ...p,
+        x: p.nx * W,
+        y: p.ny * H,
+      }));
+    };
+    init();
 
-    // Fixed tilt around X axis (subtle forward lean)
-    const TILT   = 0.18;
-    const cosT   = Math.cos(TILT);
-    const sinT   = Math.sin(TILT);
-
-    const draw = (ts) => {
+    const draw = () => {
       const W = canvas.offsetWidth;
       const H = canvas.offsetHeight;
       if (canvas.width !== W || canvas.height !== H) {
-        canvas.width  = W;
-        canvas.height = H;
+        canvas.width = W; canvas.height = H;
+        pts.forEach(p => { p.x = p.nx * W; p.y = p.ny * H; });
       }
       ctx.clearRect(0, 0, W, H);
 
-      // Sphere radius: tall enough to fill the hero nicely
-      const R   = Math.min(W, H) * 0.40;
-      const cx  = W / 2;
-      const cy  = H / 2;
-      // Perspective "focal length" — higher = less fisheye
-      const FOV = R * 2.6;
+      for (let i = 0; i < pts.length; i++) {
+        const p = pts[i];
 
-      // Slow Y-axis rotation — full orbit ~55 seconds
-      const rotY  = ts * 0.000114;
-      const cosY  = Math.cos(rotY);
-      const sinY  = Math.sin(rotY);
+        // Gently rotate wander direction each frame
+        p.wanderAngle += p.wanderTurn + (Math.random() - 0.5) * 0.006;
+        p.x += Math.cos(p.wanderAngle) * p.wanderSpeed;
+        p.y += Math.sin(p.wanderAngle) * p.wanderSpeed * 0.55; // flatten vertically
 
-      // Project all points into buffer
-      for (let i = 0; i < SPHERE_PTS.length; i++) {
-        const p = SPHERE_PTS[i];
-        // Rotate around Y
-        const rx = p.x * cosY - p.z * sinY;
-        const rz = p.x * sinY + p.z * cosY;
-        // Tilt around X
-        const ry  =  p.y * cosT - rz * sinT;
-        const rz2 =  p.y * sinT + rz * cosT;
+        // Seamless wrap
+        if (p.x < -2)    p.x += W + 4;
+        if (p.x > W + 2) p.x -= W + 4;
+        if (p.y < -2)    p.y += H + 4;
+        if (p.y > H + 2) p.y -= H + 4;
 
-        // Perspective divide
-        const persp = FOV / (FOV + rz2 * R * 0.28);
-        buf[i].sx    = cx + rx * R * persp;
-        buf[i].sy    = cy + ry * R * persp;
-        buf[i].sr    = Math.max(0.2, p.size * persp * 0.88);
-        // depth 0..1 (1 = front / brightest)
-        const depth  = (rz2 + 1) * 0.5;
-        buf[i].alpha = p.baseAlpha * (0.08 + 0.92 * depth);
-        buf[i].depth = rz2;
-      }
-
-      // Painter's algorithm — back to front so front dots occlude rear ones
-      buf.sort((a, b) => a.depth - b.depth);
-
-      for (let i = 0; i < buf.length; i++) {
-        const { sx, sy, sr, alpha } = buf[i];
+        // Crisp dot — no blur, no glow
         ctx.beginPath();
-        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
-        // Slightly warm white (not pure blue-white) to feel organic
-        ctx.fillStyle = `rgba(245,243,255,${alpha.toFixed(3)})`;
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${p.alpha.toFixed(3)})`;
         ctx.fill();
       }
 
       raf = requestAnimationFrame(draw);
     };
 
-    canvas.width  = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
     raf = requestAnimationFrame(draw);
 
     const ro = new ResizeObserver(() => {
-      canvas.width  = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+      const W = canvas.offsetWidth, H = canvas.offsetHeight;
+      canvas.width = W; canvas.height = H;
+      pts.forEach(p => { p.x = p.nx * W; p.y = p.ny * H; });
     });
     ro.observe(canvas);
 
-    return () => {
-      cancelAnimationFrame(raf);
-      ro.disconnect();
-    };
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
   }, []);
 
   return (
@@ -394,15 +361,14 @@ const NotchNav = () => {
   const raw = logoHover ? 1 : Math.min(1, scrollY / TRIGGER);
   const p   = ease(raw);
 
-  // Mac frame horizontal padding matches clamp(12px, 2vw, 32px) on the Hero wrapper
-  const hPad     = Math.min(32, Math.max(12, window.innerWidth * 0.02));
-  const macFrameW = window.innerWidth - hPad * 2;
+  // Expanded width matches the section containers: maxWidth 1240, padding clamp(24px,4vw,56px)
+  const sidePad    = Math.min(56, Math.max(24, window.innerWidth * 0.04));
+  const containerW = Math.min(1240, window.innerWidth - sidePad * 2);
   const notchTop   = Math.min(32, Math.max(16, window.innerWidth * 0.025));
-  const width      = lerp(140, macFrameW, p);
+  const width      = lerp(140, containerW, p);
   const height     = lerp(36, 58, p);
   const top        = lerp(notchTop, 12, p);
-  // border-radius: pill when closed → matches Mac frame (20px) when fully expanded
-  const br         = lerp(10, 20, p);
+  const br         = lerp(10, 12, p);
   const bgAlpha    = lerp(0, 0.82, p);
   const navAlpha   = Math.max(0, (raw - 0.5) / 0.5);
 
@@ -519,7 +485,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
         position: 'relative',
         borderRadius: 20,
         overflow: 'hidden',
-        background: 'linear-gradient(145deg, #1B1B21 0%, #17171C 60%, #131318 100%)',
+        background: 'linear-gradient(145deg, #131317 0%, #0f0f13 60%, #0b0b0f 100%)',
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), 0 0 80px rgba(0,0,0,0.5)',
         minHeight: '90vh',
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',

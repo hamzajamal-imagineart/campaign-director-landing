@@ -49,7 +49,7 @@ const EXAMPLES = [
     id: 'editorial',
     title: 'Editorial ecommerce clean',
     category: 'Fashion',
-    accent: '#A57BFE',  // purple highlight
+    accent: null,
     meta: [
       { label: 'Format',  value: 'Hero banner, Social set' },
       { label: 'Output',  value: 'Type treatment, Cut-down' },
@@ -90,7 +90,6 @@ const ExampleCard = ({ ex }) => {
   const [hover, setHover]   = useState(false);
   const [copied, setCopied] = useState(false);
   const onCopy = () => { window.copyText(ex.prompt); setCopied(true); setTimeout(() => setCopied(false), 1800); };
-  const accent = ex.accent || 'rgba(255,255,255,0.35)';
 
   return (
     <div
@@ -98,8 +97,8 @@ const ExampleCard = ({ ex }) => {
       onMouseLeave={() => setHover(false)}
       style={{
         borderRadius: 3, overflow: 'hidden',
-        background: '#0c0c0c',
-        border: `1px solid ${hover ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.06)'}`,
+        background: '#161616',
+        border: `1px solid ${hover ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.08)'}`,
         display: 'flex', flexDirection: 'column',
         transition: 'transform 360ms cubic-bezier(0.16,1,0.3,1), box-shadow 360ms, border-color 280ms',
         transform: hover ? 'translateY(-5px)' : 'none',
@@ -107,7 +106,7 @@ const ExampleCard = ({ ex }) => {
       }}
     >
       {/* ── Video ── */}
-      <div style={{ position: 'relative', overflow: 'hidden', flexShrink: 0, height: 220 }}>
+      <div style={{ position: 'relative', overflow: 'hidden', flexShrink: 0, height: 420 }}>
         <video
           src={ex.video} autoPlay muted loop playsInline
           style={{
@@ -124,7 +123,7 @@ const ExampleCard = ({ ex }) => {
       </div>
 
       {/* ── Info strip ── */}
-      <div style={{ padding: '17px 18px 18px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+      <div style={{ padding: '22px 24px 24px', display: 'flex', flexDirection: 'column', flex: 1 }}>
 
         {/* Title + ↗ button */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 9 }}>
@@ -147,18 +146,17 @@ const ExampleCard = ({ ex }) => {
             }}
           >
             {copied
-              ? <Icon name="check"        size={12} color="rgba(255,255,255,0.75)"/>
-              : <Icon name="arrowUpRight" size={12} color="rgba(255,255,255,0.45)"/>
+              ? <Icon name="check" size={12} color="rgba(255,255,255,0.75)"/>
+              : <Icon name="copy"  size={12} color="rgba(255,255,255,0.45)"/>
             }
           </button>
         </div>
 
-        {/* Category dot + label */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 13 }}>
-          <span style={{ width: 5, height: 5, borderRadius: 1, flexShrink: 0, background: accent }}/>
+        {/* Category label — no bullet, no colour */}
+        <div style={{ marginBottom: 13 }}>
           <span style={{
             fontSize: 9, fontWeight: 700, letterSpacing: '0.14em',
-            textTransform: 'uppercase', color: accent,
+            textTransform: 'uppercase', color: 'rgba(255,255,255,0.32)',
           }}>{ex.category}</span>
         </div>
 
@@ -177,7 +175,7 @@ const ExampleCard = ({ ex }) => {
           </p>
           <div style={{
             position: 'absolute', bottom: 0, left: 0, right: 0, height: '2.2em',
-            background: 'linear-gradient(to bottom, transparent, #0c0c0c)',
+            background: 'linear-gradient(to bottom, transparent, #161616)',
             pointerEvents: 'none',
           }}/>
         </div>
@@ -209,13 +207,17 @@ const ExampleCard = ({ ex }) => {
 };
 
 const Examples = ({ columns = 4 }) => (
-  <div id="examples" style={{ marginTop: 0 }}>
-    <SectionHead
-      eyebrow="What you can build"
-      title="Four briefs to start with."
-      sub="Plain creative briefs. Copy one, paste it after the starter prompt, swap the brand, and you have a working campaign request."
-    />
-    <div style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: 2 }}>
+  <div id="examples">
+    {/* Heading stays within page margins */}
+    <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(24px, 4vw, 56px)', boxSizing: 'border-box' }}>
+      <SectionHead
+        eyebrow="What you can build"
+        title="Four briefs to start with."
+        sub="Plain creative briefs. Copy one, paste it after the starter prompt, swap the brand, and you have a working campaign request."
+      />
+    </div>
+    {/* Grid — truly full viewport width, no wrapper, no gap */}
+    <div style={{ display: 'grid', gridTemplateColumns: `repeat(${columns}, 1fr)`, gap: 0 }}>
       {EXAMPLES.map(ex => <ExampleCard key={ex.id} ex={ex}/>)}
     </div>
   </div>

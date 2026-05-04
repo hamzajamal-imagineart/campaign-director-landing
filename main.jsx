@@ -230,8 +230,13 @@ const App = () => {
         <div style={cx}><div style={sec}><Reveal><HowItWorks/></Reveal></div></div>
       </LightSection>
 
-      {/* ⑤ What you can build / Templates marquee — dark + dots */}
-      <DarkSection style={{ paddingTop: 120, paddingBottom: 80 }}>
+      {/* ⑤ Prompt examples — dark, truly full-bleed */}
+      <DarkSection style={{ paddingTop: 120, paddingBottom: 120 }}>
+        <Reveal><Examples columns={4}/></Reveal>
+      </DarkSection>
+
+      {/* ⑥ Templates marquee — light */}
+      <LightSection style={{ paddingTop: 120, paddingBottom: 80 }}>
         <Reveal>
           <div style={cx}>
             <SectionHead
@@ -242,14 +247,9 @@ const App = () => {
           </div>
           <window.Templates headingHidden/>
         </Reveal>
-      </DarkSection>
-
-      {/* ⑥ Prompt examples — light */}
-      <LightSection>
-        <div style={cx}><div style={sec}><Reveal><Examples columns={tweaks.examplesColumns}/></Reveal></div></div>
       </LightSection>
 
-      {/* ⑦ Codex callout — dark + dots */}
+      {/* ⑦ Codex callout — dark */}
       <DarkSection>
         <div style={cx}><div style={sec}><Reveal><CodexCallout/></Reveal></div></div>
       </DarkSection>
