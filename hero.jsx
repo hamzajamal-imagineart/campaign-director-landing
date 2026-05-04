@@ -157,7 +157,7 @@ const HeroCTA = ({ href, onClick, children, primary = false }) => {
 /* ── Gradient bars background ───────────────────────────── */
 const GradientBars = ({
   numBars = 13,
-  gradientFrom = 'rgba(138, 63, 252, 0.55)',
+  gradientFrom = 'rgba(180, 180, 190, 0.18)',
   gradientTo = 'transparent',
   animationDuration = 2.5,
 }) => {
@@ -229,7 +229,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
         position: 'relative',
         borderRadius: 20,
         overflow: 'hidden',
-        background: 'linear-gradient(145deg, #0b0d14 0%, #080a10 60%, #06080d 100%)',
+        background: 'linear-gradient(145deg, #1a1c24 0%, #141618 60%, #111214 100%)',
         minHeight: '90vh',
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         isolation: 'isolate',
