@@ -190,6 +190,7 @@ const App = () => {
     document.documentElement.style.setProperty('--border-brand', triple);
   }, [tweaks.accentColor]);
 
+  const SectionHead = window.SectionHead;
   const cx  = { maxWidth: 1240, margin: '0 auto', padding: '0 clamp(24px, 4vw, 56px)', boxSizing: 'border-box' };
   const sec = { padding: '120px 0' };
   const secLg = { padding: '160px 0 140px' };
@@ -205,9 +206,19 @@ const App = () => {
         <div style={sec}><Reveal><HowItWorks/></Reveal></div>
       </div>
 
-      {/* Real Outputs: bento + marquee */}
-      <div style={{ padding: '120px 0 0' }}><Reveal><window.ShowcaseStrip/></Reveal></div>
-      <Reveal><window.ExploreWorkflowsMarquee headingHidden/></Reveal>
+      {/* Real Outputs: marquee */}
+      <div style={{ padding: '120px 0 0' }}>
+        <Reveal>
+          <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 clamp(24px, 4vw, 56px)', boxSizing: 'border-box' }}>
+            <SectionHead
+              eyebrow="Real outputs"
+              title="Every format. From one sentence."
+              sub="UGC reels, brand templates, cinematic shorts. Every frame from a single natural-English brief."
+            />
+          </div>
+          <window.ExploreWorkflowsMarquee headingHidden/>
+        </Reveal>
+      </div>
 
       <div style={cx}>
         <div style={sec}><Reveal><Examples columns={tweaks.examplesColumns}/></Reveal></div>
