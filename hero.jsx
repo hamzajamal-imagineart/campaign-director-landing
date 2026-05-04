@@ -274,22 +274,19 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
     /* Page-level wrapper: black bg, inset the frame */
     <div style={{ background: '#000', padding: `clamp(16px, 2.5vw, 32px) clamp(12px, 2vw, 32px)`, position: 'relative' }}>
 
-      {/* ── Logo pill — sits on the frame's top edge, outside the frame ── */}
+      {/* ── Logo icon — centered inside the top notch (38px deep) ── */}
       <div style={{
         position: 'absolute',
-        top: 'clamp(16px, 2.5vw, 32px)',
+        top: 'calc(clamp(16px, 2.5vw, 32px) + 19px)',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 112, height: 46,
-        background: '#000',
-        borderRadius: 999,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
         zIndex: 20,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <img
           src="assets/imagine-logo.svg"
-          width={18} height={18}
-          style={{ filter: 'brightness(0) invert(1)', opacity: 0.85, display: 'block' }}
+          width={22} height={22}
+          style={{ filter: 'brightness(0) invert(1)', opacity: 0.9, display: 'block' }}
           alt="ImagineArt"
         />
       </div>
