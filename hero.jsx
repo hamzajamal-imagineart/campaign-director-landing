@@ -277,7 +277,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
       {/* ── Logo icon — centered inside the top notch (38px deep) ── */}
       <div style={{
         position: 'absolute',
-        top: 'calc(clamp(16px, 2.5vw, 32px) + 19px)',
+        top: 'calc(clamp(16px, 2.5vw, 32px) + 12px)',
         left: '50%',
         transform: 'translate(-50%, -50%)',
         zIndex: 20,
@@ -285,7 +285,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
       }}>
         <img
           src="assets/logo-icon.svg"
-          width={22} height={22}
+          width={30} height={30}
           style={{ filter: 'brightness(0) invert(1)', opacity: 0.9, display: 'block' }}
           alt="ImagineArt"
         />
