@@ -60,8 +60,8 @@ const HeroStarterPrompt = () => {
       width: '100%',
       borderRadius: 14,
       overflow: 'hidden',
-      background: 'rgba(255,255,255,0.03)',
-      border: '1px solid rgba(255,255,255,0.08)',
+      background: '#0a0a0a',
+      border: '1px solid rgba(255,255,255,0.10)',
       animation: 'revealUp 900ms cubic-bezier(0.16,1,0.3,1) 700ms both',
     }}>
       <div style={{
@@ -281,8 +281,8 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           width: '100%', maxWidth: 1040,
           padding: '96px clamp(24px, 5vw, 100px) 80px',
           boxSizing: 'border-box',
-          display: 'flex', flexDirection: 'column', alignItems: 'center',
-          textAlign: 'center',
+          display: 'flex', flexDirection: 'column', alignItems: 'flex-start',
+          textAlign: 'left',
         }}>
 
           {/* Badge */}
@@ -356,7 +356,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           {/* CTAs */}
           <div style={{
             display: 'flex', gap: 12, alignItems: 'center',
-            justifyContent: 'center', marginBottom: 56,
+            justifyContent: 'flex-start', marginBottom: 56,
             animation: 'revealUp 900ms cubic-bezier(0.16,1,0.3,1) 380ms both',
           }}>
             <HeroCTA href="https://cal.com/imagine-art/campaign-director" primary>
@@ -376,7 +376,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           <div style={{
             marginTop: 28,
             display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap',
-            justifyContent: 'center',
+            justifyContent: 'flex-start',
             animation: 'revealUp 800ms cubic-bezier(0.16,1,0.3,1) 860ms both',
           }}>
             {[
