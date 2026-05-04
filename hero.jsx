@@ -306,20 +306,20 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
         isolation: 'isolate',
       }}>
 
-        {/* ── Top wave notch — tapers to y=0 at edges, no black in corners ── */}
+        {/* ── Top wave notch — tight center notch, flat on the sides ── */}
         <svg
           viewBox="0 0 1000 80" preserveAspectRatio="none"
           style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 80, zIndex: 10, pointerEvents: 'none', display: 'block' }}
         >
-          <path d="M 0 0 L 1000 0 C 900 0 820 64 760 64 C 710 64 668 44 638 30 C 618 16 594 0 500 0 C 406 0 382 16 362 30 C 332 44 290 64 240 64 C 180 64 100 0 0 0 Z" fill="#000"/>
+          <path d="M 0 0 L 330 0 C 370 0 400 10 428 26 C 450 40 466 58 484 68 C 490 72 494 74 500 74 C 506 74 510 72 516 68 C 534 58 550 40 572 26 C 600 10 630 0 670 0 L 1000 0 Z" fill="#000"/>
         </svg>
 
-        {/* ── Bottom wave notch — wider, tapers to y=80 at edges ── */}
+        {/* ── Bottom wave notch — tight center, flat on the sides ── */}
         <svg
           viewBox="0 0 1000 80" preserveAspectRatio="none"
           style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: 80, zIndex: 10, pointerEvents: 'none', display: 'block' }}
         >
-          <path d="M 0 80 L 1000 80 C 900 80 810 16 720 16 C 660 16 618 42 590 56 C 572 68 552 80 500 80 C 448 80 428 68 410 56 C 382 42 340 16 280 16 C 190 16 100 80 0 80 Z" fill="#000"/>
+          <path d="M 0 80 L 330 80 C 370 80 400 70 428 54 C 450 40 466 22 484 12 C 490 8 494 6 500 6 C 506 6 510 8 516 12 C 534 22 550 40 572 54 C 600 70 630 80 670 80 L 1000 80 Z" fill="#000"/>
         </svg>
 
         <GradientBars/>
