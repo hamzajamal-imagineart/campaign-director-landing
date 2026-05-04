@@ -262,27 +262,29 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
             }}>Campaign Director · Powered by Codex</span>
           </div>
 
-          {/* Headline */}
+          {/* Headline — display-sm from type scale: max 60px, weight 800 */}
           <div style={{ animation: 'revealUp 1000ms cubic-bezier(0.16,1,0.3,1) 120ms both' }}>
             <h1 style={{
               margin: '0 0 4px',
-              fontSize: 'clamp(44px, 6.5vw, 82px)',
-              lineHeight: 1.06,
+              fontSize: 'clamp(32px, 4.2vw, 60px)',
+              lineHeight: 1.08,
               fontWeight: 800,
-              letterSpacing: '-0.04em',
+              letterSpacing: '-0.02em',
               color: '#fff',
+              fontFamily: 'var(--font-sans)',
             }}>
               {headline}
             </h1>
           </div>
 
-          {/* Accent line */}
-          <div style={{ animation: 'revealUp 1000ms cubic-bezier(0.16,1,0.3,1) 200ms both', marginBottom: 28 }}>
+          {/* Accent line — same scale, gradient fill */}
+          <div style={{ animation: 'revealUp 1000ms cubic-bezier(0.16,1,0.3,1) 200ms both', marginBottom: 24 }}>
             <div style={{
-              fontSize: 'clamp(44px, 6.5vw, 82px)',
-              lineHeight: 1.06,
+              fontSize: 'clamp(32px, 4.2vw, 60px)',
+              lineHeight: 1.08,
               fontWeight: 800,
-              letterSpacing: '-0.04em',
+              letterSpacing: '-0.02em',
+              fontFamily: 'var(--font-sans)',
               background: 'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, #C4A8FF 50%, #9B6EFF 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
@@ -292,12 +294,13 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
             </div>
           </div>
 
-          {/* Sub */}
+          {/* Sub — body-lg from type scale */}
           <p style={{
             margin: '0 0 40px',
-            fontSize: 16.5, lineHeight: 1.65, fontWeight: 400,
+            fontSize: 16, lineHeight: 1.65, fontWeight: 400,
             color: 'rgba(255,255,255,0.45)',
             maxWidth: 480,
+            fontFamily: 'var(--font-sans)',
             animation: 'revealUp 900ms cubic-bezier(0.16,1,0.3,1) 300ms both',
           }}>
             Turn one sentence into a finished Imagine.Art campaign.
