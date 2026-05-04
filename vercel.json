@@ -1,0 +1,3 @@
+{
+  "rewrites": [{ "source": "/", "destination": "/Campaign%20Director.html" }]
+}
