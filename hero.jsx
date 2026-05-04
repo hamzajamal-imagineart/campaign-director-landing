@@ -110,10 +110,10 @@ const HeroStarterPrompt = () => {
         <br/><br/>
         to create{' '}
         <span key={ideaIdx} style={{
-          background: 'rgba(138,63,252,0.16)',
-          color: '#C4A8FF',
+          background: 'rgba(255,255,255,0.08)',
+          color: 'rgba(255,255,255,0.75)',
           padding: '2px 9px', borderRadius: 6,
-          border: '1px solid rgba(167,123,254,0.22)',
+          border: '1px solid rgba(255,255,255,0.12)',
           display: 'inline-block',
           animation: 'fadeIn 500ms ease-out',
         }}>
