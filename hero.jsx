@@ -175,33 +175,9 @@ const StarField = () => (
 /* ── Hero ───────────────────────────────────────────────── */
 const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the rest.' }) => {
   const { Icon } = window;
-  const NOTCH_TOP = 28; /* = section padding-top */
-
   return (
-    /* Page-level wrapper: black bg, creates space around the frame */
-    <div style={{ background: '#000', padding: `${NOTCH_TOP}px clamp(10px, 2vw, 28px) 0`, position: 'relative' }}>
-
-      {/* ── Top notch ── */}
-      <div style={{
-        position: 'absolute',
-        top: NOTCH_TOP,
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: 148, height: 44,
-        background: '#0e0e0e',
-        borderRadius: 999,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        zIndex: 20,
-        /* border + outer black ring that visually "cuts" into the frame border */
-        boxShadow: '0 0 0 1px rgba(255,255,255,0.13), 0 0 0 5px #000',
-      }}>
-        <img
-          src="assets/imagine-logo.svg"
-          width={20} height={20}
-          style={{ filter: 'brightness(0) invert(1)', opacity: 0.9, display: 'block' }}
-          alt="ImagineArt"
-        />
-      </div>
+    /* Page-level wrapper: black bg, inset the frame */
+    <div style={{ background: '#000', padding: `0 clamp(10px, 2vw, 28px)`, position: 'relative' }}>
 
       {/* ── Mac frame ── */}
       <div style={{
@@ -214,6 +190,27 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         isolation: 'isolate',
       }}>
+        {/* ── MacBook-style notch — cutout from top edge ── */}
+        <div style={{
+          position: 'absolute',
+          top: 0, left: '50%',
+          transform: 'translateX(-50%)',
+          width: 160, height: 36,
+          background: '#000',
+          borderRadius: '0 0 22px 22px',
+          border: '1px solid rgba(255,255,255,0.10)',
+          borderTop: 'none',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 10,
+        }}>
+          <img
+            src="assets/imagine-logo.svg"
+            width={20} height={20}
+            style={{ filter: 'brightness(0) invert(1)', opacity: 0.85, display: 'block' }}
+            alt="ImagineArt"
+          />
+        </div>
+
         <StarField/>
 
         {/* Right-side ambient glow */}
