@@ -370,7 +370,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
               margin: '0 0 4px',
               fontSize: 'clamp(32px, 4.2vw, 60px)',
               lineHeight: 1.08,
-              fontWeight: 600,
+              fontWeight: 400,
               letterSpacing: '-0.02em',
               color: '#fff',
               fontFamily: 'var(--font-sans)',
