@@ -319,7 +319,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           viewBox="0 0 1000 80" preserveAspectRatio="none"
           style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: 80, zIndex: 10, pointerEvents: 'none', display: 'block' }}
         >
-          <path d="M 0 80 L 260 80 C 310 80 360 72 400 56 C 432 42 456 22 478 10 C 486 6 492 4 500 4 C 508 4 514 6 522 10 C 544 22 568 42 600 56 C 640 72 690 80 740 80 L 1000 80 Z" fill="#000"/>
+          <path d="M 0 80 L 363 80 A 11 14 0 0 0 374 66 L 374 56 A 11 14 0 0 1 385 42 L 615 42 A 11 14 0 0 1 626 56 L 626 66 A 11 14 0 0 0 637 80 L 1000 80 Z" fill="#000"/>
         </svg>
 
         <GradientBars/>
