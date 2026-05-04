@@ -154,6 +154,56 @@ const HeroCTA = ({ href, onClick, children, primary = false }) => {
   );
 };
 
+/* ── Bottom ticker — scrolls inside the bottom notch ───── */
+const TICKER_ITEMS = [
+  { icon: 'terminal', text: 'Codex with Computer Use' },
+  { icon: 'github',   text: 'Vyro-ai/imagine-campaign-director' },
+  { icon: 'shield',   text: 'No credits spent on planning' },
+  { icon: 'zap',      text: 'Sub-agent swarms handle execution' },
+  { icon: 'layers',   text: 'Every format from one brief' },
+  { icon: 'check',    text: 'Plan → Generate → Review → Package' },
+  { icon: 'terminal', text: 'Codex with Computer Use' },
+  { icon: 'github',   text: 'Vyro-ai/imagine-campaign-director' },
+  { icon: 'shield',   text: 'No credits spent on planning' },
+  { icon: 'zap',      text: 'Sub-agent swarms handle execution' },
+  { icon: 'layers',   text: 'Every format from one brief' },
+  { icon: 'check',    text: 'Plan → Generate → Review → Package' },
+];
+
+const HeroTicker = () => {
+  const { Icon } = window;
+  return (
+    <div style={{
+      position: 'absolute', bottom: 0, left: 0, right: 0,
+      height: 60, zIndex: 9, overflow: 'hidden',
+      display: 'flex', alignItems: 'center',
+    }}>
+      <style>{`
+        @keyframes heroTickerScroll {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+      `}</style>
+      <div style={{
+        display: 'flex', gap: 40, alignItems: 'center',
+        width: 'max-content',
+        animation: 'heroTickerScroll 22s linear infinite',
+      }}>
+        {TICKER_ITEMS.map((item, i) => (
+          <span key={i} style={{
+            display: 'inline-flex', alignItems: 'center', gap: 7,
+            fontSize: 11.5, color: 'rgba(255,255,255,0.30)', fontWeight: 500,
+            whiteSpace: 'nowrap',
+          }}>
+            <Icon name={item.icon} size={12} color="rgba(255,255,255,0.28)"/>
+            {item.text}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 /* ── Gradient bars background ───────────────────────────── */
 const GradientBars = ({
   numBars = 13,
@@ -250,27 +300,26 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
         borderRadius: 20,
         overflow: 'hidden',
         background: 'linear-gradient(145deg, #1a1c24 0%, #141618 60%, #111214 100%)',
+        boxShadow: '0 0 0 1px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.10), 0 0 80px rgba(255,255,255,0.04)',
         minHeight: '90vh',
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         isolation: 'isolate',
       }}>
 
-        {/* ── Top wave notch — SVG bezier shoulders ── */}
+        {/* ── Top wave notch — tapers to y=0 at edges, no black in corners ── */}
         <svg
           viewBox="0 0 1000 80" preserveAspectRatio="none"
           style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 80, zIndex: 10, pointerEvents: 'none', display: 'block' }}
         >
-          {/* Black shape: full top, wave dips down on sides, notch peak at center */}
-          <path d="M 0 0 L 1000 0 L 1000 22 C 920 22 830 68 750 68 C 700 68 660 46 632 32 C 616 18 594 0 500 0 C 406 0 384 18 368 32 C 340 46 300 68 250 68 C 170 68 80 22 0 22 Z" fill="#000"/>
+          <path d="M 0 0 L 1000 0 C 900 0 820 64 760 64 C 710 64 668 44 638 30 C 618 16 594 0 500 0 C 406 0 382 16 362 30 C 332 44 290 64 240 64 C 180 64 100 0 0 0 Z" fill="#000"/>
         </svg>
 
-        {/* ── Bottom wave notch — wider, SVG bezier shoulders ── */}
+        {/* ── Bottom wave notch — wider, tapers to y=80 at edges ── */}
         <svg
           viewBox="0 0 1000 80" preserveAspectRatio="none"
           style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: 80, zIndex: 10, pointerEvents: 'none', display: 'block' }}
         >
-          {/* Flipped: black shape at bottom, wave peaks at center */}
-          <path d="M 0 80 L 1000 80 L 1000 58 C 900 58 800 18 700 18 C 640 18 600 44 570 56 C 552 66 536 80 500 80 C 464 80 448 66 430 56 C 400 44 360 18 300 18 C 200 18 100 58 0 58 Z" fill="#000"/>
+          <path d="M 0 80 L 1000 80 C 900 80 810 16 720 16 C 660 16 618 42 590 56 C 572 68 552 80 500 80 C 448 80 428 68 410 56 C 382 42 340 16 280 16 C 190 16 100 80 0 80 Z" fill="#000"/>
         </svg>
 
         <GradientBars/>
@@ -298,7 +347,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
         <div style={{
           position: 'relative', zIndex: 2,
           width: '100%', maxWidth: 1040,
-          padding: '96px clamp(24px, 5vw, 100px) 80px',
+          padding: '96px clamp(24px, 5vw, 100px) 96px',
           boxSizing: 'border-box',
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           textAlign: 'center',
@@ -391,34 +440,9 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
             <HeroStarterPrompt/>
           </div>
 
-          {/* Trust strip */}
-          <div style={{
-            marginTop: 28,
-            display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap',
-            justifyContent: 'center',
-            animation: 'revealUp 800ms cubic-bezier(0.16,1,0.3,1) 860ms both',
-          }}>
-            {[
-              { icon: 'terminal', text: 'Codex with Computer Use' },
-              { icon: 'github',   text: 'Vyro-ai/imagine-campaign-director' },
-              { icon: 'shield',   text: 'No credits spent on planning' },
-            ].map((item, i) => (
-              <React.Fragment key={i}>
-                {i > 0 && (
-                  <span style={{ width: 3, height: 3, borderRadius: 999, background: 'rgba(255,255,255,0.15)', flexShrink: 0 }}/>
-                )}
-                <span style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 5,
-                  fontSize: 11.5, color: 'rgba(255,255,255,0.28)', fontWeight: 500,
-                }}>
-                  <Icon name={item.icon} size={12} color="rgba(255,255,255,0.28)"/>
-                  {item.text}
-                </span>
-              </React.Fragment>
-            ))}
-          </div>
-
         </div>
+
+        <HeroTicker/>
 
       </div>
     </div>

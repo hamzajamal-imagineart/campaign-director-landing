@@ -37,7 +37,7 @@
         flex-direction: column;
         gap: 32px;
         flex-shrink: 0;
-        width: 160px;
+        width: 200px;
       }
 
       /* ── Link columns ── */
@@ -132,7 +132,7 @@
         border-top: 1px solid rgba(255,255,255,0.06);
         flex-wrap: wrap; gap: 12px;
       }
-      .sf-bar-l { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
+      .sf-bar-l { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
       .sf-copy { font-size: 12px; color: rgba(255,255,255,0.25); }
       .sf-cookies {
         font-size: 12px; color: rgba(255,255,255,0.25);
