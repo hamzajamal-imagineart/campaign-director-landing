@@ -205,8 +205,9 @@ const App = () => {
         <div style={sec}><Reveal><HowItWorks/></Reveal></div>
       </div>
 
-      {/* Real Outputs: marquee */}
-      <div style={{ padding: '120px 0 0' }}><Reveal><window.ExploreWorkflowsMarquee/></Reveal></div>
+      {/* Real Outputs: bento + marquee */}
+      <div style={{ padding: '120px 0 0' }}><Reveal><window.ShowcaseStrip/></Reveal></div>
+      <Reveal><window.ExploreWorkflowsMarquee headingHidden/></Reveal>
 
       <div style={cx}>
         <div style={sec}><Reveal><Examples columns={tweaks.examplesColumns}/></Reveal></div>

@@ -80,7 +80,7 @@ const WorkflowCard = ({ item, index }) => {
   );
 };
 
-const ExploreWorkflowsMarquee = () => {
+const ExploreWorkflowsMarquee = ({ headingHidden = false }) => {
   const trackRef = useRefEW(null);
   const [copies, setCopies] = useStateEW(4);
   const [paused, setPaused] = useStateEW(false);
@@ -105,23 +105,25 @@ const ExploreWorkflowsMarquee = () => {
   return (
     <div style={{ padding: '120px 0' }}>
       {/* Heading */}
-      <div style={{ textAlign: 'center', padding: '0 clamp(16px, 6vw, 120px)', marginBottom: 48 }}>
-        <h2 style={{
-          margin: '0 auto', maxWidth: 780,
-          fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 600,
-          letterSpacing: '-0.025em', lineHeight: 1.15,
-          color: '#fff',
-        }}>
-          Explore Our Workflows
-        </h2>
-        <p style={{
-          margin: '14px auto 0', maxWidth: 600,
-          fontSize: 16, lineHeight: 1.65,
-          color: 'rgba(255,255,255,0.55)',
-        }}>
-          From multi-layer compositing to matte manipulation, ImagineArt keeps up with your creativity with all the editing tools you frequently use and rely on.
-        </p>
-      </div>
+      {!headingHidden && (
+        <div style={{ textAlign: 'center', padding: '0 clamp(16px, 6vw, 120px)', marginBottom: 48 }}>
+          <h2 style={{
+            margin: '0 auto', maxWidth: 780,
+            fontSize: 'clamp(28px, 4vw, 48px)', fontWeight: 600,
+            letterSpacing: '-0.025em', lineHeight: 1.15,
+            color: '#fff',
+          }}>
+            Explore Our Workflows
+          </h2>
+          <p style={{
+            margin: '14px auto 0', maxWidth: 600,
+            fontSize: 16, lineHeight: 1.65,
+            color: 'rgba(255,255,255,0.55)',
+          }}>
+            From multi-layer compositing to matte manipulation, ImagineArt keeps up with your creativity with all the editing tools you frequently use and rely on.
+          </p>
+        </div>
+      )}
 
       {/* Marquee */}
       <div
