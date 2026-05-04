@@ -154,6 +154,51 @@ const HeroCTA = ({ href, onClick, children, primary = false }) => {
   );
 };
 
+/* ── Gradient bars background ───────────────────────────── */
+const GradientBars = ({
+  numBars = 13,
+  gradientFrom = 'rgba(138, 63, 252, 0.55)',
+  gradientTo = 'transparent',
+  animationDuration = 2.5,
+}) => {
+  const calcHeight = (i, total) => {
+    const pos = i / (total - 1);
+    const dist = Math.abs(pos - 0.5);
+    return 25 + 75 * Math.pow(dist * 2, 1.2);
+  };
+  return (
+    <>
+      <style>{`
+        @keyframes pulseBar {
+          0%   { transform: scaleY(var(--bar-scale)); }
+          100% { transform: scaleY(calc(var(--bar-scale) * 0.65)); }
+        }
+      `}</style>
+      <div aria-hidden style={{
+        position: 'absolute', inset: 0, zIndex: 0,
+        overflow: 'hidden', pointerEvents: 'none',
+      }}>
+        <div style={{ display: 'flex', height: '100%', width: '100%' }}>
+          {Array.from({ length: numBars }).map((_, i) => {
+            const h = calcHeight(i, numBars);
+            return (
+              <div key={i} style={{
+                flex: `1 0 calc(100% / ${numBars})`,
+                maxWidth: `calc(100% / ${numBars})`,
+                height: '100%',
+                background: `linear-gradient(to top, ${gradientFrom}, ${gradientTo})`,
+                transformOrigin: 'bottom',
+                animation: `pulseBar ${animationDuration}s ease-in-out ${i * 0.12}s infinite alternate`,
+                '--bar-scale': h / 100,
+              }}/>
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+};
+
 /* ── Starfield ──────────────────────────────────────────── */
 const StarField = () => (
   <div aria-hidden style={{
@@ -209,6 +254,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           />
         </div>
 
+        <GradientBars/>
         <StarField/>
 
         {/* Right-side ambient glow */}
