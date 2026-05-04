@@ -284,7 +284,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <img
-          src="assets/imagine-logo.svg"
+          src="assets/logo-icon.svg"
           width={22} height={22}
           style={{ filter: 'brightness(0) invert(1)', opacity: 0.9, display: 'block' }}
           alt="ImagineArt"
