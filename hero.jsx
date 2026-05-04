@@ -222,7 +222,27 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
   const { Icon } = window;
   return (
     /* Page-level wrapper: black bg, inset the frame */
-    <div style={{ background: '#000', padding: `clamp(16px, 2.5vw, 32px) clamp(12px, 2vw, 32px) 0`, position: 'relative' }}>
+    <div style={{ background: '#000', padding: `clamp(16px, 2.5vw, 32px) clamp(12px, 2vw, 32px)`, position: 'relative' }}>
+
+      {/* ── Logo pill — sits on the frame's top edge, outside the frame ── */}
+      <div style={{
+        position: 'absolute',
+        top: 'clamp(16px, 2.5vw, 32px)',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 112, height: 46,
+        background: '#000',
+        borderRadius: 999,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        zIndex: 20,
+      }}>
+        <img
+          src="assets/imagine-logo.svg"
+          width={18} height={18}
+          style={{ filter: 'brightness(0) invert(1)', opacity: 0.85, display: 'block' }}
+          alt="ImagineArt"
+        />
+      </div>
 
       {/* ── Mac frame ── */}
       <div style={{
@@ -234,25 +254,24 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
         display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         isolation: 'isolate',
       }}>
-        {/* ── MacBook-style notch — cutout from top edge ── */}
-        <div style={{
-          position: 'absolute',
-          top: 0, left: '50%',
-          transform: 'translateX(-50%)',
-          width: 160, height: 36,
-          background: '#000',
-          borderRadius: '0 0 22px 22px',
-          borderTop: 'none',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          zIndex: 10,
-        }}>
-          <img
-            src="assets/imagine-logo.svg"
-            width={20} height={20}
-            style={{ filter: 'brightness(0) invert(1)', opacity: 0.85, display: 'block' }}
-            alt="ImagineArt"
-          />
-        </div>
+
+        {/* ── Top wave notch — SVG bezier shoulders ── */}
+        <svg
+          viewBox="0 0 1000 80" preserveAspectRatio="none"
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 80, zIndex: 10, pointerEvents: 'none', display: 'block' }}
+        >
+          {/* Black shape: full top, wave dips down on sides, notch peak at center */}
+          <path d="M 0 0 L 1000 0 L 1000 22 C 920 22 830 68 750 68 C 700 68 660 46 632 32 C 616 18 594 0 500 0 C 406 0 384 18 368 32 C 340 46 300 68 250 68 C 170 68 80 22 0 22 Z" fill="#000"/>
+        </svg>
+
+        {/* ── Bottom wave notch — wider, SVG bezier shoulders ── */}
+        <svg
+          viewBox="0 0 1000 80" preserveAspectRatio="none"
+          style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: 80, zIndex: 10, pointerEvents: 'none', display: 'block' }}
+        >
+          {/* Flipped: black shape at bottom, wave peaks at center */}
+          <path d="M 0 80 L 1000 80 L 1000 58 C 900 58 800 18 700 18 C 640 18 600 44 570 56 C 552 66 536 80 500 80 C 464 80 448 66 430 56 C 400 44 360 18 300 18 C 200 18 100 58 0 58 Z" fill="#000"/>
+        </svg>
 
         <GradientBars/>
         <StarField/>
@@ -314,7 +333,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
               margin: '0 0 4px',
               fontSize: 'clamp(32px, 4.2vw, 60px)',
               lineHeight: 1.08,
-              fontWeight: 800,
+              fontWeight: 600,
               letterSpacing: '-0.02em',
               color: '#fff',
               fontFamily: 'var(--font-sans)',
@@ -328,7 +347,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
             <div style={{
               fontSize: 'clamp(32px, 4.2vw, 60px)',
               lineHeight: 1.08,
-              fontWeight: 800,
+              fontWeight: 600,
               letterSpacing: '-0.02em',
               fontFamily: 'var(--font-sans)',
               background: 'linear-gradient(135deg, rgba(255,255,255,0.75) 0%, #C4A8FF 50%, #9B6EFF 100%)',
