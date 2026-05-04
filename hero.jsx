@@ -311,7 +311,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           viewBox="0 0 1000 80" preserveAspectRatio="none"
           style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: 80, zIndex: 10, pointerEvents: 'none', display: 'block' }}
         >
-          <path d="M 0 0 L 330 0 C 370 0 400 10 428 26 C 450 40 466 58 484 68 C 490 72 494 74 500 74 C 506 74 510 72 516 68 C 534 58 550 40 572 26 C 600 10 630 0 670 0 L 1000 0 Z" fill="#000"/>
+          <path d="M 0 0 L 340 0 C 376 0 404 8 422 20 C 436 30 440 38 440 44 L 560 44 C 560 38 564 30 578 20 C 596 8 624 0 660 0 L 1000 0 Z" fill="#000"/>
         </svg>
 
         {/* ── Bottom wave notch — wider arch, flat on the sides ── */}
@@ -333,15 +333,6 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           pointerEvents: 'none', zIndex: 1,
         }}/>
 
-        {/* Center purple glow */}
-        <div aria-hidden style={{
-          position: 'absolute', top: '35%', left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 800, height: 450,
-          background: 'radial-gradient(ellipse, rgba(110,45,210,0.14) 0%, transparent 65%)',
-          pointerEvents: 'none', zIndex: 1,
-          filter: 'blur(36px)',
-        }}/>
 
         {/* ── Content ── */}
         <div style={{
@@ -436,7 +427,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           </div>
 
           {/* Prompt block */}
-          <div style={{ width: '100%', maxWidth: 620 }}>
+          <div style={{ width: '100%', maxWidth: 620, textAlign: 'left' }}>
             <HeroStarterPrompt/>
           </div>
 
