@@ -131,7 +131,10 @@ const HeroStarterPrompt = () => {
 const HeroCTA = ({ href, onClick, children, primary = false }) => {
   const [hover, setHover] = useState(false);
   const Tag = href ? 'a' : 'button';
-  const props = href ? { href, target: '_blank', rel: 'noreferrer' } : { onClick };
+  const isAnchor = href && href.startsWith('#');
+  const props = href
+    ? (isAnchor ? { href } : { href, target: '_blank', rel: 'noreferrer' })
+    : { onClick };
   return (
     <Tag
       {...props}
@@ -441,8 +444,7 @@ const NotchNav = () => {
             textDecoration: 'none', whiteSpace: 'nowrap',
           }}>{l.label}</a>
         ))}
-        <a href="https://cal.com/imagine-art/campaign-director"
-          target="_blank" rel="noreferrer"
+        <a href="#walkthrough"
           style={{
             marginLeft: 12, height: 34, padding: '0 20px', borderRadius: 999,
             background: '#fff', color: '#0a0a0a',
@@ -450,7 +452,7 @@ const NotchNav = () => {
             display: 'inline-flex', alignItems: 'center',
             textDecoration: 'none', whiteSpace: 'nowrap',
           }}>
-          Book a demo
+          Watch demo
         </a>
       </div>
     </div>
@@ -570,8 +572,8 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
             justifyContent: 'center', marginBottom: 28,
             animation: 'revealUp 900ms cubic-bezier(0.16,1,0.3,1) 380ms both',
           }}>
-            <HeroCTA href="https://cal.com/imagine-art/campaign-director" primary>
-              Book a demo
+            <HeroCTA href="#walkthrough" primary>
+              Watch demo
             </HeroCTA>
             <HeroCTA href="https://github.com/Vyro-ai/imagine-campaign-director">
               Get Started →

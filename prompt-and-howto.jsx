@@ -225,7 +225,7 @@ const VideoBlock = ({ light = false }) => {
   const fg2 = light ? 'rgba(0,0,0,0.5)' : T.fg2;
   const videoRef  = useRef(null);
   const sectionRef = useRef(null);
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState(true);
   const [prog, setProg]       = useState(0); // 0→1 scroll progress
 
   const toggle = () => {
@@ -275,9 +275,13 @@ const VideoBlock = ({ light = false }) => {
           ref={videoRef}
           src="assets/walkthrough.mp4"
           poster="assets/walkthrough-poster.jpg"
+          autoPlay
+          muted
           playsInline
           loop
-          preload="none"
+          preload="auto"
+          onPlay={() => setPlaying(true)}
+          onPause={() => setPlaying(false)}
           onClick={toggle}
           style={{ width: '100%', height: '100%', objectFit: 'cover', cursor: 'pointer' }}
         />

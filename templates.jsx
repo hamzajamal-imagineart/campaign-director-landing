@@ -87,16 +87,6 @@ const TemplateCard = ({ tpl }) => {
           opacity: hover ? 1 : 0.75,
           transition: 'opacity 200ms',
         }}>{tpl.label}</span>
-
-        {hover && (
-          <span style={{
-            fontSize: 10.5, fontWeight: 500,
-            color: 'rgba(255,255,255,0.6)',
-            letterSpacing: '0.04em',
-            textTransform: 'uppercase',
-            animation: 'fadeIn 200ms ease',
-          }}>Use →</span>
-        )}
       </div>
     </div>
   );

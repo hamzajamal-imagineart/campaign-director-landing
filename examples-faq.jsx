@@ -359,8 +359,7 @@ const FinalCTA = () => (
       {/* Actions */}
       <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
         <a
-          href="https://cal.com/imagine-art/campaign-director"
-          target="_blank" rel="noreferrer"
+          href="#walkthrough"
           style={{
             height: 44, padding: '0 24px', borderRadius: 999,
             background: '#fff', color: '#0a0a0a',
@@ -368,7 +367,7 @@ const FinalCTA = () => (
             display: 'inline-flex', alignItems: 'center', gap: 8,
             textDecoration: 'none',
           }}>
-          Book a demo
+          Watch demo
         </a>
         <a
           href="https://github.com/Vyro-ai/imagine-campaign-director"
