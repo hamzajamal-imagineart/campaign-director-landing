@@ -1,0 +1,21 @@
+{
+  "name": "campaign-director-landing",
+  "version": "0.2.0",
+  "private": true,
+  "description": "ImagineArt Campaign Director marketing landing page (Next.js).",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "15.5.15",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "eslint": "9.39.4",
+    "eslint-config-next": "15.5.15"
+  }
+}

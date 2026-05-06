@@ -6,8 +6,8 @@
 
 @font-face {
   font-family: 'Google Sans Flex';
-  src: url('./fonts/google-sans-flex.ttf') format('truetype-variations'),
-       url('./fonts/google-sans-flex.ttf') format('truetype');
+  src: url('/fonts/google-sans-flex.ttf') format('truetype-variations'),
+       url('/fonts/google-sans-flex.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -15,7 +15,7 @@
 
 @font-face {
   font-family: 'Lemon Milk';
-  src: url('./fonts/lemon-milk-medium.otf') format('opentype');
+  src: url('/fonts/lemon-milk-medium.otf') format('opentype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -250,3 +250,182 @@ small, .caption { font-size: var(--text-body-xs); line-height: var(--lh-body-xs)
 /* Hero gradient — from ImagineArt 1.5 landing page */
 .gradient-pink { background: linear-gradient(133.98deg, #FFADE8 35.17%, #FF85DD 71.54%); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .gradient-brand { background: linear-gradient(135deg, rgb(var(--primary-60)), rgb(var(--primary-40))); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* =============================================================
+   Page-level resets, palette overrides, animations
+   (originally inline in Campaign Director.html <style>)
+   ============================================================= */
+
+html, body { margin: 0; padding: 0; min-height: 100%; background: rgb(var(--background)); }
+*::selection { background: rgba(138,63,252,0.18); }
+
+/* Force Google Sans Flex everywhere */
+html, body, button, input, textarea, select, pre, code, kbd, samp {
+  font-family: 'Google Sans Flex', 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+pre, code, kbd, samp, .mono {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+/* ================ ImagineArt site palette overrides ================ */
+:root, .light {
+  --btn-primary-bg: 23 23 23;
+  --btn-primary-bg-hover: 0 0 0;
+  --btn-primary-fg: 255 255 255;
+  --hairline: 0 0 0 / 0.06;
+  --hairline-strong: 0 0 0 / 0.10;
+}
+
+/* Dark mode: white primary CTA on dark surfaces, lifted hairlines */
+.dark {
+  --btn-primary-bg: 255 255 255;
+  --btn-primary-bg-hover: 224 224 224;
+  --btn-primary-fg: 23 23 23;
+  --hairline: 255 255 255 / 0.08;
+  --hairline-strong: 255 255 255 / 0.14;
+}
+
+/* Any anchor/scroll target clears the 56px sticky TopBar */
+[id] { scroll-margin-top: 72px; }
+
+.dot-grid {
+  background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Scrollbar polish */
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb { background: rgb(var(--neutral-30)); border-radius: 999px; border: 2px solid rgb(var(--surface-elevated)); }
+*::-webkit-scrollbar-track { background: transparent; }
+
+@keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(66,190,101,0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(66,190,101,0); }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { from { opacity: 0; transform: scale(0.96) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+/* Campaign Director — motion */
+@keyframes kenBurns {
+  0%   { transform: scale(1)    translate(0, 0); }
+  100% { transform: scale(1.12) translate(-2%, -2%); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(138,63,252,0); }
+  50%      { box-shadow: 0 0 60px 8px rgba(138,63,252,0.35); }
+}
+@keyframes dotPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(167,123,254,0.6); }
+  50%      { box-shadow: 0 0 0 6px rgba(167,123,254,0); }
+}
+@keyframes marqueeLeft {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes marqueeRight {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+@keyframes typeBlink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+@keyframes risingDots {
+  0%, 100% { transform: translateY(0);   opacity: 0.4; }
+  50%      { transform: translateY(-4px); opacity: 1; }
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+@keyframes tileFade {
+  0%, 45%   { opacity: 1; }
+  55%, 100% { opacity: 0; }
+}
+@keyframes tileFadeAlt {
+  0%, 45%   { opacity: 0; }
+  55%, 100% { opacity: 1; }
+}
+@keyframes nodeIn {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes edgeFade {
+  0%   { opacity: 0; }
+  100% { opacity: 0.85; }
+}
+
+/* Glamour-pass keyframes */
+@keyframes scanLine {
+  0%   { top: -2px;   opacity: 0; }
+  8%   { opacity: 0.7; }
+  100% { top: 100%;  opacity: 0; }
+}
+@keyframes auroraDrift {
+  0%, 100% { background-position:   0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+@keyframes metallicSheen {
+  0%, 100% { background-position:   0% 50%; }
+  50%      { background-position: 200% 50%; }
+}
+@keyframes particleFloat {
+  0%   { transform: translateY(0)     translateX(0);  opacity: 0; }
+  10%  { opacity: 0.7; }
+  90%  { opacity: 0.7; }
+  100% { transform: translateY(-180px) translateX(20px); opacity: 0; }
+}
+@keyframes rotateRing {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@keyframes shimmerSweep {
+  0%   { transform: translateX(-120%) skewX(-20deg); }
+  100% { transform: translateX(220%)  skewX(-20deg); }
+}
+@keyframes borderDrift {
+  0%, 100% { background-position:   0% 50%; }
+  50%      { background-position: 200% 50%; }
+}
+@keyframes revealUp {
+  0%   { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes ambientFloat {
+  0%, 100% { transform: translateY(0) translateX(0); }
+  50%      { transform: translateY(-6px) translateX(3px); }
+}
+
+/* Live canvas build — clip-path reveal + traveling scan line */
+@keyframes liveBuild {
+  0%   { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0 0 0); }
+}
+@keyframes liveScan {
+  0%   { left: 0%;   opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+@keyframes statusBlink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.35; }
+}
+
+html { scroll-behavior: smooth; }
+
+button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible {
+  outline: 2px solid rgb(var(--neutral-100));
+  outline-offset: 2px;
+}
+textarea:focus { border-color: rgb(var(--neutral-100)) !important; }
+
+button { -webkit-tap-highlight-color: transparent; }
+button:active { filter: brightness(0.96); }
+button::-moz-focus-inner { border: 0; padding: 0; }

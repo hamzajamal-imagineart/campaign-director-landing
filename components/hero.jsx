@@ -1,31 +1,20 @@
-/* global React */
-const { useState, useEffect } = React;
+"use client";
 
-/* =========================================================
-   Hero — Mac frame + starfield aesthetic
-========================================================= */
-
-const TILE_IMAGES = [
-  'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=420&q=80',
-  'https://images.unsplash.com/photo-1493612276216-ee3925520721?w=420&q=80',
-  'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=420&q=80',
-  'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=420&q=80',
-  'https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?w=420&q=80',
-];
-window.TILE_IMAGES = TILE_IMAGES;
-window.HeroTileWall = () => null;
+import React, { useState, useEffect, useRef } from 'react';
+import { T, Icon } from '@/components/primitives';
+import { copyText } from '@/components/copy-text';
 
 /* ── Scattered particle field — generated once at module load ── */
 const SCATTER_PTS = (() => {
   const rng = (() => { let s = 987654321; return () => { s = (s * 1664525 + 1013904223) & 0xffffffff; return (s >>> 0) / 0xffffffff; }; })();
   return Array.from({ length: 780 }, () => ({
-    nx:           rng(),                          // normalised x  0..1
-    ny:           rng(),                          // normalised y  0..1
+    nx:           rng(),
+    ny:           rng(),
     size:         0.3 + rng() * 1.15,
     alpha:        0.06 + rng() * 0.42,
     wanderAngle:  rng() * Math.PI * 2,
-    wanderSpeed:  0.06 + rng() * 0.12,           // px/frame
-    wanderTurn:   (rng() - 0.5) * 0.022,         // how fast direction rotates
+    wanderSpeed:  0.06 + rng() * 0.12,
+    wanderTurn:   (rng() - 0.5) * 0.022,
   }));
 })();
 
@@ -43,7 +32,6 @@ to create <your idea here>`;
 
 /* ── Starter prompt ─────────────────────────────────────── */
 const HeroStarterPrompt = () => {
-  const { Icon } = window;
   const [ideaIdx, setIdeaIdx] = useState(0);
   const [copied, setCopied] = useState(false);
 
@@ -53,7 +41,7 @@ const HeroStarterPrompt = () => {
   }, [ideaIdx]);
 
   const onCopy = () => {
-    (window.copyText || ((t) => navigator.clipboard?.writeText(t)))(STARTER_PROMPT_TEXT);
+    copyText(STARTER_PROMPT_TEXT);
     setCopied(true);
     setTimeout(() => setCopied(false), 1800);
   };
@@ -178,7 +166,6 @@ const HeroNotchPoints = () => (
     display: 'flex', alignItems: 'center',
     pointerEvents: 'none',
   }}>
-    {/* Left side */}
     <div style={{
       flex: 1, display: 'flex', alignItems: 'center',
       justifyContent: 'flex-end', paddingRight: '2%',
@@ -194,9 +181,7 @@ const HeroNotchPoints = () => (
         </React.Fragment>
       ))}
     </div>
-    {/* Arch opening spacer — 27.4% matches x=363→637 in the 1000-unit viewBox */}
     <div style={{ flex: '0 0 27.4%' }}/>
-    {/* Right side */}
     <div style={{
       flex: 1, display: 'flex', alignItems: 'center',
       justifyContent: 'flex-start', paddingLeft: '2%',
@@ -267,48 +252,57 @@ const StarField = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx    = canvas.getContext('2d');
+    const dpr    = Math.min(window.devicePixelRatio || 1, 2);
     let raf;
+    let prev = 0;
 
-    // Initialise mutable x/y from normalised positions
     let pts = [];
-    const init = () => {
-      const W = canvas.width  = canvas.offsetWidth;
-      const H = canvas.height = canvas.offsetHeight;
-      pts = SCATTER_PTS.map(p => ({
-        ...p,
-        x: p.nx * W,
-        y: p.ny * H,
-      }));
-    };
-    init();
-
-    const draw = () => {
+    const resize = () => {
       const W = canvas.offsetWidth;
       const H = canvas.offsetHeight;
-      if (canvas.width !== W || canvas.height !== H) {
-        canvas.width = W; canvas.height = H;
-        pts.forEach(p => { p.x = p.nx * W; p.y = p.ny * H; });
+      canvas.width  = Math.round(W * dpr);
+      canvas.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (pts.length === 0) {
+        pts = SCATTER_PTS.map(p => ({
+          ...p,
+          x: p.nx * W,
+          y: p.ny * H,
+          fill: `rgba(255,255,255,${p.alpha.toFixed(3)})`,
+        }));
+      } else {
+        for (let i = 0; i < pts.length; i++) {
+          pts[i].x = pts[i].nx * W;
+          pts[i].y = pts[i].ny * H;
+        }
       }
+    };
+    resize();
+
+    const draw = (t) => {
+      const W = canvas.offsetWidth;
+      const H = canvas.offsetHeight;
+      // dt normalised so 1.0 == one 60fps frame; clamp spikes (tab-switch etc.)
+      const dt = prev ? Math.min(3, (t - prev) / 16.6667) : 1;
+      prev = t;
+
       ctx.clearRect(0, 0, W, H);
 
       for (let i = 0; i < pts.length; i++) {
         const p = pts[i];
 
-        // Gently rotate wander direction each frame
-        p.wanderAngle += p.wanderTurn + (Math.random() - 0.5) * 0.006;
-        p.x += Math.cos(p.wanderAngle) * p.wanderSpeed;
-        p.y += Math.sin(p.wanderAngle) * p.wanderSpeed * 0.55; // flatten vertically
+        p.wanderAngle += (p.wanderTurn + (Math.random() - 0.5) * 0.006) * dt;
+        p.x += Math.cos(p.wanderAngle) * p.wanderSpeed * dt;
+        p.y += Math.sin(p.wanderAngle) * p.wanderSpeed * 0.55 * dt;
 
-        // Seamless wrap
         if (p.x < -2)    p.x += W + 4;
         if (p.x > W + 2) p.x -= W + 4;
         if (p.y < -2)    p.y += H + 4;
         if (p.y > H + 2) p.y -= H + 4;
 
-        // Crisp dot — no blur, no glow
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${p.alpha.toFixed(3)})`;
+        ctx.fillStyle = p.fill;
         ctx.fill();
       }
 
@@ -317,11 +311,7 @@ const StarField = () => {
 
     raf = requestAnimationFrame(draw);
 
-    const ro = new ResizeObserver(() => {
-      const W = canvas.offsetWidth, H = canvas.offsetHeight;
-      canvas.width = W; canvas.height = H;
-      pts.forEach(p => { p.x = p.nx * W; p.y = p.ny * H; });
-    });
+    const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
     return () => { cancelAnimationFrame(raf); ro.disconnect(); };
@@ -351,13 +341,22 @@ const RIGHT_NAV = [
 ];
 
 const NotchNav = () => {
-  const [scrollY, setScrollY]     = useState(0);
+  // Initial windowW seeds at the locked-desktop viewport width so the SSR
+  // render produces sensible markup that matches the first client render.
+  const [windowW, setWindowW] = useState(1280);
+  const [scrollY, setScrollY] = useState(0);
   const [logoHover, setLogoHover] = useState(false);
 
   useEffect(() => {
-    const fn = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', fn, { passive: true });
-    return () => window.removeEventListener('scroll', fn);
+    const onScroll = () => setScrollY(window.scrollY);
+    const onResize = () => setWindowW(window.innerWidth);
+    onResize();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
+    };
   }, []);
 
   const TRIGGER = 120;
@@ -365,9 +364,9 @@ const NotchNav = () => {
   const p   = ease(raw);
 
   // Expanded width matches the section containers: maxWidth 1240, padding clamp(24px,4vw,56px)
-  const sidePad    = Math.min(56, Math.max(24, window.innerWidth * 0.04));
-  const containerW = Math.min(1240, window.innerWidth - sidePad * 2);
-  const notchTop   = Math.min(32, Math.max(16, window.innerWidth * 0.025));
+  const sidePad    = Math.min(56, Math.max(24, windowW * 0.04));
+  const containerW = Math.min(1240, windowW - sidePad * 2);
+  const notchTop   = Math.min(32, Math.max(16, windowW * 0.025));
   const width      = lerp(140, containerW, p);
   const height     = lerp(36, 58, p);
   const top        = lerp(notchTop, 12, p);
@@ -424,7 +423,7 @@ const NotchNav = () => {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           width: 44, height: 44, cursor: 'pointer',
         }}>
-        <img src="assets/logo-icon.svg" width={28} height={28}
+        <img src="/assets/logo-icon.svg" width={28} height={28}
           style={{ filter: 'brightness(0) invert(1)', opacity: 0.9, display: 'block' }}
           alt="ImagineArt"/>
       </div>
@@ -460,8 +459,7 @@ const NotchNav = () => {
 };
 
 /* ── Hero ───────────────────────────────────────────────── */
-const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the rest.' }) => {
-  const { Icon } = window;
+export const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the rest.' }) => {
   return (
     <div style={{ background: '#000', padding: `clamp(16px, 2.5vw, 32px) clamp(12px, 2vw, 32px)`, position: 'relative' }}>
 
@@ -477,7 +475,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         pointerEvents: 'none',
       }}>
-        <img src="assets/logo-icon.svg" width={30} height={30}
+        <img src="/assets/logo-icon.svg" width={30} height={30}
           style={{ filter: 'brightness(0) invert(1)', opacity: 0.9, display: 'block' }}
           alt="ImagineArt"/>
       </div>
@@ -521,7 +519,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
           textAlign: 'center',
         }}>
 
-          {/* Headline — display-sm from type scale: max 60px, weight 800 */}
+          {/* Headline */}
           <div style={{ animation: 'revealUp 1000ms cubic-bezier(0.16,1,0.3,1) 120ms both' }}>
             <h1 style={{
               margin: '0 0 4px',
@@ -536,7 +534,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
             </h1>
           </div>
 
-          {/* Accent line — same scale, gradient fill */}
+          {/* Accent line */}
           <div style={{ animation: 'revealUp 1000ms cubic-bezier(0.16,1,0.3,1) 200ms both', marginBottom: 24 }}>
             <div style={{
               fontSize: 'clamp(32px, 4.2vw, 60px)',
@@ -553,7 +551,7 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
             </div>
           </div>
 
-          {/* Sub — body-lg from type scale */}
+          {/* Sub */}
           <p style={{
             margin: '0 0 24px',
             fontSize: 16, lineHeight: 1.65, fontWeight: 400,
@@ -595,48 +593,41 @@ const Hero = ({ headline = 'Direct your campaign.', accent = 'Codex does the res
 };
 
 /* ── CodexCallout ───────────────────────────────────────── */
-const CodexCallout = () => {
-  const { T, Icon } = window;
-  return (
+export const CodexCallout = () => (
+  <div style={{
+    marginTop: 18,
+    display: 'flex', alignItems: 'flex-start', gap: 14,
+    padding: '16px 20px', borderRadius: 14,
+    background: T.elev,
+    border: `1px solid ${T.hair}`,
+  }}>
     <div style={{
-      marginTop: 18,
-      display: 'flex', alignItems: 'flex-start', gap: 14,
-      padding: '16px 20px', borderRadius: 14,
-      background: T.elev,
-      border: `1px solid ${T.hair}`,
+      width: 32, height: 32, borderRadius: 10,
+      background: T.surfS, color: T.fg,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      flexShrink: 0,
     }}>
-      <div style={{
-        width: 32, height: 32, borderRadius: 10,
-        background: T.surfS, color: T.fg,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        flexShrink: 0,
-      }}>
-        <Icon name="alert" size={16}/>
-      </div>
-      <div style={{ flex: 1 }}>
-        <div style={{ fontSize: 13.5, fontWeight: 600, marginBottom: 2 }}>
-          Currently Codex-only. That's intentional.
-        </div>
-        <div style={{ fontSize: 12.5, color: T.fg2, lineHeight: 1.55 }}>
-          Building real workflow canvases needs reliable browser, clipboard, and download control.
-          Codex with Computer Use handles that today. You'll need a Codex workspace with Computer
-          Use enabled, Google Chrome open, and an Imagine.Art session signed in.
-        </div>
-      </div>
-      <a href="https://developers.openai.com/codex/app/computer-use" target="_blank" rel="noreferrer" style={{
-        flexShrink: 0, height: 30, padding: '0 14px', borderRadius: 999,
-        background: T.btnDark, color: T.btnDarkFg, border: 0,
-        cursor: 'pointer', fontSize: 12, fontWeight: 500,
-        display: 'inline-flex', alignItems: 'center', gap: 6,
-        textDecoration: 'none',
-      }}>
-        Enable Computer Use
-        <Icon name="arrowUpRight" size={13} color={T.btnDarkFg}/>
-      </a>
+      <Icon name="alert" size={16}/>
     </div>
-  );
-};
-
-window.Hero = Hero;
-window.CodexCallout = CodexCallout;
-window.HeroTileWall = () => null;
+    <div style={{ flex: 1 }}>
+      <div style={{ fontSize: 13.5, fontWeight: 600, marginBottom: 2 }}>
+        Currently Codex-only. That's intentional.
+      </div>
+      <div style={{ fontSize: 12.5, color: T.fg2, lineHeight: 1.55 }}>
+        Building real workflow canvases needs reliable browser, clipboard, and download control.
+        Codex with Computer Use handles that today. You'll need a Codex workspace with Computer
+        Use enabled, Google Chrome open, and an Imagine.Art session signed in.
+      </div>
+    </div>
+    <a href="https://developers.openai.com/codex/app/computer-use" target="_blank" rel="noreferrer" style={{
+      flexShrink: 0, height: 30, padding: '0 14px', borderRadius: 999,
+      background: T.btnDark, color: T.btnDarkFg, border: 0,
+      cursor: 'pointer', fontSize: 12, fontWeight: 500,
+      display: 'inline-flex', alignItems: 'center', gap: 6,
+      textDecoration: 'none',
+    }}>
+      Enable Computer Use
+      <Icon name="arrowUpRight" size={13} color={T.btnDarkFg}/>
+    </a>
+  </div>
+);

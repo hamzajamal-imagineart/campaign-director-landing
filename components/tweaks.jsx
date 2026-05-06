@@ -1,7 +1,21 @@
-/* global React, ReactDOM */
-/* Tweak controls for Campaign Director — exposed as window.CampaignTweaks */
+"use client";
 
-const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+// DO NOT FORMAT, DO NOT REORDER KEYS — host edits the EDITMODE block
+// below on disk via a regex match on the /*EDITMODE-BEGIN*/.../*EDITMODE-END*/
+// markers. Any autoformatter changes inside that block break host persistence.
+
+import {
+  TweaksPanel,
+  TweakSection,
+  TweakText,
+  TweakColor,
+  TweakToggle,
+  TweakRadio,
+} from '@/components/tweaks-panel';
+
+// prettier-ignore
+/* eslint-disable */
+export const CAMPAIGN_TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "headline": "Direct your campaign.",
   "headlineAccent": "Codex does the rest.",
   "accentColor": "#8A3FFC",
@@ -10,47 +24,46 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "showFAQ": true,
   "examplesColumns": 4
 }/*EDITMODE-END*/;
+/* eslint-enable */
 
-window.CAMPAIGN_TWEAK_DEFAULTS = TWEAK_DEFAULTS;
-
-const CampaignTweaks = ({ tweaks, setTweak }) => (
-  <window.TweaksPanel>
-    <window.TweakSection label="Hero copy"/>
-    <window.TweakText
+export const CampaignTweaks = ({ tweaks, setTweak }) => (
+  <TweaksPanel>
+    <TweakSection label="Hero copy"/>
+    <TweakText
       label="Headline"
       value={tweaks.headline}
       onChange={(v) => setTweak('headline', v)}
     />
-    <window.TweakText
+    <TweakText
       label="Accent line"
       value={tweaks.headlineAccent}
       onChange={(v) => setTweak('headlineAccent', v)}
     />
 
-    <window.TweakSection label="Theme"/>
-    <window.TweakColor
+    <TweakSection label="Theme"/>
+    <TweakColor
       label="Brand accent"
       value={tweaks.accentColor}
       onChange={(v) => setTweak('accentColor', v)}
     />
-    <window.TweakToggle
+    <TweakToggle
       label="Animated node graph"
       value={tweaks.animateGraph}
       onChange={(v) => setTweak('animateGraph', v)}
     />
 
-    <window.TweakSection label="Sections"/>
-    <window.TweakToggle
+    <TweakSection label="Sections"/>
+    <TweakToggle
       label="Show walkthrough video"
       value={tweaks.showVideo}
       onChange={(v) => setTweak('showVideo', v)}
     />
-    <window.TweakToggle
+    <TweakToggle
       label="Show FAQ"
       value={tweaks.showFAQ}
       onChange={(v) => setTweak('showFAQ', v)}
     />
-    <window.TweakRadio
+    <TweakRadio
       label="Examples grid"
       value={String(tweaks.examplesColumns)}
       options={[
@@ -60,7 +73,7 @@ const CampaignTweaks = ({ tweaks, setTweak }) => (
       ]}
       onChange={(v) => setTweak('examplesColumns', Number(v))}
     />
-  </window.TweaksPanel>
+  </TweaksPanel>
 );
 
-window.CampaignTweaks = CampaignTweaks;
+export default CampaignTweaks;

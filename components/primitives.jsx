@@ -1,10 +1,11 @@
-/* global React, ReactDOM */
-const { useState, useEffect, useRef, useMemo, useCallback } = React;
+"use client";
+
+import { useState, useEffect, useRef } from 'react';
 
 /* =========================================================
    Tokens & primitives
 ========================================================= */
-const T = {
+export const T = {
   bg: 'rgb(var(--background))',
   surfP: 'rgb(var(--surface-primary))',
   surfS: 'rgb(var(--surface-secondary))',
@@ -32,19 +33,7 @@ const T = {
   hairS: 'rgb(var(--hairline-strong))',
 };
 
-const Icon = ({ name, size = 18, sw = 1.75, color = 'currentColor', style, className }) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={size} height={size} viewBox="0 0 24 24"
-    fill="none" stroke={color} strokeWidth={sw}
-    strokeLinecap="round" strokeLinejoin="round"
-    vectorEffect="non-scaling-stroke"
-    style={{ flexShrink: 0, ...style }} className={className}
-    dangerouslySetInnerHTML={{ __html: ICONS[name] || '' }}
-  />
-);
-
-const ICONS = {
+export const ICONS = {
   search: '<circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/>',
   bell: '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
   zap: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
@@ -100,181 +89,23 @@ const ICONS = {
   pause: '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>',
 };
 
-/* =========================================================
-   Sidebar (matches the screenshot)
-========================================================= */
-const SidebarItem = ({ icon, label, active, onClick, indent, badge, trailing }) => (
-  <button onClick={onClick} style={{
-    display: 'flex', alignItems: 'center', gap: 9,
-    height: 36, padding: indent ? '0 10px 0 14px' : '0 10px',
-    borderRadius: 10,
-    background: active ? T.surfS : 'transparent',
-    color: T.fg,
-    border: 0, cursor: 'pointer', textAlign: 'left',
-    fontSize: 13.5, fontWeight: 500, letterSpacing: '0.01em',
-    width: '100%',
-  }}>
-    <Icon name={icon} size={16} />
-    <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{label}</span>
-    {badge && (
-      <span style={{
-        marginLeft: 'auto', flexShrink: 0,
-        fontSize: 8, fontWeight: 700, letterSpacing: '0.04em',
-        padding: '1px 4px', borderRadius: 3,
-        background: 'rgb(var(--primary-50))', color: '#fff',
-      }}>{badge}</span>
-    )}
-    {trailing && (
-      <span style={{ marginLeft: 'auto', display: 'inline-flex', color: T.fg2 }}>
-        <Icon name={trailing} size={13}/>
-      </span>
-    )}
-  </button>
+export const Icon = ({ name, size = 18, sw = 1.75, color = 'currentColor', style, className }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={size} height={size} viewBox="0 0 24 24"
+    fill="none" stroke={color} strokeWidth={sw}
+    strokeLinecap="round" strokeLinejoin="round"
+    vectorEffect="non-scaling-stroke"
+    style={{ flexShrink: 0, ...style }} className={className}
+    dangerouslySetInnerHTML={{ __html: ICONS[name] || '' }}
+  />
 );
-
-const SidebarSection = ({ title, children }) => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: 2, marginTop: 14 }}>
-    <div style={{
-      fontSize: 12, fontWeight: 500, color: T.fg3, padding: '0 12px 6px',
-    }}>{title}</div>
-    {children}
-  </div>
-);
-
-const Sidebar = ({ active, onNav }) => (
-  <aside style={{
-    width: 232, flexShrink: 0, alignSelf: 'flex-start',
-    background: T.elev, borderRight: `1px solid ${T.border}`,
-    padding: '14px 10px', display: 'flex', flexDirection: 'column',
-    height: '100vh', position: 'sticky', top: 0, overflow: 'auto',
-  }}>
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 8px 12px' }}>
-      <img src="assets/imagine-logo.svg" width="26" height="26" alt="ImagineArt" />
-      <div style={{ fontWeight: 600, fontSize: 16, letterSpacing: '-0.005em', color: T.fg }}>
-        ImagineArt
-      </div>
-      <button style={{
-        marginLeft: 'auto', width: 24, height: 24, borderRadius: 6,
-        background: 'transparent', border: 0, color: T.fg2, cursor: 'pointer',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-      }}><Icon name="layout" size={15}/></button>
-    </div>
-
-    <SidebarItem icon="home" label="Home" active={active==='home'} onClick={()=>onNav('home')} />
-    <SidebarItem icon="folder" label="Assets" active={active==='assets'} onClick={()=>onNav('assets')} />
-    <SidebarItem icon="search" label="Search" active={active==='search'} onClick={()=>onNav('search')} />
-
-    <SidebarSection title="Tools">
-      <SidebarItem icon="image" label="Image" />
-      <SidebarItem icon="film" label="Video" />
-      <SidebarItem icon="music" label="Audio" />
-      <SidebarItem icon="workflow" label="Workflows" active={active==='workflows'} onClick={()=>onNav('workflows')} />
-      <SidebarItem icon="edit" label="Edit" />
-      <SidebarItem icon="maximize" label="Upscale" />
-      <SidebarItem icon="film" label="Film studio" />
-      <SidebarItem icon="spark" label="Campaign Director" active={active==='director'} onClick={()=>onNav('director')} badge="NEW" />
-    </SidebarSection>
-
-    <SidebarSection title="Apps">
-      <SidebarItem icon="apps" label="All Tools" />
-      <SidebarItem icon="layers" label="Apps" />
-      <SidebarItem icon="users" label="Community" />
-      <SidebarItem icon="message" label="Chatly" trailing="arrowUpRight" />
-    </SidebarSection>
-
-    <div style={{ flex: 1 }} />
-
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: 4, padding: '10px 4px 4px',
-      borderTop: `1px solid ${T.border}`,
-    }}>
-      {[
-        { name: 'settings' },
-        { name: 'message' },
-        { name: 'clipboard' },
-        { name: 'helpCircle' },
-        { name: 'monitor' },
-      ].map((b, i) => (
-        <button key={i} style={{
-          width: 32, height: 32, borderRadius: 8,
-          background: 'transparent', border: 0, color: T.fg2, cursor: 'pointer',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          <Icon name={b.name} size={15}/>
-        </button>
-      ))}
-    </div>
-  </aside>
-);
-
-/* =========================================================
-   Top app bar
-========================================================= */
-const TopBar = () => (
-  <header style={{
-    height: 56, flexShrink: 0, background: T.bg,
-    borderBottom: `1px solid ${T.border}`,
-    display: 'flex', alignItems: 'center', gap: 10, padding: '0 20px',
-  }}>
-    <div style={{ flex: 1 }} />
-    <button style={{
-      width: 36, height: 36, borderRadius: 10, background: 'transparent',
-      border: 0, color: T.fg, cursor: 'pointer', display: 'inline-flex',
-      alignItems: 'center', justifyContent: 'center',
-    }}><Icon name="search" size={18}/></button>
-    <button style={btnGhost}>Contact Sales</button>
-    <button style={btnUpgrade}>
-      <Icon name="zap" size={15}/>
-      Upgrade
-    </button>
-    <button style={btnTeam}>
-      <span style={{
-        width: 18, height: 18, borderRadius: 5,
-        background: 'linear-gradient(135deg,#8A3FFC,#FF85DD)',
-      }}/>
-      ImagineArt (...)
-      <Icon name="chevronDown" size={13}/>
-    </button>
-    <button style={iconGhost}><Icon name="message" size={18}/></button>
-    <button style={iconGhost}><Icon name="bell" size={18}/></button>
-    <div style={{
-      width: 30, height: 30, borderRadius: 999,
-      background: 'linear-gradient(135deg,#34D399,#10B981)',
-      color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-      fontWeight: 600, fontSize: 13,
-    }}>H</div>
-  </header>
-);
-
-const btnGhost = {
-  height: 32, padding: '0 12px', borderRadius: 9,
-  background: 'transparent', border: `1px solid ${T.border2}`, color: T.fg,
-  cursor: 'pointer', fontSize: 13, fontWeight: 500,
-};
-const btnUpgrade = {
-  height: 32, padding: '0 12px', borderRadius: 9,
-  background: T.brandTonal, border: 0, color: T.brandText,
-  cursor: 'pointer', fontSize: 13, fontWeight: 500,
-  display: 'inline-flex', alignItems: 'center', gap: 6,
-};
-const btnTeam = {
-  height: 32, padding: '0 10px', borderRadius: 9,
-  background: T.surfS, border: `1px solid ${T.border}`, color: T.fg,
-  cursor: 'pointer', fontSize: 13, fontWeight: 500,
-  display: 'inline-flex', alignItems: 'center', gap: 8,
-};
-const iconGhost = {
-  width: 36, height: 36, borderRadius: 10, background: 'transparent',
-  border: 0, color: T.fg, cursor: 'pointer', display: 'inline-flex',
-  alignItems: 'center', justifyContent: 'center',
-};
 
 /* =========================================================
    Scroll-reveal hook + wrapper. Adds a one-shot fade-up
-   when the element scrolls into view. Used to give every
-   section a soft entrance instead of arriving cold.
+   when the element scrolls into view.
 ========================================================= */
-const useReveal = (rootMargin = '0px 0px -80px 0px', threshold = 0.12) => {
+export const useReveal = (rootMargin = '0px 0px -80px 0px', threshold = 0.12) => {
   const [visible, setVisible] = useState(false);
   const ref = useRef(null);
   useEffect(() => {
@@ -291,7 +122,7 @@ const useReveal = (rootMargin = '0px 0px -80px 0px', threshold = 0.12) => {
   return [ref, visible];
 };
 
-const Reveal = ({ children, delay = 0, distance = 14, style }) => {
+export const Reveal = ({ children, delay = 0, distance = 14, style }) => {
   const [ref, visible] = useReveal();
   return (
     <div ref={ref} style={{
@@ -305,8 +136,3 @@ const Reveal = ({ children, delay = 0, distance = 14, style }) => {
     </div>
   );
 };
-
-window.T = T; window.Icon = Icon;
-window.Sidebar = Sidebar; window.TopBar = TopBar;
-window.useReveal = useReveal;
-window.Reveal = Reveal;

@@ -1,10 +1,12 @@
-/* global React */
-const { useState: useStateSN, useEffect: useEffectSN, useRef: useRefSN } = React;
+"use client";
+
+import { useState, useEffect } from 'react';
+import { T, Icon, useReveal } from '@/components/primitives';
+import { SectionHead } from '@/components/section-head';
 
 /* =========================================================
    "What it does" — a single real Imagine.Art canvas paired
-   with the brief that generated it. The whole point of this
-   section is one wow: one sentence → this canvas.
+   with the brief that generated it.
 ========================================================= */
 
 const SN_WORKFLOW = {
@@ -12,15 +14,15 @@ const SN_WORKFLOW = {
   label: 'Rabbit headphones · vertical campaign',
   sentence: 'Cinematic product story for our rabbit headphones. Pink chrome, kawaii character, vertical-first.',
   stats: { nodes: 9, edges: 14, minutes: 11, subagents: 4 },
-  file: 'assets/workflow-rabbit.png',
+  file: '/assets/workflow-rabbit.png',
   flowUrl: 'https://www.imagine.art/flow/ebdc3fd5-1825-4cd9-b78a-530c9ef36922',
 };
 
-/* ---------- Count-up hook (animates a number from 0 → end) ---------- */
+/* ---------- Count-up hook ---------- */
 const useCountUp = (end, opts) => {
   const { duration = 1400, delay = 0, start = false } = opts || {};
-  const [val, setVal] = useStateSN(0);
-  useEffectSN(() => {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
     if (!start) return;
     let raf;
     let t0 = null;
@@ -39,9 +41,9 @@ const useCountUp = (end, opts) => {
   return val;
 };
 
-/* ---------- Sentence card (left) — word-stagger on the brief ---------- */
+/* ---------- Sentence card (left) ---------- */
 const StaggeredSentence = ({ text, visible }) => {
-  const words = text.split(/(\s+)/); // keep whitespace tokens
+  const words = text.split(/(\s+)/);
   return (
     <>
       {words.map((w, i) => {
@@ -65,7 +67,6 @@ const StaggeredSentence = ({ text, visible }) => {
 };
 
 const SentenceCard = ({ workflow, revealed }) => {
-  const T = window.T;
   const minutes = useCountUp(workflow.stats.minutes, { duration: 900, delay: 200, start: revealed });
   const subagents = useCountUp(workflow.stats.subagents, { duration: 700, delay: 360, start: revealed });
 
@@ -148,22 +149,19 @@ const SentenceCard = ({ workflow, revealed }) => {
   );
 };
 
-/* ---------- Canvas panel (right) — live-time build of the screenshot ---------- */
-const BUILD_DURATION = 3400;     // total canvas-build animation
-const BUILD_DELAY    = 400;      // wait briefly after the section reveals before starting
-const POST_BUILD_GAP = 200;      // small grace period before "Ready" + chrome glints
+/* ---------- Canvas panel (right) ---------- */
+const BUILD_DURATION = 3400;
+const BUILD_DELAY    = 400;
+const POST_BUILD_GAP = 200;
 
 const CanvasPanel = ({ workflow, revealed }) => {
-  const T = window.T;
-  const Icon = window.Icon;
-  const [built, setBuilt] = useStateSN(false);
+  const [built, setBuilt] = useState(false);
 
-  /* Numbers tick during build, finish around the same time it does */
   const nodes   = useCountUp(workflow.stats.nodes,   { duration: 1800, delay: BUILD_DELAY + 600,  start: revealed });
   const edges   = useCountUp(workflow.stats.edges,   { duration: 2200, delay: BUILD_DELAY + 800,  start: revealed });
   const minutes = useCountUp(workflow.stats.minutes, { duration: 1400, delay: BUILD_DELAY + 1400, start: revealed });
 
-  useEffectSN(() => {
+  useEffect(() => {
     if (!revealed) return;
     const t = setTimeout(() => setBuilt(true), BUILD_DELAY + BUILD_DURATION + POST_BUILD_GAP);
     return () => clearTimeout(t);
@@ -215,16 +213,12 @@ const CanvasPanel = ({ workflow, revealed }) => {
         </a>
       </div>
       <div style={{ position: 'relative', flex: 1, overflow: 'hidden', background: '#000' }}>
-        {/* Subtle dot grid behind the canvas to match Imagine.Art's editor */}
         <div aria-hidden style={{
           position: 'absolute', inset: 0,
           backgroundImage: 'radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px)',
           backgroundSize: '20px 20px',
         }}/>
 
-        {/* Image is clipped to a 0-width strip on the left, then `liveBuild`
-            wipes the clip-path open over BUILD_DURATION. Looks like the canvas
-            is being rendered live, not pasted in. */}
         <img
           src={workflow.file}
           alt={workflow.label}
@@ -239,7 +233,6 @@ const CanvasPanel = ({ workflow, revealed }) => {
           }}
         />
 
-        {/* Vertical scan line — travels along the wipe leading edge */}
         {revealed && (
           <div aria-hidden style={{
             position: 'absolute', top: 0, bottom: 0,
@@ -251,15 +244,12 @@ const CanvasPanel = ({ workflow, revealed }) => {
           }}/>
         )}
 
-        {/* Subtle inner vignette so stats pill reads cleanly */}
         <div aria-hidden style={{
           position: 'absolute', inset: 0,
           background: 'linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0.45) 100%)',
           pointerEvents: 'none',
         }}/>
 
-        {/* Live progress pill in the canvas (bottom-center during build,
-            fades out once built) */}
         {revealed && !built && (
           <div style={{
             position: 'absolute', left: '50%', top: 14,
@@ -282,7 +272,6 @@ const CanvasPanel = ({ workflow, revealed }) => {
           </div>
         )}
 
-        {/* Stats pill bottom-left — appears when build completes */}
         <div style={{
           position: 'absolute', left: 14, bottom: 14,
           padding: '6px 12px', borderRadius: 999,
@@ -303,7 +292,6 @@ const CanvasPanel = ({ workflow, revealed }) => {
           <span>{minutes} min</span>
         </div>
 
-        {/* Open-in-imagine.art pill bottom-right — appears when build completes */}
         <a
           href={workflow.flowUrl}
           target="_blank"
@@ -334,9 +322,7 @@ const CanvasPanel = ({ workflow, revealed }) => {
 };
 
 /* ---------- Section ---------- */
-const SentenceNetwork = () => {
-  const SectionHead = window.SectionHead;
-  const useReveal = window.useReveal;
+export const SentenceNetwork = () => {
   const [revRef, revealed] = useReveal();
 
   return (
@@ -355,5 +341,4 @@ const SentenceNetwork = () => {
   );
 };
 
-window.SentenceNetwork = SentenceNetwork;
-window.WorkflowGallery = SentenceNetwork;
+export default SentenceNetwork;

@@ -1,43 +1,35 @@
-/* global React */
-const { useState: useStateTpl, useRef: useRefTpl } = React;
+"use client";
 
-/* =========================================================
-   Templates — horizontal auto-scrolling marquee
-   9:16 video cards, hover to play + lift
-========================================================= */
+import { useState, useRef } from 'react';
+import { SectionHead } from '@/components/section-head';
 
 const TEMPLATES = [
-  { id: 'minimal-float',    label: 'Minimal Float',     video: 'assets/examples/ec-template-minimal-float.mp4' },
-  { id: 'editorial-clean',  label: 'Editorial Clean',   video: 'assets/examples/ec-template-editorial-clean.mp4' },
-  { id: 'studio-dark',      label: 'Studio Dark',       video: 'assets/examples/ec-template-studio-dark.mp4' },
-  { id: 'luxury-marble',    label: 'Luxury Marble',     video: 'assets/examples/ec-template-luxury-marble.mp4' },
-  { id: 'ambient-glow',     label: 'Ambient Glow',      video: 'assets/examples/ec-template-ambient-glow.mp4' },
-  { id: 'bold-color',       label: 'Bold Color',        video: 'assets/examples/ec-template-bold-color.mp4' },
-  { id: 'lifestyle-scene',  label: 'Lifestyle Scene',   video: 'assets/examples/ec-template-lifestyle-scene.mp4' },
-  { id: 'outdoor-natural',  label: 'Outdoor Natural',   video: 'assets/examples/ec-template-outdoor-natural.mp4' },
-  { id: 'bag-color',        label: 'Bag Color',         video: 'assets/examples/ec-template-bag-color.mp4' },
+  { id: 'minimal-float',    label: 'Minimal Float',     video: '/assets/examples/ec-template-minimal-float.mp4' },
+  { id: 'editorial-clean',  label: 'Editorial Clean',   video: '/assets/examples/ec-template-editorial-clean.mp4' },
+  { id: 'studio-dark',      label: 'Studio Dark',       video: '/assets/examples/ec-template-studio-dark.mp4' },
+  { id: 'luxury-marble',    label: 'Luxury Marble',     video: '/assets/examples/ec-template-luxury-marble.mp4' },
+  { id: 'ambient-glow',     label: 'Ambient Glow',      video: '/assets/examples/ec-template-ambient-glow.mp4' },
+  { id: 'bold-color',       label: 'Bold Color',        video: '/assets/examples/ec-template-bold-color.mp4' },
+  { id: 'lifestyle-scene',  label: 'Lifestyle Scene',   video: '/assets/examples/ec-template-lifestyle-scene.mp4' },
+  { id: 'outdoor-natural',  label: 'Outdoor Natural',   video: '/assets/examples/ec-template-outdoor-natural.mp4' },
+  { id: 'bag-color',        label: 'Bag Color',         video: '/assets/examples/ec-template-bag-color.mp4' },
 ];
 
 const TPL_CARD_W  = 400;
-const TPL_CARD_H  = 500;   /* ~4:5 — portrait but less towering */
+const TPL_CARD_H  = 500;
 const TPL_GAP     = 20;
 
-/* Two copies for seamless loop */
 const TEMPLATES_2X = [...TEMPLATES, ...TEMPLATES];
-/* Speed: 40 px/s */
 const TPL_DURATION = (TEMPLATES.length * (TPL_CARD_W + TPL_GAP)) / 40;
 
 const TemplateCard = ({ tpl }) => {
-  const [hover, setHover] = useStateTpl(false);
-  const videoRef = useRefTpl(null);
-
-  const onEnter = () => setHover(true);
-  const onLeave = () => setHover(false);
+  const [hover, setHover] = useState(false);
+  const videoRef = useRef(null);
 
   return (
     <div
-      onMouseEnter={onEnter}
-      onMouseLeave={onLeave}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
       style={{
         flexShrink: 0,
         position: 'relative',
@@ -69,14 +61,12 @@ const TemplateCard = ({ tpl }) => {
         }}
       />
 
-      {/* Gradient overlay */}
       <div style={{
         position: 'absolute', inset: 0,
         background: 'linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.72) 100%)',
         pointerEvents: 'none',
       }}/>
 
-      {/* Label */}
       <div style={{
         position: 'absolute', left: 12, right: 12, bottom: 12,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -92,9 +82,8 @@ const TemplateCard = ({ tpl }) => {
   );
 };
 
-const Templates = ({ headingHidden = false }) => {
-  const { SectionHead } = window;
-  const [paused, setPaused] = useStateTpl(false);
+export const Templates = ({ headingHidden = false }) => {
+  const [paused, setPaused] = useState(false);
 
   return (
     <div id="templates">
@@ -106,7 +95,6 @@ const Templates = ({ headingHidden = false }) => {
         />
       )}
 
-      {/* Clip boundary */}
       <div
         style={{ overflow: 'hidden' }}
         onMouseEnter={() => setPaused(true)}
@@ -136,4 +124,4 @@ const Templates = ({ headingHidden = false }) => {
   );
 };
 
-window.Templates = Templates;
+export default Templates;
